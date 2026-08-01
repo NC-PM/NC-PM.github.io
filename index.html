@@ -513,6 +513,7 @@ try{
 } catch(e){ /* App Check not configured yet — safe to ignore */ }
 
 const auth = getAuth(app);
+auth.languageCode = 'ar';
 const db = getFirestore(app);
 
 function mapFirebaseError(e){
@@ -537,8 +538,7 @@ window.handleRegister = async function(){
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
     try{ await sendEmailVerification(cred.user); } catch(e2){ /* verification email is a bonus, not required */ }
-    showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها).');
-    setTimeout(()=>{ closeAuthModal(); }, 3200);
+    showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها). اضغط × لإغلاق هذه الرسالة والمتابعة.');
   } catch(e){
     showAuthError(mapFirebaseError(e));
   }
