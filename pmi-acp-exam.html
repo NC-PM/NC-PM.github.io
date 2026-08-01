@@ -188,6 +188,10 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 .field input:focus-visible{ outline:2px solid var(--gold); }
 .auth-note{ font-size:12px; color:var(--slate); text-align:center; margin-top:16px; font-family:var(--font-mono); }
 .auth-error{ color:var(--bad); font-size:13px; margin-top:8px; display:none; text-align:center; }
+.welcome-icon{ width:60px; height:60px; border-radius:50%; background:rgba(31,111,92,.1); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+.welcome-title{ font-size:20px; color:var(--navy); margin:0 0 8px; font-family:var(--font-display); }
+.welcome-sub{ font-size:14.5px; color:var(--slate); margin:0; }
+.welcome-note{ display:none; font-size:12.5px; color:var(--gold); background:rgba(200,155,60,.08); border:1px solid rgba(200,155,60,.25); border-radius:10px; padding:10px 14px; margin:16px 0 0; }
 .auth-error.show{ display:block; }
 .auth-success{ color:var(--good); font-size:13px; margin-top:8px; display:none; text-align:center; }
 .auth-success.show{ display:block; }
@@ -244,7 +248,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
     </a>
     <a href="index.html" class="back-home">← الرئيسية</a>
     <span class="crumb"><b>PMI-ACP</b></span>
-    <button class="auth-trigger" id="authTrigger" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>
+    <button class="auth-trigger" id="authTrigger" style="display:none;" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>
     <div class="user-bar" id="userBar">
       <button class="stats-toggle" onclick="toggleStatsDropdown()">
         <span id="userGreeting">—</span>
@@ -373,17 +377,27 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
     </div>
 
     <div id="loginForm">
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleLogin()">تسجيل الدخول</button>
       <button class="forgot-link" onclick="handleForgotPassword()">نسيت كلمة المرور؟</button>
     </div>
 
     <div id="registerForm" style="display:none;">
-      <div class="field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل"></div>
-      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+      <div class="field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل" autocomplete="name"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>تأكيد البريد الإلكتروني</label><input type="email" id="regEmailConfirm" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"></div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleRegister()">إنشاء الحساب</button>
+    </div>
+
+    <div id="welcomePanel" style="display:none; text-align:center; padding:14px 0 4px;">
+      <div class="welcome-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F6F5C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3 class="welcome-title">مرحبًا، <span id="welcomeName">—</span> 👋</h3>
+      <p class="welcome-sub">تم تسجيل الدخول بنجاح</p>
+      <p class="welcome-note" id="welcomeNote">بريدك الإلكتروني غير مُفعّل بعد — تحقق من بريدك لتفعيل حسابك.</p>
     </div>
 
     <p class="auth-error" id="authError"></p>
@@ -519,7 +533,35 @@ function showScreen(name){
 
 /* ---------------- UI-only helpers (data logic lives in the Firebase module script below) ---------------- */
 function openAuthModal(){ document.getElementById('authModalOverlay').classList.add('show'); }
-function closeAuthModal(){ document.getElementById('authModalOverlay').classList.remove('show'); }
+function closeAuthModal(){
+  document.getElementById('authModalOverlay').classList.remove('show');
+  clearTimeout(window._welcomeTimer);
+  resetAuthModalView();
+}
+
+window.resetAuthModalView = resetAuthModalView;
+function resetAuthModalView(){
+  document.getElementById('welcomePanel').style.display = 'none';
+  document.querySelector('.auth-tabs').style.display = 'flex';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('tabLogin').classList.add('active');
+  document.getElementById('tabRegister').classList.remove('active');
+}
+
+window.showWelcomePanel = showWelcomePanel;
+function showWelcomePanel(name, showVerifyNote){
+  document.querySelector('.auth-tabs').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('authError').classList.remove('show');
+  document.getElementById('authSuccess').classList.remove('show');
+  document.getElementById('welcomeName').textContent = name;
+  document.getElementById('welcomeNote').style.display = showVerifyNote ? 'block' : 'none';
+  document.getElementById('welcomePanel').style.display = 'block';
+  clearTimeout(window._welcomeTimer);
+  window._welcomeTimer = setTimeout(closeAuthModal, 7000);
+}
 function openPaymentModal(){ document.getElementById('paymentModalOverlay').classList.add('show'); }
 function closePaymentModal(){ document.getElementById('paymentModalOverlay').classList.remove('show'); }
 
@@ -547,7 +589,15 @@ function showAuthSuccess(msg){
   el.classList.add('show');
 }
 
-function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+function isValidEmail(v){
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return false;
+  const domain = (v.split('@')[1] || '').toLowerCase();
+  const knownProviders = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','msn.com'];
+  for(const p of knownProviders){
+    if(domain.startsWith(p) && domain.length > p.length) return false;
+  }
+  return true;
+}
 
 document.getElementById('timedDesc').textContent =
   `اختبار بزمن محدد (بمعدل الاختبار العالمي) بدون إظهار الإجابات أثناء الحل. النتيجة والتفسير يظهران فقط بعد الإنهاء.`;
@@ -1005,9 +1055,11 @@ onAuthStateChanged(auth, (user)=>{
 window.handleRegister = async function(){
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const emailConfirm = document.getElementById('regEmailConfirm').value.trim().toLowerCase();
   const password = document.getElementById('regPassword').value;
-  if(!name || !email || !password){ window.showAuthError('الرجاء تعبئة جميع الحقول.'); return; }
-  if(!window.isValidEmail(email)){ window.showAuthError('البريد الإلكتروني غير صحيح.'); return; }
+  if(!name || !email || !emailConfirm || !password){ window.showAuthError('الرجاء تعبئة جميع الحقول.'); return; }
+  if(!window.isValidEmail(email)){ window.showAuthError('البريد الإلكتروني غير صحيح — تأكد من عدم وجود أحرف زائدة بالخطأ.'); return; }
+  if(email !== emailConfirm){ window.showAuthError('البريد الإلكتروني غير متطابق في الحقلين — تأكد من كتابته بنفس الشكل مرتين.'); return; }
   if(password.length < 6){ window.showAuthError('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
   try{
     const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -1025,12 +1077,7 @@ window.handleLogin = async function(){
   const password = document.getElementById('loginPassword').value;
   try{
     const cred = await signInWithEmailAndPassword(auth, email, password);
-    if(!cred.user.emailVerified){
-      window.showAuthSuccess('تنبيه: بريدك الإلكتروني غير مُفعّل بعد. تحقق من بريدك لتفعيل حسابك (هذا لا يمنعك من استخدام الموقع حاليًا).');
-      setTimeout(()=>{ window.closeAuthModal(); }, 3200);
-    } else {
-      window.closeAuthModal();
-    }
+    window.showWelcomePanel(cred.user.displayName || cred.user.email, !cred.user.emailVerified);
   } catch(e){
     window.showAuthError(mapFirebaseError(e));
   }

@@ -236,6 +236,10 @@ section{ padding:88px 0; }
 .auth-field label{ display:block; font-size:12.5px; color:var(--slate); margin-bottom:6px; font-family:var(--font-mono); }
 .auth-field input{ width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:var(--font-body); font-size:14.5px; background:var(--ivory); direction:ltr; text-align:left; box-sizing:border-box; }
 .auth-note{ font-size:12px; color:var(--slate); text-align:center; margin-top:16px; font-family:var(--font-mono); }
+.welcome-icon{ width:60px; height:60px; border-radius:50%; background:rgba(31,111,92,.1); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+.welcome-title{ font-size:20px; color:var(--navy); margin:0 0 8px; font-family:var(--font-display); }
+.welcome-sub{ font-size:14.5px; color:var(--slate); margin:0; }
+.welcome-note{ display:none; font-size:12.5px; color:var(--gold); background:rgba(200,155,60,.08); border:1px solid rgba(200,155,60,.25); border-radius:10px; padding:10px 14px; margin:16px 0 0; }
 .auth-error{ color:var(--danger); font-size:13px; margin-top:8px; display:none; text-align:center; }
 .auth-error.show{ display:block; }
 .auth-success{ color:var(--teal); font-size:13px; margin-top:8px; display:none; text-align:center; }
@@ -274,8 +278,8 @@ section{ padding:88px 0; }
       <li><a href="#guarantee" data-i18n="navGuarantee">الضمان</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn btn-outline-dark btn-sm" id="authTriggerLogin" onclick="openAuthModal('login')">تسجيل الدخول</button>
-      <button class="btn btn-gold btn-sm" id="authTriggerRegister" onclick="openAuthModal('register')">إنشاء حساب</button>
+      <button class="btn btn-outline-dark btn-sm" id="authTriggerLogin" style="display:none;" onclick="openAuthModal('login')">تسجيل الدخول</button>
+      <button class="btn btn-gold btn-sm" id="authTriggerRegister" style="display:none;" onclick="openAuthModal('register')">إنشاء حساب</button>
       <div class="user-bar" id="userBar">
         <span id="userGreeting">—</span>
         <button onclick="logout()">تسجيل خروج</button>
@@ -448,16 +452,25 @@ document.addEventListener('DOMContentLoaded', () => {
       <button id="tabRegister" onclick="switchAuthTab('register')">حساب جديد</button>
     </div>
     <div id="loginForm">
-      <div class="auth-field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <div class="auth-field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleLogin()">تسجيل الدخول</button>
       <button class="forgot-link" onclick="handleForgotPassword()">نسيت كلمة المرور؟</button>
     </div>
     <div id="registerForm" style="display:none;">
-      <div class="auth-field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل"></div>
-      <div class="auth-field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+      <div class="auth-field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل" autocomplete="name"></div>
+      <div class="auth-field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>تأكيد البريد الإلكتروني</label><input type="email" id="regEmailConfirm" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"></div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleRegister()">إنشاء الحساب</button>
+    </div>
+    <div id="welcomePanel" style="display:none; text-align:center; padding:14px 0 4px;">
+      <div class="welcome-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F6F5C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3 class="welcome-title">مرحبًا، <span id="welcomeName">—</span> 👋</h3>
+      <p class="welcome-sub">تم تسجيل الدخول بنجاح</p>
+      <p class="welcome-note" id="welcomeNote">بريدك الإلكتروني غير مُفعّل بعد — تحقق من بريدك لتفعيل حسابك.</p>
     </div>
     <p class="auth-error" id="authError"></p>
     <p class="auth-success" id="authSuccess"></p>
@@ -470,7 +483,33 @@ function openAuthModal(tab){
   document.getElementById('authModalOverlay').classList.add('show');
   switchAuthTab(tab === 'register' ? 'register' : 'login');
 }
-function closeAuthModal(){ document.getElementById('authModalOverlay').classList.remove('show'); }
+function closeAuthModal(){
+  document.getElementById('authModalOverlay').classList.remove('show');
+  clearTimeout(window._welcomeTimer);
+  resetAuthModalView();
+}
+
+function resetAuthModalView(){
+  document.getElementById('welcomePanel').style.display = 'none';
+  document.querySelector('.auth-tabs').style.display = 'flex';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('tabLogin').classList.add('active');
+  document.getElementById('tabRegister').classList.remove('active');
+}
+
+function showWelcomePanel(name, showVerifyNote){
+  document.querySelector('.auth-tabs').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('authError').classList.remove('show');
+  document.getElementById('authSuccess').classList.remove('show');
+  document.getElementById('welcomeName').textContent = name;
+  document.getElementById('welcomeNote').style.display = showVerifyNote ? 'block' : 'none';
+  document.getElementById('welcomePanel').style.display = 'block';
+  clearTimeout(window._welcomeTimer);
+  window._welcomeTimer = setTimeout(closeAuthModal, 7000);
+}
 
 (function(){
   const overlay = document.getElementById('authModalOverlay');
@@ -503,7 +542,15 @@ function showAuthSuccess(msg){
   el.textContent = msg;
   el.classList.add('show');
 }
-function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+function isValidEmail(v){
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return false;
+  const domain = (v.split('@')[1] || '').toLowerCase();
+  const knownProviders = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','msn.com'];
+  for(const p of knownProviders){
+    if(domain.startsWith(p) && domain.length > p.length) return false;
+  }
+  return true;
+}
 </script>
 
 <script type="module">
@@ -580,9 +627,11 @@ function mapFirebaseError(e){
 window.handleRegister = async function(){
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const emailConfirm = document.getElementById('regEmailConfirm').value.trim().toLowerCase();
   const password = document.getElementById('regPassword').value;
-  if(!name || !email || !password){ showAuthError('الرجاء تعبئة جميع الحقول.'); return; }
-  if(!isValidEmail(email)){ showAuthError('البريد الإلكتروني غير صحيح.'); return; }
+  if(!name || !email || !emailConfirm || !password){ showAuthError('الرجاء تعبئة جميع الحقول.'); return; }
+  if(!isValidEmail(email)){ showAuthError('البريد الإلكتروني غير صحيح — تأكد من عدم وجود أحرف زائدة بالخطأ.'); return; }
+  if(email !== emailConfirm){ showAuthError('البريد الإلكتروني غير متطابق في الحقلين — تأكد من كتابته بنفس الشكل مرتين.'); return; }
   if(password.length < 6){ showAuthError('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
   try{
     const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -600,12 +649,7 @@ window.handleLogin = async function(){
   const password = document.getElementById('loginPassword').value;
   try{
     const cred = await signInWithEmailAndPassword(auth, email, password);
-    if(!cred.user.emailVerified){
-      showAuthSuccess('تنبيه: بريدك الإلكتروني غير مُفعّل بعد. تحقق من بريدك لتفعيل حسابك (هذا لا يمنعك من استخدام الموقع حاليًا).');
-      setTimeout(()=>{ closeAuthModal(); }, 3200);
-    } else {
-      closeAuthModal();
-    }
+    showWelcomePanel(cred.user.displayName || cred.user.email, !cred.user.emailVerified);
   } catch(e){
     showAuthError(mapFirebaseError(e));
   }
