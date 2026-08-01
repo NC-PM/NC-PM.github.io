@@ -819,7 +819,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/fireba
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail
+  onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp,
@@ -995,7 +995,9 @@ window.handleRegister = async function(){
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
-    window.closeAuthModal();
+    try{ await sendEmailVerification(cred.user); } catch(e2){ /* verification email is a bonus, not required */ }
+    window.showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها).');
+    setTimeout(()=>{ window.closeAuthModal(); }, 3200);
   } catch(e){
     window.showAuthError(mapFirebaseError(e));
   }
@@ -1005,8 +1007,13 @@ window.handleLogin = async function(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   try{
-    await signInWithEmailAndPassword(auth, email, password);
-    window.closeAuthModal();
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    if(!cred.user.emailVerified){
+      window.showAuthSuccess('تنبيه: بريدك الإلكتروني غير مُفعّل بعد. تحقق من بريدك لتفعيل حسابك (هذا لا يمنعك من استخدام الموقع حاليًا).');
+      setTimeout(()=>{ window.closeAuthModal(); }, 3200);
+    } else {
+      window.closeAuthModal();
+    }
   } catch(e){
     window.showAuthError(mapFirebaseError(e));
   }

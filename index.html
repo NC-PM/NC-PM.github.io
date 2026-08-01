@@ -110,7 +110,7 @@ section{ padding:88px 0; }
 /* ---------- Hero ---------- */
 .hero{
   background:
-    radial-gradient(1100px 480px at 18% -10%, rgba(60, 200, 121, 0.2), transparent 60%),
+    radial-gradient(1100px 480px at 18% -10%, rgba(200,155,60,.20), transparent 60%),
     linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%);
   color:var(--ivory);
   position:relative; overflow:hidden;
@@ -261,15 +261,15 @@ section{ padding:88px 0; }
 <header class="site-header">
   <nav class="nav">
     <a href="#top" class="brand">
-      <span class="brand-text"><strong>NC-PM</strong><span>المركز الوطني لإدارة المشاريع</span></span>
+      <span class="brand-text"><strong>NC-PM</strong><span data-i18n="brandSub">المركز الوطني لإدارة المشاريع</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="#courses">الشهادات</a></li>
-      <li><a href="https://wa.me/966500000000" target="_blank" rel="noopener">الدعم</a></li>
-      <li><a href="#guarantee">الضمان</a></li>
+      <li><a href="#courses" data-i18n="navCourses">الشهادات</a></li>
+      <li><a href="https://wa.me/966500000000" target="_blank" rel="noopener" data-i18n="navSupport">الدعم</a></li>
+      <li><a href="#guarantee" data-i18n="navGuarantee">الضمان</a></li>
     </ul>
     <div class="nav-actions">
-      <a href="#" class="btn btn-gold btn-sm" onclick="openAuthModal(); return false;">سجّل الآن</a>
+      <a href="#" class="btn btn-gold btn-sm" onclick="openAuthModal(); return false;" data-i18n="navRegister">سجّل الآن</a>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="القائمة">☰</button>
   </nav>
@@ -279,16 +279,16 @@ section{ padding:88px 0; }
 <section class="hero" id="top">
   <div class="wrap">
     <div>
-      <p class="eyebrow">اجتياز الاختبار أو استرداد كامل لأموالك</p>
-      <h1>احصل على الشهادة. احصل على الوظيفة. <em>بضمان حقيقي.</em></h1>
-      <p class="lead">يؤهّل مركز NC-PM المهنيين للنجاح في اختبارات إدارة المشاريع الاحترافية — CAPM وPMP وPMI-ACP وPMI-RMP — من خلال مسارات تعلّم ذاتية منظّمة، مع وعد حقيقي: تجتاز الاختبار أو تسترد أموالك بالكامل.</p>
+      <p class="eyebrow" data-i18n="heroEyebrow">اجتياز الاختبار أو استرداد كامل لأموالك</p>
+      <h1 data-i18n="heroH1">احصل على الشهادة. احصل على الوظيفة. <em>بضمان حقيقي.</em></h1>
+      <p class="lead" data-i18n="heroLead">يؤهّل مركز NC-PM المهنيين للنجاح في اختبارات إدارة المشاريع الاحترافية — CAPM وPMP وPMI-ACP وPMI-RMP — من خلال مسارات تعلّم ذاتية منظّمة، مع وعد حقيقي: تجتاز الاختبار أو تسترد أموالك بالكامل.</p>
       <div class="hero-actions">
-        <a href="#courses" class="btn btn-gold">تصفح الشهادات</a>
-        <a href="https://wa.me/966500000000" target="_blank" rel="noopener" class="btn btn-outline">تواصل معنا عبر واتساب ←</a>
+        <a href="#courses" class="btn btn-gold" data-i18n="heroBrowse">تصفح الشهادات</a>
+        <a href="https://wa.me/966500000000" target="_blank" rel="noopener" class="btn btn-outline" data-i18n="heroWhatsapp">تواصل معنا عبر واتساب ←</a>
       </div>
       <div class="hero-stats">
-        <div><strong>4</strong><span>شهادات إدارة مشاريع</span></div>
-        <div><strong>100%</strong><span>ضمان استرداد الأموال</span></div>
+        <div><strong>4</strong><span data-i18n="heroStat1">شهادات إدارة مشاريع</span></div>
+        <div><strong>100%</strong><span data-i18n="heroStat2">ضمان استرداد الأموال</span></div>
       </div>
     </div>
   </div>
@@ -296,10 +296,10 @@ section{ padding:88px 0; }
 
 <div class="trust-strip">
   <div class="wrap">
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>ضمان استرداد كامل على جميع المسارات</div>
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>بنك أسئلة يحاكي نمط الاختبار الفعلي</div>
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>فيزا · مدى · تمارا · تابي</div>
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>دعم فوري عبر واتساب</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="trust1">ضمان استرداد كامل على جميع المسارات</span></div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span data-i18n="trust2">بنك أسئلة يحاكي نمط الاختبار الفعلي</span></div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span data-i18n="trust3">فيزا · مدى · تمارا · تابي</span></div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg><span data-i18n="trust4">دعم فوري عبر واتساب</span></div>
   </div>
 </div>
 
@@ -307,56 +307,56 @@ section{ padding:88px 0; }
 <section id="courses">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow">إدارة المشاريع والبرامج</p>
-      <h2>تأهيل للاختبارات مبني على معدلات نجاح حقيقية</h2>
-      <p>يشمل كل مسار دروسًا مرئية منظمة، وأدلة دراسية قابلة للتحميل، وبنك أسئلة كاملًا، واختبارات محاكاة زمنية تحاكي تجربة الاختبار الفعلي.</p>
+      <p class="eyebrow" data-i18n="coursesEyebrow">إدارة المشاريع والبرامج</p>
+      <h2 data-i18n="coursesH2">تأهيل للاختبارات مبني على معدلات نجاح حقيقية</h2>
+      <p data-i18n="coursesLead">يشمل كل مسار دروسًا مرئية منظمة، وأدلة دراسية قابلة للتحميل، وبنك أسئلة كاملًا، واختبارات محاكاة زمنية تحاكي تجربة الاختبار الفعلي.</p>
     </div>
     <div class="course-grid">
       <article class="course-card">
-        <span class="tag">PMI · إدارة مشاريع</span>
-        <h3>PMP — محترف إدارة المشاريع</h3>
-        <p>المعيار العالمي المعتمد لمديري المشاريع. يغطي مجالات الأفراد والعمليات وبيئة الأعمال وفق مخطط محتوى اختبار PMI الحالي.</p>
-        <div class="meta"><span><b>35</b> ساعة تدريبية</span><span><b>+1,200</b> سؤال</span></div>
+        <span class="tag" data-i18n="tag1">PMI · إدارة مشاريع</span>
+        <h3 data-i18n="h3-1">PMP — محترف إدارة المشاريع</h3>
+        <p data-i18n="p1">المعيار العالمي المعتمد لمديري المشاريع. يغطي مجالات الأفراد والعمليات وبيئة الأعمال وفق مخطط محتوى اختبار PMI الحالي.</p>
+        <div class="meta"><span><b>35</b> <span data-i18n="hours">ساعة تدريبية</span></span><span><b>+1,200</b> <span data-i18n="questions">سؤال</span></span></div>
         <div class="card-actions">
           <a href="pmp-exam.html" class="link-quiz">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            اختيار الامتحان
+            <span data-i18n="chooseExam">اختيار الامتحان</span>
           </a>
         </div>
       </article>
       <article class="course-card">
-        <span class="tag">PMI · أجايل</span>
-        <h3>PMI-ACP — ممارس معتمد في المشاريع الرشيقة</h3>
-        <p>أطر Scrum وKanban وLean وXP من خلال تمارين عملية، مصممة للمهنيين الذين يقودون فرق عمل رشيقة أو مختلطة.</p>
-        <div class="meta"><span><b>21</b> ساعة تدريبية</span><span><b>+800</b> سؤال</span></div>
+        <span class="tag" data-i18n="tag2">PMI · أجايل</span>
+        <h3 data-i18n="h3-2">PMI-ACP — ممارس معتمد في المشاريع الرشيقة</h3>
+        <p data-i18n="p2">أطر Scrum وKanban وLean وXP من خلال تمارين عملية، مصممة للمهنيين الذين يقودون فرق عمل رشيقة أو مختلطة.</p>
+        <div class="meta"><span><b>21</b> <span data-i18n="hours">ساعة تدريبية</span></span><span><b>+800</b> <span data-i18n="questions">سؤال</span></span></div>
         <div class="card-actions">
           <a href="pmi-acp-exam.html" class="link-quiz">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            اختيار الامتحان
+            <span data-i18n="chooseExam">اختيار الامتحان</span>
           </a>
         </div>
       </article>
       <article class="course-card">
-        <span class="tag">PMI · المخاطر</span>
-        <h3>PMI-RMP — محترف إدارة المخاطر</h3>
-        <p>تحديد المخاطر المتقدم وتحليلها وتخطيط الاستجابة لها، للمسؤولين عن مخاطر المشاريع والمحافظ الاستثمارية.</p>
-        <div class="meta"><span><b>30</b> ساعة تدريبية</span><span><b>+650</b> سؤال</span></div>
+        <span class="tag" data-i18n="tag3">PMI · المخاطر</span>
+        <h3 data-i18n="h3-3">PMI-RMP — محترف إدارة المخاطر</h3>
+        <p data-i18n="p3">تحديد المخاطر المتقدم وتحليلها وتخطيط الاستجابة لها، للمسؤولين عن مخاطر المشاريع والمحافظ الاستثمارية.</p>
+        <div class="meta"><span><b>30</b> <span data-i18n="hours">ساعة تدريبية</span></span><span><b>+650</b> <span data-i18n="questions">سؤال</span></span></div>
         <div class="card-actions">
           <a href="pmi-rmp-exam.html" class="link-quiz">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            اختيار الامتحان
+            <span data-i18n="chooseExam">اختيار الامتحان</span>
           </a>
         </div>
       </article>
       <article class="course-card">
-        <span class="tag">PMI · تأسيسي</span>
-        <h3>CAPM — الشهادة المهنية المعتمدة في إدارة المشاريع</h3>
-        <p>نقطة انطلاق مثالية للمهنيين الجدد في إدارة المشاريع — تغطي المفاهيم والمصطلحات الأساسية المعتمدة عالميًا.</p>
-        <div class="meta"><span><b>24</b> ساعة تدريبية</span><span><b>+500</b> سؤال</span></div>
+        <span class="tag" data-i18n="tag4">PMI · تأسيسي</span>
+        <h3 data-i18n="h3-4">CAPM — الشهادة المهنية المعتمدة في إدارة المشاريع</h3>
+        <p data-i18n="p4">نقطة انطلاق مثالية للمهنيين الجدد في إدارة المشاريع — تغطي المفاهيم والمصطلحات الأساسية المعتمدة عالميًا.</p>
+        <div class="meta"><span><b>24</b> <span data-i18n="hours">ساعة تدريبية</span></span><span><b>+500</b> <span data-i18n="questions">سؤال</span></span></div>
         <div class="card-actions">
           <a href="capm-exam.html" class="link-quiz">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            اختيار الامتحان
+            <span data-i18n="chooseExam">اختيار الامتحان</span>
           </a>
         </div>
       </article>
@@ -368,14 +368,14 @@ section{ padding:88px 0; }
 <section id="guarantee" class="section-dark">
   <div class="wrap guarantee-box">
     <div>
-      <p class="eyebrow">وعدنا لك</p>
-      <h2>اجتز اختبار الشهادة، أو استرد أموالك بالكامل</h2>
+      <p class="eyebrow" data-i18n="guarEyebrow">وعدنا لك</p>
+      <h2 data-i18n="guarH2">اجتز اختبار الشهادة، أو استرد أموالك بالكامل</h2>
       <ul class="guarantee-list">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>أكمل الدورة، وتقدّم لاختبارك ضمن فترة الأهلية، وإن لم تجتزه يمكنك طلب استرداد كامل لرسوم الدورة.</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>ينطبق على مسارات PMP وPMI-ACP وPMI-RMP وCAPM عند إكمال جميع الدروس والاختبارات التجريبية وساعات الدراسة المطلوبة.</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>تتم مراجعة طلبات الاسترداد خلال 5 أيام عمل — وتُشارك الشروط الكاملة عند التسجيل.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="guarLi1">أكمل الدورة، وتقدّم لاختبارك ضمن فترة الأهلية، وإن لم تجتزه يمكنك طلب استرداد كامل لرسوم الدورة.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="guarLi2">ينطبق على مسارات PMP وPMI-ACP وPMI-RMP وCAPM عند إكمال جميع الدروس والاختبارات التجريبية وساعات الدراسة المطلوبة.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="guarLi3">تتم مراجعة طلبات الاسترداد خلال 5 أيام عمل — وتُشارك الشروط الكاملة عند التسجيل.</span></li>
       </ul>
-      <a href="#" class="btn btn-gold" style="margin-top:26px;" onclick="openAuthModal(); return false;">سجّل بثقة تامة</a>
+      <a href="#" class="btn btn-gold" style="margin-top:26px;" onclick="openAuthModal(); return false;" data-i18n="guarBtn">سجّل بثقة تامة</a>
     </div>
   </div>
 </section>
@@ -390,15 +390,15 @@ section{ padding:88px 0; }
       <div class="brand" style="margin-bottom:14px;">
         <strong style="font-family:'Tajawal',sans-serif; font-size:19px; color:#FAF8F2;">NC-PM</strong>
       </div>
-      <p style="max-width:420px; font-size:13.5px;">كل ما تحتاجه لمسيرتك المهنية في إدارة المشاريع، في مكان واحد.</p>
+      <p style="max-width:420px; font-size:13.5px;" data-i18n="footerTagline">كل ما تحتاجه لمسيرتك المهنية في إدارة المشاريع، في مكان واحد.</p>
     </div>
     <div class="footer-cols">
-      <div class="footer-col"><h5>الشهادات</h5><a href="pmp-exam.html">PMP</a><a href="pmi-acp-exam.html">PMI-ACP</a><a href="pmi-rmp-exam.html">PMI-RMP</a><a href="capm-exam.html">CAPM</a></div>
-      <div class="footer-col"><h5>الدعم</h5><a href="#guarantee">الضمان</a><a href="https://wa.me/966500000000" target="_blank" rel="noopener">واتساب</a></div>
+      <div class="footer-col"><h5 data-i18n="footerCerts">الشهادات</h5><a href="pmp-exam.html">PMP</a><a href="pmi-acp-exam.html">PMI-ACP</a><a href="pmi-rmp-exam.html">PMI-RMP</a><a href="capm-exam.html">CAPM</a></div>
+      <div class="footer-col"><h5 data-i18n="footerSupport">الدعم</h5><a href="#guarantee" data-i18n="navGuarantee">الضمان</a><a href="https://wa.me/966500000000" target="_blank" rel="noopener" data-i18n="footerWhatsapp">واتساب</a></div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 المركز الوطني لإدارة المشاريع NC-PM. جميع الحقوق محفوظة.</span>
-      <span>الرياض، المملكة العربية السعودية</span>
+      <span data-i18n="footerCopyright">© 2026 المركز الوطني لإدارة المشاريع NC-PM. جميع الحقوق محفوظة.</span>
+      <span data-i18n="footerAddress">الرياض، المملكة العربية السعودية</span>
     </div>
   </div>
 </footer>
@@ -488,7 +488,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/fireba
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  updateProfile, sendPasswordResetEmail
+  updateProfile, sendPasswordResetEmail, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, serverTimestamp
@@ -536,7 +536,9 @@ window.handleRegister = async function(){
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
-    closeAuthModal();
+    try{ await sendEmailVerification(cred.user); } catch(e2){ /* verification email is a bonus, not required */ }
+    showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها).');
+    setTimeout(()=>{ closeAuthModal(); }, 3200);
   } catch(e){
     showAuthError(mapFirebaseError(e));
   }
@@ -546,8 +548,13 @@ window.handleLogin = async function(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   try{
-    await signInWithEmailAndPassword(auth, email, password);
-    closeAuthModal();
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    if(!cred.user.emailVerified){
+      showAuthSuccess('تنبيه: بريدك الإلكتروني غير مُفعّل بعد. تحقق من بريدك لتفعيل حسابك (هذا لا يمنعك من استخدام الموقع حاليًا).');
+      setTimeout(()=>{ closeAuthModal(); }, 3200);
+    } else {
+      closeAuthModal();
+    }
   } catch(e){
     showAuthError(mapFirebaseError(e));
   }
