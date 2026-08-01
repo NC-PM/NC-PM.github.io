@@ -104,7 +104,12 @@ section{ padding:88px 0; }
 .nav-links{ display:flex; gap:30px; align-items:center; }
 .nav-links a{ color:var(--charcoal); font-size:14.5px; font-weight:500; transition:color .15s; }
 .nav-links a:hover{ color:var(--navy); }
-.nav-actions{ display:flex; align-items:center; gap:12px; }
+.nav-actions{ display:flex; align-items:center; gap:10px; position:relative; }
+.user-bar{ display:none; align-items:center; gap:12px; }
+.user-bar.show{ display:flex; }
+.user-bar span{ font-family:var(--font-mono); font-size:12px; color:var(--charcoal); }
+.user-bar button{ font-family:var(--font-mono); font-size:11.5px; color:var(--navy); background:none; border:1px solid rgba(15,27,51,.25); padding:6px 12px; border-radius:999px; }
+.user-bar button:hover{ border-color:var(--gold); }
 .nav-toggle{ display:none; background:none; border:1px solid rgba(15,27,51,.25); color:var(--navy); border-radius:8px; padding:8px 10px; }
 
 /* ---------- Hero ---------- */
@@ -269,7 +274,12 @@ section{ padding:88px 0; }
       <li><a href="#guarantee" data-i18n="navGuarantee">الضمان</a></li>
     </ul>
     <div class="nav-actions">
-      <a href="#" class="btn btn-gold btn-sm" onclick="openAuthModal(); return false;" data-i18n="navRegister">سجّل الآن</a>
+      <button class="btn btn-outline-dark btn-sm" id="authTriggerLogin" onclick="openAuthModal('login')">تسجيل الدخول</button>
+      <button class="btn btn-gold btn-sm" id="authTriggerRegister" onclick="openAuthModal('register')">إنشاء حساب</button>
+      <div class="user-bar" id="userBar">
+        <span id="userGreeting">—</span>
+        <button onclick="logout()">تسجيل خروج</button>
+      </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="القائمة">☰</button>
   </nav>
@@ -375,7 +385,7 @@ section{ padding:88px 0; }
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="guarLi2">ينطبق على مسارات PMP وPMI-ACP وPMI-RMP وCAPM عند إكمال جميع الدروس والاختبارات التجريبية وساعات الدراسة المطلوبة.</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span data-i18n="guarLi3">تتم مراجعة طلبات الاسترداد خلال 5 أيام عمل — وتُشارك الشروط الكاملة عند التسجيل.</span></li>
       </ul>
-      <a href="#" class="btn btn-gold" style="margin-top:26px;" onclick="openAuthModal(); return false;" data-i18n="guarBtn">سجّل بثقة تامة</a>
+      <a href="#" class="btn btn-gold" style="margin-top:26px;" onclick="openAuthModal('register'); return false;" data-i18n="guarBtn">سجّل بثقة تامة</a>
     </div>
   </div>
 </section>
@@ -430,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<div class="modal-overlay" id="authModalOverlay" onclick="if(event.target===this) closeAuthModal()">
+<div class="modal-overlay" id="authModalOverlay">
   <div class="auth-card">
     <button class="modal-close" onclick="closeAuthModal()">×</button>
     <div class="auth-tabs">
@@ -456,8 +466,21 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script>
-function openAuthModal(){ document.getElementById('authModalOverlay').classList.add('show'); }
+function openAuthModal(tab){
+  document.getElementById('authModalOverlay').classList.add('show');
+  switchAuthTab(tab === 'register' ? 'register' : 'login');
+}
 function closeAuthModal(){ document.getElementById('authModalOverlay').classList.remove('show'); }
+
+(function(){
+  const overlay = document.getElementById('authModalOverlay');
+  let mousedownOnOverlay = false;
+  overlay.addEventListener('mousedown', (e)=>{ mousedownOnOverlay = (e.target === overlay); });
+  overlay.addEventListener('click', (e)=>{
+    if(mousedownOnOverlay && e.target === overlay) closeAuthModal();
+    mousedownOnOverlay = false;
+  });
+})();
 
 function switchAuthTab(tab){
   const isLogin = tab === 'login';
@@ -488,7 +511,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/fireba
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  updateProfile, sendPasswordResetEmail, sendEmailVerification
+  updateProfile, sendPasswordResetEmail, sendEmailVerification,
+  onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, serverTimestamp
@@ -515,6 +539,33 @@ try{
 const auth = getAuth(app);
 auth.languageCode = 'ar';
 const db = getFirestore(app);
+
+let currentUser = null;
+
+function renderUserBar(){
+  const bar = document.getElementById('userBar');
+  const loginBtn = document.getElementById('authTriggerLogin');
+  const registerBtn = document.getElementById('authTriggerRegister');
+  if(!currentUser){
+    bar.classList.remove('show');
+    loginBtn.style.display = 'inline-flex';
+    registerBtn.style.display = 'inline-flex';
+    return;
+  }
+  document.getElementById('userGreeting').textContent = `مرحبًا، ${currentUser.displayName || currentUser.email}`;
+  bar.classList.add('show');
+  loginBtn.style.display = 'none';
+  registerBtn.style.display = 'none';
+}
+
+onAuthStateChanged(auth, (user)=>{
+  currentUser = user;
+  renderUserBar();
+});
+
+window.logout = async function(){
+  try{ await signOut(auth); } catch(e){ /* ignore */ }
+};
 
 function mapFirebaseError(e){
   const code = (e && e.code) || '';

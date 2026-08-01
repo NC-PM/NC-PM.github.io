@@ -45,6 +45,8 @@ button{ font-family:inherit; cursor:pointer; }
 .brand .mark{ width:30px; height:30px; }
 .brand strong{ font-family:var(--font-display); font-size:18px; }
 .crumb{ font-family:var(--font-mono); font-size:11.5px; color:var(--slate); letter-spacing:.02em; direction:ltr; }
+.back-home{ font-family:var(--font-mono); font-size:12px; color:var(--navy); font-weight:700; padding:6px 12px; border:1px solid rgba(15,27,51,.18); border-radius:999px; transition:all .15s ease; }
+.back-home:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); }
 .crumb b{ color:var(--gold-light); font-weight:600; }
 
 .exam-hero{ background:radial-gradient(900px 380px at 20% -10%, rgba(200,155,60,.18), transparent 60%), linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%); color:var(--ivory); padding:52px 0 40px; text-align:center; }
@@ -237,9 +239,10 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
 <header class="site-header">
   <nav class="nav">
-    <a href="#" class="brand">
+    <a href="index.html" class="brand">
       <strong>NC-PM</strong>
     </a>
+    <a href="index.html" class="back-home">← الرئيسية</a>
     <span class="crumb"><b>CAPM</b></span>
     <button class="auth-trigger" id="authTrigger" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>
     <div class="user-bar" id="userBar">
@@ -351,7 +354,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
 <footer class="mini-footer">NC-PM · CAPM Practice Bank v4</footer>
 
-<div class="modal-overlay" id="translateModal" onclick="if(event.target===this) closeTranslate()">
+<div class="modal-overlay" id="translateModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeTranslate()">×</button>
     <span class="modal-label">ARABIC TRANSLATION</span>
@@ -361,7 +364,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
   </div>
 </div>
 
-<div class="modal-overlay" id="authModalOverlay" onclick="if(event.target===this) closeAuthModal()">
+<div class="modal-overlay" id="authModalOverlay">
   <div class="auth-card" style="position:relative;">
     <button class="modal-close" onclick="closeAuthModal()">×</button>
     <div class="auth-tabs">
@@ -389,7 +392,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
   </div>
 </div>
 
-<div class="modal-overlay" id="paymentModalOverlay" onclick="if(event.target===this) closePaymentModal()">
+<div class="modal-overlay" id="paymentModalOverlay">
   <div class="pay-card" style="position:relative;">
     <button class="modal-close" onclick="closePaymentModal()">×</button>
     <span class="eyebrow" style="color:var(--gold);">خطوة أخيرة</span>
@@ -812,6 +815,20 @@ function openTranslate(){
 function closeTranslate(){
   document.getElementById('translateModal').classList.remove('show');
 }
+
+function setupOverlayCloseGuard(overlayId, closeFn){
+  const overlay = document.getElementById(overlayId);
+  if(!overlay) return;
+  let mousedownOnOverlay = false;
+  overlay.addEventListener('mousedown', (e)=>{ mousedownOnOverlay = (e.target === overlay); });
+  overlay.addEventListener('click', (e)=>{
+    if(mousedownOnOverlay && e.target === overlay) closeFn();
+    mousedownOnOverlay = false;
+  });
+}
+setupOverlayCloseGuard('translateModal', closeTranslate);
+setupOverlayCloseGuard('authModalOverlay', closeAuthModal);
+setupOverlayCloseGuard('paymentModalOverlay', closePaymentModal);
 </script>
 
 <script type="module">
