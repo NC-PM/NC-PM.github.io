@@ -189,6 +189,14 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 .field input:focus-visible{ outline:2px solid var(--gold); }
 .auth-note{ font-size:12px; color:var(--slate); text-align:center; margin-top:16px; font-family:var(--font-mono); }
 .auth-error{ color:var(--bad); font-size:13px; margin-top:8px; display:none; text-align:center; }
+.password-wrap{ position:relative; }
+.password-wrap input{ padding-inline-end:42px; }
+.toggle-password{ position:absolute; top:50%; transform:translateY(-50%); inset-inline-end:10px; background:none; border:none; cursor:pointer; font-size:16px; line-height:1; color:var(--slate); padding:4px; }
+.toggle-password:hover{ color:var(--navy); }
+.pw-bar{ height:5px; border-radius:3px; background:var(--border); overflow:hidden; margin-top:8px; }
+.pw-bar-fill{ height:100%; width:0%; border-radius:3px; background:var(--border); transition:width .2s ease, background .2s ease; }
+.pw-label{ font-size:11.5px; margin-top:5px; font-family:var(--font-mono); min-height:14px; }
+.pw-hint{ font-size:11.5px; color:var(--slate); margin-top:6px; line-height:1.6; }
 .welcome-icon{ width:60px; height:60px; border-radius:50%; background:rgba(31,111,92,.1); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
 .welcome-title{ font-size:20px; color:var(--navy); margin:0 0 8px; font-family:var(--font-display); }
 .welcome-sub{ font-size:14.5px; color:var(--slate); margin:0; }
@@ -380,7 +388,12 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
     <div id="loginForm">
       <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
+      <div class="field"><label>كلمة المرور</label>
+        <div class="password-wrap">
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginPassword', this)" aria-label="إظهار كلمة المرور">👁</button>
+        </div>
+      </div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleLogin()">تسجيل الدخول</button>
       <button class="forgot-link" onclick="handleForgotPassword()">نسيت كلمة المرور؟</button>
     </div>
@@ -389,7 +402,15 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
       <div class="field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل" autocomplete="name"></div>
       <div class="field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"></div>
       <div class="field"><label>تأكيد البريد الإلكتروني</label><input type="email" id="regEmailConfirm" placeholder="you@example.com" autocomplete="email"></div>
-      <div class="field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password"></div>
+      <div class="field"><label>كلمة المرور</label>
+        <div class="password-wrap">
+          <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" oninput="updatePasswordStrength()">
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassword', this)" aria-label="إظهار كلمة المرور">👁</button>
+        </div>
+        <div class="pw-bar"><div class="pw-bar-fill" id="pwBarFill"></div></div>
+        <p class="pw-label" id="pwStrengthLabel">&nbsp;</p>
+        <p class="pw-hint">يفضل استخدام 8 أحرف على الأقل، مع مزيج من الحروف والأرقام والرموز لزيادة الأمان.</p>
+      </div>
       <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleRegister()">إنشاء الحساب</button>
     </div>
 
@@ -404,7 +425,6 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
     <p class="auth-error" id="authError"></p>
     <p class="auth-success" id="authSuccess"></p>
-    <p class="auth-note">حسابك محفوظ بشكل آمن وحقيقي عبر Firebase — نفس الحساب يعمل في جميع صفحات بنك الأسئلة.</p>
   </div>
 </div>
 
@@ -549,6 +569,10 @@ function resetAuthModalView(){
   document.getElementById('loginForm').style.display = 'block';
   document.getElementById('tabLogin').classList.add('active');
   document.getElementById('tabRegister').classList.remove('active');
+  const fill = document.getElementById('pwBarFill');
+  const label = document.getElementById('pwStrengthLabel');
+  if(fill){ fill.style.width = '0%'; fill.style.background = 'var(--border)'; }
+  if(label){ label.innerHTML = '&nbsp;'; }
 }
 
 window.showWelcomePanel = showWelcomePanel;
@@ -599,6 +623,52 @@ function isValidEmail(v){
     if(domain.startsWith(p) && domain.length > p.length) return false;
   }
   return true;
+}
+
+function togglePasswordVisibility(fieldId, btn){
+  const input = document.getElementById(fieldId);
+  if(input.type === 'password'){
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function getPasswordStrength(pw){
+  const hasLower = /[a-z]/.test(pw);
+  const hasUpper = /[A-Z]/.test(pw);
+  const hasDigit = /[0-9]/.test(pw);
+  const hasSymbol = /[^a-zA-Z0-9]/.test(pw);
+  const varietyCount = [hasLower, hasUpper, hasDigit, hasSymbol].filter(Boolean).length;
+  const longEnough = pw.length >= 8;
+  let score = 0;
+  if(pw.length > 0) score = 1;
+  if(longEnough) score = 2;
+  if(longEnough && varietyCount >= 2) score = 3;
+  if(pw.length >= 12 && varietyCount >= 3) score = 4;
+  return { score, longEnough, varietyCount };
+}
+
+function updatePasswordStrength(){
+  const pw = document.getElementById('regPassword').value;
+  const fill = document.getElementById('pwBarFill');
+  const label = document.getElementById('pwStrengthLabel');
+  if(!pw){ fill.style.width = '0%'; fill.style.background = 'var(--border)'; label.innerHTML = '&nbsp;'; return; }
+  const { score } = getPasswordStrength(pw);
+  const levels = [
+    { width: '20%',  color: '#D6483F', text: 'ضعيفة جدًا' },
+    { width: '40%',  color: '#D6483F', text: 'ضعيفة' },
+    { width: '65%',  color: '#C89B3C', text: 'متوسطة' },
+    { width: '85%',  color: '#2E9179', text: 'قوية' },
+    { width: '100%', color: '#1F6F5C', text: 'قوية جدًا' },
+  ];
+  const lvl = levels[score];
+  fill.style.width = lvl.width;
+  fill.style.background = lvl.color;
+  label.textContent = lvl.text;
+  label.style.color = lvl.color;
 }
 
 document.getElementById('timedDesc').textContent =
@@ -1087,6 +1157,8 @@ window.handleRegister = async function(){
   if(!window.isValidEmail(email)){ window.showAuthError('البريد الإلكتروني غير صحيح — تأكد من عدم وجود أحرف زائدة بالخطأ.'); return; }
   if(email !== emailConfirm){ window.showAuthError('البريد الإلكتروني غير متطابق في الحقلين — تأكد من كتابته بنفس الشكل مرتين.'); return; }
   if(password.length < 6){ window.showAuthError('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
+  const strength = getPasswordStrength(password);
+  if(strength.score < 3){ window.showAuthError('كلمة المرور ضعيفة — استخدم 8 أحرف على الأقل مع مزيج من الحروف والأرقام والرموز.'); return; }
   try{
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
