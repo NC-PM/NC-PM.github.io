@@ -153,6 +153,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 .user-bar{ display:none; align-items:center; gap:12px; position:relative; }
 .user-bar.show{ display:flex; }
 .user-bar span{ font-family:var(--font-mono); font-size:12px; color:var(--slate); }
+.user-bar span.pending{ color:var(--gold); font-weight:700; }
 .user-bar > button{ font-family:var(--font-mono); font-size:11.5px; color:var(--navy); background:none; border:1px solid rgba(15,27,51,.25); padding:6px 12px; border-radius:999px; }
 .user-bar > button:hover{ border-color:var(--gold); }
 .stats-toggle{ display:flex; align-items:center; gap:6px; }
@@ -254,6 +255,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
         <span id="userGreeting">—</span>
         <span class="chevron">▾</span>
       </button>
+      <button id="resendVerifyBtn" style="display:none;" onclick="resendVerification()">إعادة إرسال رابط التفعيل</button>
       <button onclick="logout()">تسجيل خروج</button>
       <div class="stats-dropdown" id="statsDropdown">
         <div class="stats-summary" id="statsSummary"></div>
@@ -936,15 +938,37 @@ window.getCurrentUserEmail = function(){ return currentUser ? currentUser.email 
 window.renderUserBar = function(){
   const bar = document.getElementById('userBar');
   const trigger = document.getElementById('authTrigger');
+  const resendBtn = document.getElementById('resendVerifyBtn');
   if(!currentUser){
     bar.classList.remove('show');
     trigger.style.display = 'inline-flex';
     closeStatsDropdown();
     return;
   }
-  document.getElementById('userGreeting').textContent = `مرحبًا، ${currentUser.displayName || currentUser.email}`;
+  const greeting = document.getElementById('userGreeting');
+  if(!currentUser.emailVerified){
+    greeting.textContent = `بانتظار تفعيل البريد — ${currentUser.email}`;
+    greeting.classList.add('pending');
+    resendBtn.style.display = 'inline-flex';
+  } else {
+    greeting.textContent = `مرحبًا، ${currentUser.displayName || currentUser.email}`;
+    greeting.classList.remove('pending');
+    resendBtn.style.display = 'none';
+  }
   bar.classList.add('show');
   trigger.style.display = 'none';
+};
+
+window.resendVerification = async function(){
+  if(!currentUser) return;
+  document.getElementById('authModalOverlay').classList.add('show');
+  resetAuthModalView();
+  try{
+    await sendEmailVerification(currentUser);
+    window.showAuthSuccess('تم إرسال رابط تفعيل جديد إلى بريدك الإلكتروني.');
+  } catch(e){
+    window.showAuthError(mapFirebaseError(e));
+  }
 };
 
 const ALL_COURSES = [
