@@ -607,7 +607,7 @@ function renderUserBar(){
   }
   const greeting = document.getElementById('userGreeting');
   if(!currentUser.emailVerified){
-    greeting.textContent = `بانتظار تفعيل البريد — ${currentUser.email}`;
+    greeting.textContent = `📬 بانتظار تفعيل البريد — ${currentUser.email}`;
     greeting.classList.add('pending');
     resendBtn.style.display = 'inline-flex';
   } else {
