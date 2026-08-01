@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F6F5C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
       </div>
       <h3 class="welcome-title">مرحبًا، <span id="welcomeName">—</span> 👋</h3>
-      <p class="welcome-sub">تم تسجيل الدخول بنجاح</p>
+      <p class="welcome-sub" id="welcomeSub">تم تسجيل الدخول بنجاح</p>
       <p class="welcome-note" id="welcomeNote">بريدك الإلكتروني غير مُفعّل بعد — تحقق من بريدك لتفعيل حسابك.</p>
     </div>
     <p class="auth-error" id="authError"></p>
@@ -500,13 +500,14 @@ function resetAuthModalView(){
   document.getElementById('tabRegister').classList.remove('active');
 }
 
-function showWelcomePanel(name, showVerifyNote){
+function showWelcomePanel(name, showVerifyNote, customSub){
   document.querySelector('.auth-tabs').style.display = 'none';
   document.getElementById('loginForm').style.display = 'none';
   document.getElementById('registerForm').style.display = 'none';
   document.getElementById('authError').classList.remove('show');
   document.getElementById('authSuccess').classList.remove('show');
   document.getElementById('welcomeName').textContent = name;
+  document.getElementById('welcomeSub').textContent = customSub || 'تم تسجيل الدخول بنجاح';
   document.getElementById('welcomeNote').style.display = showVerifyNote ? 'block' : 'none';
   document.getElementById('welcomePanel').style.display = 'block';
   clearTimeout(window._welcomeTimer);
@@ -561,7 +562,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   updateProfile, sendPasswordResetEmail, sendEmailVerification,
-  onAuthStateChanged, signOut
+  onAuthStateChanged, signOut, applyActionCode
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, serverTimestamp
@@ -590,6 +591,8 @@ auth.languageCode = 'ar';
 const db = getFirestore(app);
 
 let currentUser = null;
+let resolveAuthReady;
+const authReady = new Promise((res)=>{ resolveAuthReady = res; });
 
 function renderUserBar(){
   const bar = document.getElementById('userBar');
@@ -620,14 +623,40 @@ function renderUserBar(){
 onAuthStateChanged(auth, (user)=>{
   currentUser = user;
   renderUserBar();
+  if(resolveAuthReady){ resolveAuthReady(); resolveAuthReady = null; }
 });
+
+(async function handleEmailVerificationRedirect(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('mode') !== 'verifyEmail' || !params.get('oobCode')) return;
+  const oobCode = params.get('oobCode');
+  window.history.replaceState({}, document.title, window.location.pathname);
+  try{
+    await applyActionCode(auth, oobCode);
+    await authReady;
+    if(currentUser){
+      await currentUser.reload();
+      renderUserBar();
+      document.getElementById('authModalOverlay').classList.add('show');
+      showWelcomePanel(currentUser.displayName || currentUser.email, false, 'تم تفعيل بريدك الإلكتروني بنجاح! ✅');
+    } else {
+      document.getElementById('authModalOverlay').classList.add('show');
+      switchAuthTab('login');
+      showAuthSuccess('تم تفعيل بريدك الإلكتروني بنجاح! يمكنك تسجيل الدخول الآن.');
+    }
+  } catch(e){
+    console.error('Email verification link error:', e);
+  }
+})();
+
+const verifyActionSettings = { url: window.location.origin + '/index.html', handleCodeInApp: true };
 
 window.resendVerification = async function(){
   if(!currentUser) return;
   document.getElementById('authModalOverlay').classList.add('show');
   resetAuthModalView();
   try{
-    await sendEmailVerification(currentUser);
+    await sendEmailVerification(currentUser, verifyActionSettings);
     showAuthSuccess('تم إرسال رابط تفعيل جديد إلى بريدك الإلكتروني.');
   } catch(e){
     showAuthError(mapFirebaseError(e));
@@ -661,7 +690,7 @@ window.handleRegister = async function(){
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
-    try{ await sendEmailVerification(cred.user); } catch(e2){ /* verification email is a bonus, not required */ }
+    try{ await sendEmailVerification(cred.user, verifyActionSettings); } catch(e2){ /* verification email is a bonus, not required */ }
     showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها). اضغط × لإغلاق هذه الرسالة والمتابعة.');
   } catch(e){
     showAuthError(mapFirebaseError(e));
