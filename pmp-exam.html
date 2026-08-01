@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMP — بنك أسئلة تجريبي | NC-PM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#6C6CE1; --navy-light:#8285EA; --navy-lighter:#9B9DEF;
+  --ivory:#FAF8F2; --paper:#FFFFFF;
+  --gold:#C89B3C; --gold-light:#E4C878;
+  --teal:#1F6F5C; --teal-light:#2E9179;
+  --charcoal:#171A21; --slate:#5B6472;
+  --border:#E5E1D6; --border-dark:#2B3A5C;
+  --danger:#B5502F;
+  --good:#1E8A4C; --good-bg:rgba(30,138,76,.09); --good-light:#3FB871;
+  --bad:#D6483F; --bad-bg:rgba(214,72,63,.09);
+  --neutral:#6B5FB0; --neutral-bg:rgba(107,95,176,.09);
+  --font-display:"Tajawal","Segoe UI",sans-serif;
+  --font-body:"Tajawal","Segoe UI",sans-serif;
+  --font-en:"Inter","Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono","SFMono-Regular",monospace;
+  --radius-sm:4px; --radius-md:10px; --radius-lg:22px;
+  --shadow-card:0 1px 2px rgba(15,27,51,0.06), 0 12px 32px -16px rgba(15,27,51,0.18);
+  --shadow-hover:0 1px 2px rgba(15,27,51,0.08), 0 20px 44px -16px rgba(15,27,51,0.28);
+  --max-w:940px;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; font-family:var(--font-body); background:var(--ivory); color:var(--charcoal); line-height:1.7; -webkit-font-smoothing:antialiased; }
+a{ color:inherit; text-decoration:none; }
+h1,h2,h3,h4{ font-family:var(--font-display); margin:0; line-height:1.3; font-weight:700; }
+p{ margin:0; }
+button{ font-family:inherit; cursor:pointer; }
+:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+.wrap{ max-width:var(--max-w); margin:0 auto; padding:0 28px; }
+.ltr{ direction:ltr; text-align:left; font-family:var(--font-en); }
+
+.site-header{ position:sticky; top:0; z-index:80; background:rgba(255,255,255,.96); backdrop-filter:blur(10px); border-bottom:1px solid rgba(15,27,51,.08); box-shadow:0 1px 3px rgba(15,27,51,.05); }
+.nav{ display:flex; align-items:center; justify-content:space-between; padding:14px 28px; max-width:1180px; margin:0 auto; gap:14px; flex-wrap:wrap; }
+.brand{ display:flex; align-items:center; gap:10px; color:var(--navy); }
+.brand .mark{ width:30px; height:30px; }
+.brand strong{ font-family:var(--font-display); font-size:18px; }
+.crumb{ font-family:var(--font-mono); font-size:11.5px; color:var(--slate); letter-spacing:.02em; direction:ltr; }
+.crumb b{ color:var(--gold-light); font-weight:600; }
+
+.exam-hero{ background:radial-gradient(900px 380px at 20% -10%, rgba(200,155,60,.18), transparent 60%), linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%); color:var(--ivory); padding:52px 0 40px; text-align:center; }
+.exam-hero .eyebrow{ font-family:var(--font-mono); font-size:12px; color:var(--gold-light); letter-spacing:.04em; }
+.exam-hero h1{ font-size:clamp(24px,3.4vw,34px); margin-top:12px; }
+.exam-hero p{ color:#C9D0E2; font-size:15.5px; margin-top:14px; max-width:580px; margin-inline:auto; }
+
+.quiz-shell{ padding:44px 0 90px; }
+
+.mode-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-top:8px; }
+.mode-card{ background:var(--paper); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-card); text-align:right; display:flex; flex-direction:column; gap:12px; transition:border-color .15s ease, transform .15s ease; }
+.mode-card:hover{ border-color:var(--gold); transform:translateY(-3px); }
+.mode-card .mtag{ font-family:var(--font-mono); font-size:11px; padding:4px 10px; border-radius:999px; width:fit-content; direction:ltr; }
+.mode-card.practice .mtag{ color:var(--teal); background:rgba(31,111,92,.09); }
+.mode-card.timed .mtag{ color:var(--gold); background:rgba(200,155,60,.12); }
+.mode-card h3{ font-size:19px; color:var(--navy); }
+.mode-card p{ color:var(--slate); font-size:14px; }
+.mode-card .btn{ margin-top:8px; align-self:flex-start; }
+@media (max-width:640px){ .mode-grid{ grid-template-columns:1fr; } }
+
+.timed-bar{ display:none; align-items:center; justify-content:space-between; gap:16px; background:var(--navy); color:var(--ivory); border-radius:16px; padding:14px 20px; margin-bottom:20px; flex-wrap:wrap; }
+.timed-bar.show{ display:flex; }
+.timer-box{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); }
+.timer-box .clock{ font-size:22px; font-weight:600; letter-spacing:.03em; direction:ltr; }
+.timer-box.danger .clock{ color:#FF8A73; animation:pulse 1s infinite; }
+@keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.45;} }
+.nav-dots{ display:flex; gap:6px; flex-wrap:wrap; direction:ltr; }
+.nav-dot{ width:28px; height:28px; border-radius:8px; border:1.5px solid rgba(255,255,255,.28); background:transparent; color:#C9D0E2; font-family:var(--font-mono); font-size:11.5px; display:flex; align-items:center; justify-content:center; transition:all .15s ease; }
+.nav-dot.answered{ background:var(--gold); border-color:var(--gold); color:var(--navy); font-weight:700; }
+.nav-dot.current{ border-color:var(--gold-light); box-shadow:0 0 0 2px rgba(228,200,120,.35); }
+.timed-submit{ font-family:var(--font-mono); font-size:12px; background:transparent; border:1.5px solid rgba(255,255,255,.35); color:#FF8A73; padding:8px 16px; border-radius:999px; font-weight:700; }
+.timed-submit:hover{ border-color:#FF8A73; }
+
+.progress-row{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+.progress-track{ flex:1; height:6px; background:var(--border); border-radius:999px; overflow:hidden; }
+.progress-fill{ height:100%; background:linear-gradient(90deg,var(--gold),var(--teal-light)); border-radius:999px; transition:width .35s ease; }
+.progress-label{ font-family:var(--font-mono); font-size:12.5px; color:var(--slate); white-space:nowrap; direction:ltr; }
+
+.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); }
+.qcard .domain-tag{ font-family:var(--font-mono); font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-bottom:16px; display:inline-block; }
+.qcard h3{ font-size:19px; color:var(--navy); font-weight:700; font-family:var(--font-en); line-height:1.6; }
+.translate-row{ margin-top:14px; }
+.translate-btn{ display:inline-flex; align-items:center; gap:7px; background:transparent; border:1.5px dashed var(--border); color:var(--slate); font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:999px; font-family:var(--font-body); transition:all .15s ease; }
+.translate-btn:hover{ border-color:var(--gold); color:var(--navy); border-style:solid; }
+.translate-btn .globe{ font-size:14px; }
+.options{ margin-top:18px; display:flex; flex-direction:column; gap:11px; list-style:none; padding:0; }
+.opt{ display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; font-size:14.5px; font-family:var(--font-en); transition:border-color .15s ease, background .15s ease; text-align:left; width:100%; background:var(--paper); color:var(--charcoal); }
+.opt:hover:not(:disabled){ border-color:var(--gold); background:rgba(200,155,60,.05); }
+.opt .letter{ flex-shrink:0; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--slate); font-weight:600; }
+.opt.selected-neutral{ border-color:var(--neutral); background:var(--neutral-bg); }
+.opt.selected-neutral .letter{ background:var(--neutral); border-color:var(--neutral); color:#fff; }
+.opt.correct{ border-color:var(--good); background:var(--good-bg); }
+.opt.correct .letter{ background:var(--good); border-color:var(--good); color:#fff; }
+.opt.incorrect{ border-color:var(--bad); background:var(--bad-bg); }
+.opt.incorrect .letter{ background:var(--bad); border-color:var(--bad); color:#fff; }
+.opt:disabled{ cursor:default; }
+
+.explain{ margin-top:20px; padding:16px 18px; background:var(--ivory); border-left:3px solid var(--gold); border-radius:8px; font-size:13.5px; color:var(--slate); display:none; font-family:var(--font-en); direction:ltr; text-align:left; }
+.explain.show{ display:block; }
+.explain b{ color:var(--navy); }
+
+.qcard-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:26px; gap:12px; flex-wrap:wrap; }
+.btn{ display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:999px; font-weight:700; font-size:14.5px; border:1px solid transparent; transition:transform .15s ease, box-shadow .15s ease, background .15s ease; }
+.btn:hover:not(:disabled){ transform:translateY(-1px); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+.btn-gold{ background:var(--gold); color:var(--navy); }
+.btn-gold:hover:not(:disabled){ background:var(--gold-light); box-shadow:0 10px 24px -10px rgba(200,155,60,.6); }
+.btn-outline-dark{ border-color:var(--navy); color:var(--navy); background:transparent; }
+.btn-outline-dark:hover:not(:disabled){ background:var(--navy); color:var(--ivory); }
+.btn-ghost{ border-color:var(--border); color:var(--slate); background:transparent; }
+.btn-ghost:hover:not(:disabled){ border-color:var(--slate); color:var(--navy); }
+.hint{ font-size:12.5px; color:var(--slate); font-family:var(--font-mono); }
+
+.result-screen{ display:none; text-align:center; }
+.result-screen.show{ display:block; }
+.result-ring{ width:160px; height:160px; margin:0 auto 18px; }
+.result-verdict{ font-size:24px; color:var(--navy); margin-top:6px; }
+.result-stats{ display:flex; gap:28px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+.result-stats div strong{ display:block; font-family:var(--font-mono); font-size:22px; }
+.result-stats div span{ font-size:12.5px; color:var(--slate); }
+.result-stats .st-correct strong{ color:var(--good); }
+.result-stats .st-wrong strong{ color:var(--bad); }
+.result-stats .st-pct strong{ color:var(--navy); }
+.result-sub{ color:var(--slate); font-size:15px; margin-top:14px; max-width:460px; margin-inline:auto; }
+.result-actions{ display:flex; gap:12px; justify-content:center; margin-top:30px; flex-wrap:wrap; }
+.review-list{ margin-top:44px; text-align:left; direction:ltr; display:flex; flex-direction:column; gap:14px; font-family:var(--font-en); }
+.review-item{ background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow-card); }
+.review-item .rtag{ font-family:var(--font-mono); font-size:11px; padding:3px 9px; border-radius:999px; }
+.review-item.was-correct .rtag{ background:var(--good-bg); color:var(--good); }
+.review-item.was-wrong .rtag{ background:var(--bad-bg); color:var(--bad); }
+.review-item.was-unanswered .rtag{ background:var(--bad-bg); color:var(--bad); }
+.review-item p.qtext{ font-size:14.5px; color:var(--navy); font-weight:700; margin-top:10px; }
+.review-item p.ans{ font-size:13.5px; color:var(--slate); margin-top:6px; }
+.review-item p.exp{ font-size:13px; color:var(--slate); margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+
+footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); font-size:12.5px; font-family:var(--font-mono); }
+
+.screen{ display:none; }
+.screen.show{ display:block; }
+
+.auth-trigger{ font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--navy); background:none; border:1px solid rgba(15,27,51,.25); padding:8px 16px; border-radius:999px; }
+.auth-trigger:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); }
+
+.user-bar{ display:none; align-items:center; gap:12px; position:relative; }
+.user-bar.show{ display:flex; }
+.user-bar span{ font-family:var(--font-mono); font-size:12px; color:var(--slate); }
+.user-bar > button{ font-family:var(--font-mono); font-size:11.5px; color:var(--navy); background:none; border:1px solid rgba(15,27,51,.25); padding:6px 12px; border-radius:999px; }
+.user-bar > button:hover{ border-color:var(--gold); }
+.stats-toggle{ display:flex; align-items:center; gap:6px; }
+.stats-toggle .chevron{ font-size:10px; color:var(--gold-light); transition:transform .15s ease; }
+.stats-toggle.open .chevron{ transform:rotate(180deg); }
+
+.stats-dropdown{
+  display:none; position:absolute; top:calc(100% + 12px); inset-inline-end:0; z-index:120;
+  width:320px; background:var(--paper); border:1px solid var(--border); border-radius:16px;
+  padding:20px; box-shadow:var(--shadow-hover); text-align:right;
+}
+.stats-dropdown.show{ display:block; }
+.stats-summary{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.stat-box{ background:var(--ivory); border-radius:10px; padding:10px 12px; text-align:center; }
+.stat-box strong{ display:block; font-family:var(--font-mono); font-size:20px; color:var(--navy); }
+.stat-box span{ font-size:11px; color:var(--slate); font-family:var(--font-body); }
+.stat-box.good strong{ color:var(--good); }
+.stat-box.bad strong{ color:var(--bad); }
+.stats-breakdown{ display:flex; flex-direction:column; gap:8px; border-top:1px dashed var(--border); padding-top:14px; }
+.stats-breakdown .brow{ display:flex; justify-content:space-between; align-items:center; font-size:12.5px; }
+.stats-breakdown .brow b{ color:var(--navy); font-family:var(--font-mono); font-size:12px; }
+.stats-breakdown .brow span.bpct{ font-family:var(--font-mono); font-weight:700; color:var(--navy); }
+.stats-empty{ font-size:12.5px; color:var(--slate); text-align:center; padding:10px 0; }
+.stats-loading{ font-size:12.5px; color:var(--slate); text-align:center; padding:10px 0; font-family:var(--font-mono); }
+
+.auth-card{ max-width:420px; width:100%; margin:0 auto; background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-hover); }
+.auth-tabs{ display:flex; gap:8px; background:var(--ivory); border-radius:999px; padding:4px; margin-bottom:22px; }
+.auth-tabs button{ flex:1; padding:10px; border-radius:999px; background:transparent; border:none; font-weight:700; font-size:13.5px; color:var(--slate); }
+.auth-tabs button.active{ background:var(--navy); color:var(--ivory); }
+.field{ margin-bottom:14px; }
+.field label{ display:block; font-size:12.5px; color:var(--slate); margin-bottom:6px; font-family:var(--font-mono); }
+.field input{ width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:var(--font-body); font-size:14.5px; background:var(--ivory); direction:ltr; text-align:left; }
+.field input:focus-visible{ outline:2px solid var(--gold); }
+.auth-note{ font-size:12px; color:var(--slate); text-align:center; margin-top:16px; font-family:var(--font-mono); }
+.auth-error{ color:var(--bad); font-size:13px; margin-top:8px; display:none; text-align:center; }
+.auth-error.show{ display:block; }
+.auth-success{ color:var(--good); font-size:13px; margin-top:8px; display:none; text-align:center; }
+.auth-success.show{ display:block; }
+.forgot-link{ display:block; width:100%; text-align:center; background:none; border:none; color:var(--slate); font-size:12.5px; margin-top:12px; font-family:var(--font-mono); text-decoration:underline; }
+.forgot-link:hover{ color:var(--navy); }
+
+.pay-card{ max-width:460px; width:100%; margin:0 auto; background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-hover); text-align:center; }
+.pay-price{ font-family:var(--font-mono); font-size:34px; color:var(--navy); font-weight:700; margin:14px 0; }
+.pay-price span{ font-size:15px; color:var(--slate); font-weight:500; }
+.pay-methods{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:22px 0; }
+.pay-methods .chip{ border:1.5px solid var(--border); border-radius:10px; padding:12px 6px; font-family:var(--font-display); font-weight:800; font-size:13px; color:var(--navy); }
+.pay-processing{ display:none; align-items:center; justify-content:center; gap:10px; margin-top:16px; font-family:var(--font-mono); font-size:13px; color:var(--slate); }
+.pay-processing.show{ display:flex; }
+
+.save-cta{ display:none; max-width:560px; margin:32px auto 0; background:var(--ivory); border:1.5px dashed var(--gold); border-radius:14px; padding:18px 20px; text-align:center; }
+.save-cta.show{ display:block; }
+.save-cta p{ font-size:14px; color:var(--navy); margin-bottom:12px; }
+
+.history-box{ max-width:640px; margin:36px auto 0; text-align:right; display:none; }
+.history-box h4{ font-size:14px; color:var(--navy); margin-bottom:12px; }
+.history-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px; background:var(--paper); direction:rtl; }
+.history-row .hscore{ font-family:var(--font-mono); font-weight:700; color:var(--navy); }
+
+/* ---- Arabic translation popup (mimics real-exam language toggle window) ---- */
+.modal-overlay{ display:none; position:fixed; inset:0; background:rgba(15,27,51,.55); z-index:200; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.show{ display:flex; }
+.modal-box{
+  background:var(--paper); border-radius:18px; max-width:480px; width:100%; padding:26px 26px 24px;
+  box-shadow:var(--shadow-hover); position:relative; font-family:var(--font-body); direction:rtl; text-align:right;
+  max-height:80vh; overflow-y:auto;
+}
+.modal-box .modal-label{ font-family:var(--font-mono); font-size:11px; color:var(--gold); direction:ltr; text-align:left; display:block; letter-spacing:.04em; }
+.modal-box .modal-domain{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-top:10px; }
+.modal-box h4{ font-family:var(--font-body); font-size:16.5px; color:var(--navy); margin-top:14px; font-weight:700; line-height:1.7; }
+.modal-opts{ margin-top:14px; display:flex; flex-direction:column; gap:8px; list-style:none; padding:0; }
+.modal-opts li{ padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:13.5px; }
+.modal-close{ position:absolute; top:14px; left:14px; background:var(--ivory); border:1px solid var(--border); width:30px; height:30px; border-radius:50%; font-size:15px; color:var(--slate); display:flex; align-items:center; justify-content:center; }
+.modal-close:hover{ color:var(--navy); border-color:var(--gold); }
+
+@media (max-width:640px){
+  .qcard{ padding:22px; }
+  .qcard-actions{ flex-direction:column; gap:14px; align-items:stretch; }
+  .qcard-actions .btn{ justify-content:center; }
+  .timed-bar{ flex-direction:column; align-items:stretch; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="#" class="brand">
+      <strong>NC-PM</strong>
+    </a>
+    <span class="crumb"><b>PMP</b></span>
+    <button class="auth-trigger" id="authTrigger" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>
+    <div class="user-bar" id="userBar">
+      <button class="stats-toggle" onclick="toggleStatsDropdown()">
+        <span id="userGreeting">—</span>
+        <span class="chevron">▾</span>
+      </button>
+      <button onclick="logout()">تسجيل خروج</button>
+      <div class="stats-dropdown" id="statsDropdown">
+        <div class="stats-summary" id="statsSummary"></div>
+        <div class="stats-breakdown" id="statsBreakdown"></div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="exam-hero">
+  <div class="wrap">
+    <p class="eyebrow">بنك أسئلة تجريبي</p>
+    <h1>اختبار PMP التجريبي — محاكاة لنمط الاختبار الفعلي</h1>
+    <p>عشر أسئلة سيناريو واقعية باللغة الإنجليزية، بنفس صيغة الاختبار الفعلي — مع خيار عرض ترجمة عربية لأي سؤال عبر نافذة منبثقة صغيرة.</p>
+  </div>
+</section>
+
+<main class="quiz-shell wrap" id="quizShell">
+
+  <div class="screen show" id="screenStart">
+    <div class="mode-grid">
+      <div class="mode-card practice">
+        <span class="mtag">Practice</span>
+        <h3>وضع التدريب</h3>
+        <p>تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
+        <button class="btn btn-gold" onclick="startQuiz('practice', null)">ابدأ الوضع التدريبي</button>
+      </div>
+      <div class="mode-card timed">
+        <span class="mtag">Timed simulation</span>
+        <h3>وضع الاختبار الفعلي</h3>
+        <p id="timedDesc">اختبار بزمن محدد بدون إظهار الإجابات أثناء الحل — تمامًا كتجربة الاختبار العالمي. النتيجة والتفسير يظهران فقط بعد الإنهاء.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+          <button class="btn btn-outline-dark" onclick="startQuiz('timed', null, 90)">نموذج 90 سؤال</button>
+          <button class="btn btn-outline-dark" onclick="startQuiz('timed', null, 180)">نموذج 180 سؤال</button>
+        </div>
+        <p class="hint" id="bankSizeNote" style="margin-top:4px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenQuiz">
+    <div class="timed-bar" id="timedBar">
+      <div class="timer-box" id="timerBox">
+        <span>الوقت المتبقي</span>
+        <span class="clock" id="clockDisplay">--:--</span>
+      </div>
+      <div class="nav-dots" id="navDots"></div>
+      <button class="timed-submit" onclick="finishQuiz(false)">إنهاء الاختبار الآن</button>
+    </div>
+
+    <div class="progress-row">
+      <span class="progress-label" id="progressLabel">1 / 10</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+      <span class="progress-label" id="scoreLabel">—</span>
+    </div>
+
+    <div class="qcard">
+      <span class="domain-tag" id="domainTag">—</span>
+      <h3 id="questionText" class="ltr">—</h3>
+      <div class="translate-row">
+        <button class="translate-btn" onclick="openTranslate()"><span class="globe">🌐</span> عرض السؤال بالعربي</button>
+      </div>
+      <ul class="options ltr" id="optionsList"></ul>
+      <div class="explain" id="explainBox"></div>
+      <div class="qcard-actions">
+        <button class="btn btn-ghost" id="prevBtn" onclick="goPrev()">السابق</button>
+        <span class="hint" id="hintText">اختر إجابة لعرض التفسير</span>
+        <button class="btn btn-gold" id="nextBtn" disabled onclick="goNext()">السؤال التالي ←</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResult">
+    <div class="result-screen show">
+      <svg class="result-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(200,155,60,.2)" stroke-width="1.5" stroke-dasharray="2 5"/>
+        <circle cx="100" cy="100" r="78" fill="none" stroke="var(--gold-light)" stroke-width="1.5" id="ringOuter"/>
+        <circle cx="100" cy="100" r="58" fill="#6C6CE1" stroke="#C89B3C" stroke-width="2" id="ringInner"/>
+        <text x="100" y="107" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700" font-size="30" fill="#FAF8F2" id="ringScore">0%</text>
+      </svg>
+      <h2 class="result-verdict" id="verdictText">—</h2>
+      <div class="result-stats">
+        <div class="st-pct"><strong id="statPct">0%</strong><span>النسبة الكلية</span></div>
+        <div class="st-correct"><strong id="statCorrect">0</strong><span>إجابات صحيحة</span></div>
+        <div class="st-wrong"><strong id="statWrong">0</strong><span>إجابات خاطئة</span></div>
+      </div>
+      <p class="result-sub" id="verdictSub">—</p>
+      <div class="result-actions">
+        <button class="btn btn-gold" onclick="retryShuffled()">إعادة الاختبار (ترتيب جديد)</button>
+        <button class="btn btn-outline-dark" id="retryWrongBtn" onclick="retryWrongOnly()">إعادة الأسئلة الخاطئة فقط</button>
+        <button class="btn btn-ghost" onclick="backToModeSelect()">تغيير وضع الاختبار</button>
+      </div>
+      <div class="save-cta" id="saveCta"></div>
+      <div class="history-box" id="historyBox">
+        <h4>سجل محاولاتك السابقة لهذا الاختبار</h4>
+        <div id="historyList"></div>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="mini-footer">NC-PM · PMP Practice Bank v4</footer>
+
+<div class="modal-overlay" id="translateModal" onclick="if(event.target===this) closeTranslate()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeTranslate()">×</button>
+    <span class="modal-label">ARABIC TRANSLATION</span>
+    <span class="modal-domain" id="modalDomain">—</span>
+    <h4 id="modalQuestion">—</h4>
+    <ul class="modal-opts" id="modalOptions"></ul>
+  </div>
+</div>
+
+<div class="modal-overlay" id="authModalOverlay" onclick="if(event.target===this) closeAuthModal()">
+  <div class="auth-card" style="position:relative;">
+    <button class="modal-close" onclick="closeAuthModal()">×</button>
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+      <button id="tabRegister" onclick="switchAuthTab('register')">حساب جديد</button>
+    </div>
+
+    <div id="loginForm">
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleLogin()">تسجيل الدخول</button>
+      <button class="forgot-link" onclick="handleForgotPassword()">نسيت كلمة المرور؟</button>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <div class="field"><label>الاسم</label><input type="text" id="regName" placeholder="اسمك الكامل"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>كلمة المرور</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+      <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleRegister()">إنشاء الحساب</button>
+    </div>
+
+    <p class="auth-error" id="authError"></p>
+    <p class="auth-success" id="authSuccess"></p>
+    <p class="auth-note">حسابك محفوظ بشكل آمن وحقيقي عبر Firebase — نفس الحساب يعمل في جميع صفحات بنك الأسئلة.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="paymentModalOverlay" onclick="if(event.target===this) closePaymentModal()">
+  <div class="pay-card" style="position:relative;">
+    <button class="modal-close" onclick="closePaymentModal()">×</button>
+    <span class="eyebrow" style="color:var(--gold);">خطوة أخيرة</span>
+    <h3 style="margin-top:10px; font-size:20px; color:var(--navy);">فعّل بنك أسئلة PMP التجريبي</h3>
+    <p style="color:var(--slate); font-size:14px; margin-top:10px;">ادفع مرة واحدة لحفظ نتائجك وإنجازك بشكل دائم مرتبط بحسابك.</p>
+    <div class="pay-price">49 <span>ر.س</span></div>
+    <div class="pay-methods">
+      <div class="chip">VISA</div>
+      <div class="chip">مدى</div>
+      <div class="chip">tamara</div>
+      <div class="chip">tabby</div>
+    </div>
+    <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="fakePay()" id="payBtn">ادفع الآن (تجريبي) ←</button>
+    <div class="pay-processing" id="payProcessing"><span>⏳</span><span>جاري تأكيد الدفع...</span></div>
+    <p class="auth-note">هذه بوابة دفع تجريبية لعرض الفكرة فقط — لن يتم خصم أي مبلغ حقيقي.</p>
+  </div>
+</div>
+
+<script>
+const DOMAIN_AR = {people:'الأفراد', process:'العمليات', biz:'بيئة الأعمال'};
+const SECONDS_PER_QUESTION = 77; // ~230min / 180q real PMP pacing
+const COURSE_ID = 'pmp';
+const COURSE_PRICE = 49;
+window.COURSE_ID = COURSE_ID;
+window.COURSE_PRICE = COURSE_PRICE;
+
+const QUESTIONS = [
+  { id:0, domain:'people',
+    en:{q:'A project manager notices an escalating disagreement between two team members over how to implement a technical task, and it is starting to affect the team\'s ability to hit the schedule. What is the best first action?',
+      opts:['Ignore it since it is a technical disagreement, not a PM concern','Meet with both individuals directly to understand each perspective and reach a collaborative solution','Escalate immediately to the sponsor for a decision','Reassign the task to someone else to avoid the conflict'],
+      correct:1, exp:'A collaborative, problem-solving approach addresses the root cause and preserves team relationships, and is generally the preferred first step before escalating.'},
+    ar:{q:'يلاحظ مدير المشروع خلافًا متصاعدًا بين عضوين في الفريق حول أسلوب تنفيذ مهمة تقنية، مما بدأ يؤثر على التزام الفريق بالجدول. ما أفضل إجراء أولي؟',
+      opts:['تجاهل الخلاف لأنه بين الفريق التقني وليس من اختصاص مدير المشروع','عقد جلسة مباشرة مع الطرفين لفهم وجهتي النظر والوصول لحل تعاوني','تصعيد الأمر فورًا للراعي لاتخاذ القرار','إسناد المهمة لعضو آخر لتفادي الخلاف']} },
+
+  { id:1, domain:'process',
+    en:{q:'A stakeholder requests a new feature that was not part of the approved project scope. What is the correct next step?',
+      opts:['Reject the request immediately to protect the schedule','Implement it right away since the stakeholder is important','Log the request formally and route it through integrated change control','Ignore the request and hope it is forgotten'],
+      correct:2, exp:'Any scope change, regardless of size or source, should go through Perform Integrated Change Control so its impact on scope, cost, and schedule can be assessed before approval or rejection.'},
+    ar:{q:'طلب أحد أصحاب المصلحة إضافة ميزة جديدة لم تكن مدرجة في نطاق المشروع المعتمد. ما الخطوة الصحيحة التالية؟',
+      opts:['رفض الطلب فورًا للحفاظ على الجدول الزمني','تنفيذ الطلب مباشرة لأن صاحب المصلحة مهم','تسجيل الطلب رسميًا وتمريره عبر عملية التحكم المتكامل بالتغيير','تجاهل الطلب حتى ينسى صاحب المصلحة أمره']} },
+
+  { id:2, domain:'process',
+    en:{q:'Risk analysis identifies a high-probability, high-impact risk related to a key external supplier\'s potential delay. If a reliable alternative supplier is available, what is the best response strategy?',
+      opts:['Passive acceptance','Transfer, by contracting the alternative supplier','Escalate to the sponsor with no action','Ignore the risk until it occurs'],
+      correct:1, exp:'When risk ownership can be shifted to a third party better equipped to manage it (a reliable alternate supplier under clear contract terms), Transfer is the most appropriate of the negative risk response strategies.'},
+    ar:{q:'أثناء تحليل سجل المخاطر، تم تحديد خطر مرتفع الاحتمالية ومرتفع الأثر يتعلق بتأخر مورد خارجي رئيسي. ما استراتيجية الاستجابة الأنسب إذا أمكن العمل مع مورد بديل موثوق؟',
+      opts:['القبول السلبي (Passive Acceptance)','التحويل عبر التعاقد مع مورد بديل (Transfer)','التصعيد للجهة الراعية دون اتخاذ إجراء','تجاهل الخطر حتى يتحقق']} },
+
+  { id:3, domain:'process',
+    en:{q:'A Scrum team\'s burndown chart shows remaining work decreasing much slower than the baseline since the sprint began. What is the best interpretation and action for the Scrum Master?',
+      opts:['The team is being lazy and should be held accountable immediately','This is normal and needs no action','It may signal an impediment worth surfacing and removing via the daily scrum','The sprint should be cancelled immediately'],
+      correct:2, exp:'A clear deviation from the burndown baseline is a signal for the Scrum Master to investigate impediments and help the team remove them — not an immediate judgment on individual performance.'},
+    ar:{q:'يظهر مخطط الاحتراق (Burndown Chart) لفريق سكرم أن العمل المتبقي يتناقص بمعدل أبطأ بكثير من الخط الأساسي منذ بداية السبرنت. ما أفضل تفسير وإجراء لـ Scrum Master؟',
+      opts:['الفريق كسول ويجب محاسبته فوريًا','هذا طبيعي ولا داعي لأي إجراء','قد تشير إلى انسداد (Impediment) يستحق المناقشة في الاجتماع اليومي وإزالته','يجب إلغاء السبرنت فورًا']} },
+
+  { id:4, domain:'people',
+    en:{q:'Which behavior best reflects "servant leadership" for an agile project leader?',
+      opts:['Making all technical decisions on the team\'s behalf to move faster','Removing impediments for the team and enabling it to make its own decisions','Monitoring every member\'s output daily and reporting details to management','Assigning each member\'s tasks precisely without consulting them'],
+      correct:1, exp:'Servant leadership focuses on enabling and supporting the team and clearing obstacles, rather than directly controlling technical decisions or micromanaging.'},
+    ar:{q:'ما السلوك الذي يعكس بأفضل شكل مبدأ "القيادة الخادمة" (Servant Leadership) لدى مدير مشروع رشيق؟',
+      opts:['اتخاذ جميع القرارات التقنية نيابة عن الفريق لتسريع العمل','إزالة العوائق أمام الفريق وتمكينه من اتخاذ قراراته الخاصة','مراقبة أداء كل عضو يوميًا وتقديم تقارير تفصيلية للإدارة','تحديد المهام لكل عضو بدقة دون استشارته']} },
+
+  { id:5, domain:'biz',
+    en:{q:'The project team discovers a new regulatory compliance requirement that will affect product design after the scope baseline was approved. What is the project manager\'s correct priority?',
+      opts:['Ignore it since scope is already baselined','Assess the impact on scope, cost, and schedule, then submit a formal change request','Implement it immediately without documentation to save time','Defer it until the end of the project'],
+      correct:1, exp:'Business-environment shifts like regulatory requirements must be impact-assessed and routed through formal change control — being legally mandatory does not exempt them from disciplined documentation and evaluation.'},
+    ar:{q:'اكتشف فريق المشروع أن أحد المتطلبات التنظيمية الجديدة (Regulatory Compliance) سيؤثر على تصميم المنتج بعد اعتماد خط الأساس للنطاق. ما الأولوية الصحيحة لمدير المشروع؟',
+      opts:['تجاهل المتطلب لأن النطاق معتمد بالفعل','تقييم الأثر على النطاق والتكلفة والجدول، ثم تقديم طلب تغيير رسمي','تنفيذ المتطلب فورًا دون توثيق لتوفير الوقت','تأجيل الأمر حتى نهاية المشروع']} },
+
+  { id:6, domain:'people',
+    en:{q:'While building a Stakeholder Engagement Assessment Matrix, a key stakeholder is currently classified as "Unaware" but the desired state is "Leading." What is the appropriate action?',
+      opts:['Ignore the gap since stakeholder attitudes shift on their own over time','Design targeted engagement and communication activities to close the gap to the desired level','Remove them from the stakeholder register','Require them to attend every meeting with no clear objective'],
+      correct:1, exp:'A gap between current and desired engagement for a key stakeholder calls for a tailored engagement plan with communication activities specifically aimed at closing that gap — not ignoring it or removing them.'},
+    ar:{q:'عند بناء مصفوفة إشراك أصحاب المصلحة (Stakeholder Engagement Assessment Matrix)، تم تصنيف أحد أصحاب المصلحة الرئيسيين ضمن "غير مدرك" بينما المطلوب أن يكون "قائدًا داعمًا". ما الإجراء المناسب؟',
+      opts:['تجاهل الفجوة لأن أصحاب المصلحة يتغيرون تلقائيًا مع الوقت','تصميم أنشطة تواصل وإشراك مستهدفة لتقريب مستوى إدراكه ودعمه من المستوى المرغوب','استبعاده من قائمة أصحاب المصلحة','مطالبته بحضور جميع الاجتماعات دون تحديد هدف واضح']} },
+
+  { id:7, domain:'process',
+    en:{q:'In schedule network analysis, which activity lies on the critical path such that its delay pushes the project finish date directly?',
+      opts:['An activity with total float equal to zero','Any activity that requires the most resources','An activity with total float greater than zero','Only the first activity in the network diagram'],
+      correct:0, exp:'The critical path consists of activities with total float equal to zero (in the typical case), so any delay in these activities directly impacts the project finish date.'},
+    ar:{q:'في تحليل شبكة الجدول الزمني، أي نشاط يقع على المسار الحرج (Critical Path) وتأخره سيؤخر تاريخ انتهاء المشروع مباشرة؟',
+      opts:['نشاط له وفرة زمنية كلية (Total Float) تساوي صفرًا','أي نشاط يتطلب أكبر عدد من الموارد','نشاط له وفرة زمنية كلية أكبر من صفر','النشاط الأول في مخطط الشبكة فقط']} },
+
+  { id:8, domain:'process',
+    en:{q:'What is the primary purpose of holding a Retrospective at the end of each sprint?',
+      opts:['Evaluate each individual\'s performance in front of management','Reflect on the team\'s process and identify concrete improvements for the next sprint','Demo the finished product to stakeholders','Assign the next sprint\'s tasks only'],
+      correct:1, exp:'The retrospective focuses on collective reflection on how the team works (process, collaboration, tools) to derive real improvements for upcoming sprints — unlike the Sprint Review, which focuses on the output.'},
+    ar:{q:'ما الهدف الأساسي من عقد اجتماع "الاستعادة" (Retrospective) في نهاية كل سبرنت؟',
+      opts:['تقييم أداء كل فرد بشكل فردي أمام الإدارة','مراجعة عملية الفريق وتحديد تحسينات ملموسة للسبرنت القادم','عرض المنتج النهائي لأصحاب المصلحة','تحديد المهام الجديدة لبداية السبرنت القادم فقط']} },
+
+  { id:9, domain:'biz',
+    en:{q:'Before approving project initiation, the steering committee asked for clarity on expected "business value." Which best represents that?',
+      opts:['The number of hours the team will spend on the project','The tangible and intangible benefits the project delivers relative to its cost and investment','The detailed task list in the work breakdown structure','The number of meetings required to complete the project'],
+      correct:1, exp:'Business value is measured by the net benefits — tangible (financial return) and intangible (reputation, customer satisfaction) — a project delivers relative to what was invested, which is the core of any business case.'},
+    ar:{q:'قبل الموافقة على بدء المشروع، طلبت اللجنة التوجيهية توضيح "القيمة التجارية" (Business Value) المتوقعة. أي مما يلي يمثل أفضل تعبير عن ذلك؟',
+      opts:['عدد ساعات العمل التي سيقضيها الفريق في المشروع','الفوائد الملموسة وغير الملموسة التي سيحققها المشروع مقارنة بتكلفته واستثماره','قائمة المهام التفصيلية في هيكل تجزئة العمل','عدد الاجتماعات المطلوبة لإنجاز المشروع']} }
+];
+
+let mode = null;
+let activeSet = [];
+let order = [];
+let posIndex = 0;
+let answers = {};
+let timeLeft = 0;
+let timerHandle = null;
+let lastRunResults = null;
+
+function qById(id){ return QUESTIONS.find(q => q.id === id); }
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(name){
+  ['screenStart','screenQuiz','screenResult'].forEach(id=>{
+    document.getElementById(id).classList.toggle('show', id === name);
+  });
+}
+
+/* ---------------- UI-only helpers (data logic lives in the Firebase module script below) ---------------- */
+function openAuthModal(){ document.getElementById('authModalOverlay').classList.add('show'); }
+function closeAuthModal(){ document.getElementById('authModalOverlay').classList.remove('show'); }
+function openPaymentModal(){ document.getElementById('paymentModalOverlay').classList.add('show'); }
+function closePaymentModal(){ document.getElementById('paymentModalOverlay').classList.remove('show'); }
+
+function switchAuthTab(tab){
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('authError').classList.remove('show');
+  document.getElementById('authSuccess').classList.remove('show');
+}
+
+function showAuthError(msg){
+  document.getElementById('authSuccess').classList.remove('show');
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function showAuthSuccess(msg){
+  document.getElementById('authError').classList.remove('show');
+  const el = document.getElementById('authSuccess');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+document.getElementById('timedDesc').textContent =
+  `اختبار بزمن محدد (بمعدل الاختبار العالمي) بدون إظهار الإجابات أثناء الحل. النتيجة والتفسير يظهران فقط بعد الإنهاء.`;
+
+document.getElementById('bankSizeNote').textContent =
+  QUESTIONS.length < 90
+    ? `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (90 و180) تلقائيًا عند تحديث البنك.`
+    : `يتم سحب الأسئلة عشوائيًا من بنك يضم ${QUESTIONS.length} سؤال — كل محاولة تحصل على مجموعة جديدة.`;
+
+function startQuiz(selectedMode, idsSubset, desiredCount){
+  mode = selectedMode;
+  const baseSet = idsSubset && idsSubset.length ? idsSubset.slice() : QUESTIONS.map(q => q.id);
+  if(desiredCount){
+    activeSet = shuffle(baseSet).slice(0, Math.min(desiredCount, baseSet.length));
+  } else {
+    activeSet = baseSet;
+  }
+  order = shuffle(activeSet);
+  posIndex = 0;
+  answers = {};
+  clearInterval(timerHandle);
+
+  document.getElementById('timedBar').classList.toggle('show', mode === 'timed');
+  document.getElementById('prevBtn').style.visibility = mode === 'timed' ? 'visible' : 'hidden';
+
+  if(mode === 'timed'){
+    timeLeft = Math.round(activeSet.length * SECONDS_PER_QUESTION);
+    renderNavDots();
+    tickTimer();
+    timerHandle = setInterval(tickTimer, 1000);
+  }
+
+  showScreen('screenQuiz');
+  renderQuestion();
+}
+
+function tickTimer(){
+  const box = document.getElementById('timerBox');
+  const mm = String(Math.floor(timeLeft / 60)).padStart(2,'0');
+  const ss = String(timeLeft % 60).padStart(2,'0');
+  document.getElementById('clockDisplay').textContent = `${mm}:${ss}`;
+  box.classList.toggle('danger', timeLeft <= 120);
+  if(timeLeft <= 0){
+    clearInterval(timerHandle);
+    finishQuiz(true);
+    return;
+  }
+  timeLeft--;
+}
+
+function renderNavDots(){
+  const wrap = document.getElementById('navDots');
+  wrap.innerHTML = '';
+  order.forEach((id, i)=>{
+    const b = document.createElement('button');
+    b.className = 'nav-dot' + (answers[id] !== undefined ? ' answered' : '') + (i === posIndex ? ' current' : '');
+    b.textContent = i + 1;
+    b.onclick = () => { posIndex = i; renderQuestion(); };
+    wrap.appendChild(b);
+  });
+}
+
+function renderQuestion(){
+  const id = order[posIndex];
+  const q = qById(id);
+  const data = q.en;
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('domainTag').textContent = DOMAIN_AR[q.domain];
+  document.getElementById('questionText').textContent = data.q;
+  document.getElementById('progressLabel').textContent = `${posIndex + 1} / ${order.length}`;
+  document.getElementById('progressFill').style.width = ((posIndex) / order.length * 100 + 10) + '%';
+
+  const correctCountSoFar = Object.keys(answers).reduce((n, k) => n + (qById(Number(k)).en.correct === answers[k] ? 1 : 0), 0);
+  document.getElementById('scoreLabel').textContent = mode === 'practice' ? `${correctCountSoFar} إجابة صحيحة حتى الآن` : '';
+
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  const selected = answers[id];
+
+  data.opts.forEach((optText, idx)=>{
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${letters[idx]}</span><span>${optText}</span>`;
+    btn.onclick = () => selectOption(idx);
+
+    if(mode === 'practice'){
+      if(selected !== undefined){
+        btn.disabled = true;
+        if(idx === data.correct) btn.classList.add('correct');
+        if(idx === selected && idx !== data.correct) btn.classList.add('incorrect');
+      }
+    } else {
+      if(selected === idx) btn.classList.add('selected-neutral');
+    }
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  const explainBox = document.getElementById('explainBox');
+  const nextBtn = document.getElementById('nextBtn');
+  const isLast = posIndex === order.length - 1;
+
+  if(mode === 'practice'){
+    if(selected !== undefined){
+      explainBox.classList.add('show');
+      explainBox.innerHTML = `<b>Explanation:</b> ${data.exp}`;
+      nextBtn.disabled = false;
+    } else {
+      explainBox.classList.remove('show');
+      explainBox.innerHTML = '';
+      nextBtn.disabled = true;
+    }
+    document.getElementById('hintText').textContent = 'اختر إجابة لعرض التفسير';
+  } else {
+    explainBox.classList.remove('show');
+    explainBox.innerHTML = '';
+    nextBtn.disabled = false;
+    document.getElementById('hintText').textContent = 'اختر إجابة ثم انتقل — النتيجة تظهر بعد الإنهاء';
+    renderNavDots();
+  }
+  nextBtn.textContent = isLast ? 'إنهاء الاختبار' : 'السؤال التالي ←';
+  document.getElementById('prevBtn').disabled = posIndex === 0;
+}
+
+function selectOption(idx){
+  const id = order[posIndex];
+  if(mode === 'practice' && answers[id] !== undefined) return;
+  answers[id] = idx;
+  renderQuestion();
+}
+
+function goPrev(){
+  if(posIndex > 0){ posIndex--; renderQuestion(); }
+}
+
+function goNext(){
+  if(posIndex < order.length - 1){
+    posIndex++;
+    renderQuestion();
+  } else {
+    finishQuiz(false);
+  }
+}
+
+function finishQuiz(timedOut){
+  clearInterval(timerHandle);
+  let correct = 0, wrong = 0;
+  const details = activeSet.map(id=>{
+    const q = qById(id);
+    const sel = answers[id];
+    const isCorrect = sel === q.en.correct;
+    const isUnanswered = sel === undefined;
+    if(isUnanswered || !isCorrect) wrong++; else correct++;
+    return { id, sel, isCorrect, isUnanswered };
+  });
+  lastRunResults = { correct, wrong, total: activeSet.length, details, timedOut: !!timedOut };
+  showScreen('screenResult');
+  renderResults();
+}
+
+async function renderResults(){
+  if(!lastRunResults) return;
+  const { correct, wrong, total, details, timedOut } = lastRunResults;
+  const pct = Math.round((correct / total) * 100);
+  const passed = pct >= 70;
+
+  document.getElementById('ringScore').textContent = pct + '%';
+  document.getElementById('ringInner').setAttribute('stroke', passed ? 'var(--good)' : 'var(--bad)');
+  document.getElementById('ringOuter').setAttribute('stroke', passed ? 'var(--good-light)' : 'var(--bad)');
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent = wrong;
+
+  const email = window.getCurrentUserEmail ? window.getCurrentUserEmail() : null;
+  const purchased = email && typeof window.hasPurchased === 'function' && await window.hasPurchased(COURSE_ID);
+  const cta = document.getElementById('saveCta');
+
+  if(purchased){
+    if(!lastRunResults.saved){
+      await window.saveAttempt({ date: new Date().toLocaleDateString('ar-SA'), mode, pct, correct, wrong, total });
+      lastRunResults.saved = true;
+    }
+    cta.classList.remove('show');
+    cta.innerHTML = '';
+  } else if(email){
+    cta.classList.add('show');
+    cta.innerHTML = `<p>سجّلت الدخول لكن لم تفعّل الوصول بعد — ادفع مرة واحدة لحفظ هذه النتيجة وسجل إنجازك بشكل دائم.</p><button class="btn btn-gold btn-sm" onclick="openPaymentModal()">تفعيل الوصول (49 ر.س)</button>`;
+  } else {
+    cta.classList.add('show');
+    cta.innerHTML = `<p>نتيجتك لن تُحفظ ما لم تسجّل الدخول — أنشئ حسابًا أو سجّل الدخول لحفظ إنجازك.</p><button class="btn btn-gold btn-sm" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>`;
+  }
+  if(typeof window.renderAttemptHistory === 'function') await window.renderAttemptHistory();
+  document.getElementById('verdictText').textContent = passed ? 'اجتياز محاكاة قوي' : 'يحتاج مزيدًا من المراجعة';
+  let sub = passed
+    ? 'أداؤك يوازي مستوى الجاهزية للاختبار الفعلي — راجع الأسئلة التي أخطأت فيها ثم أعد المحاولة لتثبيت المعلومة.'
+    : 'راجع الأسئلة والمجالات التي أخطأت فيها أدناه، ثم استخدم "إعادة الأسئلة الخاطئة فقط" للتركيز عليها.';
+  if(timedOut) sub = 'انتهى الوقت المحدد للاختبار. ' + sub;
+  document.getElementById('verdictSub').textContent = sub;
+
+  document.getElementById('retryWrongBtn').style.display = wrong > 0 ? 'inline-flex' : 'none';
+
+  const reviewList = document.getElementById('reviewList');
+  const oldNote = reviewList.parentElement.querySelector('.all-correct-note');
+  if(oldNote) oldNote.remove();
+  reviewList.innerHTML = '';
+  details.forEach((d, i)=>{
+    const q = qById(d.id);
+    const data = q.en;
+    const div = document.createElement('div');
+    const cls = d.isUnanswered ? 'was-unanswered' : (d.isCorrect ? 'was-correct' : 'was-wrong');
+    const tag = d.isUnanswered ? 'Not answered' : (d.isCorrect ? 'Correct' : 'Incorrect');
+    div.className = 'review-item ' + cls;
+    div.innerHTML = `
+      <span class="rtag">${tag}</span>
+      <p class="qtext">${i+1}. ${data.q}</p>
+      ${!d.isUnanswered ? `<p class="ans">Your answer: ${data.opts[d.sel]}</p>` : ''}
+      ${!d.isCorrect ? `<p class="ans">Correct answer: ${data.opts[data.correct]}</p>` : ''}
+      <p class="exp"><b>Explanation:</b> ${data.exp}</p>
+    `;
+    reviewList.appendChild(div);
+  });
+
+  if(wrong === 0){
+    const note = document.createElement('p');
+    note.className = 'result-sub all-correct-note';
+    note.style.marginTop = '18px';
+    note.textContent = 'لا توجد إجابات خاطئة — أحسنت! جرّب "إعادة الاختبار" لترتيب أسئلة جديد.';
+    reviewList.parentElement.insertBefore(note, reviewList);
+  }
+}
+
+function retryShuffled(){
+  startQuiz(mode, activeSet);
+}
+
+function retryWrongOnly(){
+  if(!lastRunResults) return;
+  const wrongIds = lastRunResults.details.filter(d => !d.isCorrect).map(d => d.id);
+  if(!wrongIds.length) return;
+  startQuiz('practice', wrongIds);
+}
+
+function backToModeSelect(){
+  clearInterval(timerHandle);
+  showScreen('screenStart');
+}
+
+function openTranslate(){
+  const id = order[posIndex];
+  const q = qById(id);
+  document.getElementById('modalDomain').textContent = DOMAIN_AR[q.domain];
+  document.getElementById('modalQuestion').textContent = q.ar.q;
+  const list = document.getElementById('modalOptions');
+  list.innerHTML = '';
+  q.ar.opts.forEach(opt=>{
+    const li = document.createElement('li');
+    li.textContent = opt;
+    list.appendChild(li);
+  });
+  document.getElementById('translateModal').classList.add('show');
+}
+
+function closeTranslate(){
+  document.getElementById('translateModal').classList.remove('show');
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, updateProfile, sendPasswordResetEmail, sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, serverTimestamp,
+  collection, addDoc, query, orderBy, limit, getDocs
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXebiDdl4_ksWTr-UC7lXMNq2BRBNrqfU",
+  authDomain: "ncpm-platform.firebaseapp.com",
+  projectId: "ncpm-platform",
+  storageBucket: "ncpm-platform.firebasestorage.app",
+  messagingSenderId: "93200453111",
+  appId: "1:93200453111:web:db7cc90675220ae55ef2f2"
+};
+
+const app = initializeApp(firebaseConfig);
+
+// App Check: replace RECAPTCHA_V3_SITE_KEY below with the site key from
+// Firebase Console → Build → App Check → register a reCAPTCHA v3 provider.
+// Until you add the real key, App Check silently fails to attach and the
+// app still works normally — it just isn't protected yet.
+try{
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Lfflm8tAAAAAN_wbPYNO-oXqv9tDDseYyFH1rZI'),
+    isTokenAutoRefreshEnabled: true
+  });
+} catch(e){ /* App Check not configured yet — safe to ignore for now */ }
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+
+function mapFirebaseError(e){
+  const code = (e && e.code) || '';
+  if(code.includes('email-already-in-use')) return 'هذا البريد مسجّل مسبقًا — جرّب تسجيل الدخول بدلًا من ذلك.';
+  if(code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  if(code.includes('weak-password')) return 'كلمة المرور ضعيفة جدًا — استخدم 6 أحرف على الأقل.';
+  if(code.includes('invalid-email')) return 'البريد الإلكتروني غير صحيح.';
+  if(code.includes('network-request-failed')) return 'تعذّر الاتصال — تحقق من الإنترنت وحاول مرة أخرى.';
+  return 'حدث خطأ غير متوقع، حاول مرة أخرى.';
+}
+
+window.getCurrentUserEmail = function(){ return currentUser ? currentUser.email : null; };
+
+window.renderUserBar = function(){
+  const bar = document.getElementById('userBar');
+  const trigger = document.getElementById('authTrigger');
+  if(!currentUser){
+    bar.classList.remove('show');
+    trigger.style.display = 'inline-flex';
+    closeStatsDropdown();
+    return;
+  }
+  document.getElementById('userGreeting').textContent = `مرحبًا، ${currentUser.displayName || currentUser.email}`;
+  bar.classList.add('show');
+  trigger.style.display = 'none';
+};
+
+const ALL_COURSES = [
+  { id: 'pmp', label: 'PMP' },
+  { id: 'acp', label: 'PMI-ACP' },
+  { id: 'rmp', label: 'PMI-RMP' },
+  { id: 'capm', label: 'CAPM' }
+];
+
+function closeStatsDropdown(){
+  document.getElementById('statsDropdown').classList.remove('show');
+  document.querySelector('.stats-toggle')?.classList.remove('open');
+}
+
+window.toggleStatsDropdown = async function(){
+  const dd = document.getElementById('statsDropdown');
+  const toggleBtn = document.querySelector('.stats-toggle');
+  if(dd.classList.contains('show')){
+    closeStatsDropdown();
+    return;
+  }
+  dd.classList.add('show');
+  toggleBtn?.classList.add('open');
+  document.getElementById('statsSummary').innerHTML = '<p class="stats-loading">جاري تحميل إحصائياتك...</p>';
+  document.getElementById('statsBreakdown').innerHTML = '';
+
+  const stats = await computeUserStats();
+  renderStatsDropdown(stats);
+};
+
+document.addEventListener('click', (e)=>{
+  const bar = document.getElementById('userBar');
+  if(bar && !bar.contains(e.target)) closeStatsDropdown();
+});
+
+async function computeUserStats(){
+  const perCourse = {};
+  let totalAttempts = 0, totalPassed = 0, totalFailed = 0, totalQuestions = 0, pctSum = 0;
+
+  for(const course of ALL_COURSES){
+    let attempts = 0, passed = 0, failed = 0, questions = 0, coursePctSum = 0;
+    try{
+      const snap = await getDocs(collection(db, 'users', currentUser.uid, 'attempts_' + course.id));
+      snap.forEach(docSnap=>{
+        const a = docSnap.data();
+        attempts++;
+        questions += (a.total || 0);
+        coursePctSum += (a.pct || 0);
+        if((a.pct || 0) >= 70) passed++; else failed++;
+      });
+    } catch(e){ /* no attempts yet or rules issue — treat as empty */ }
+    perCourse[course.id] = {
+      label: course.label, attempts, passed, failed,
+      avgPct: attempts ? Math.round(coursePctSum / attempts) : 0
+    };
+    totalAttempts += attempts;
+    totalPassed += passed;
+    totalFailed += failed;
+    totalQuestions += questions;
+    pctSum += coursePctSum;
+  }
+
+  return {
+    totalAttempts, totalPassed, totalFailed, totalQuestions,
+    overallAvgPct: totalAttempts ? Math.round(pctSum / totalAttempts) : 0,
+    perCourse
+  };
+}
+
+function renderStatsDropdown(stats){
+  const summary = document.getElementById('statsSummary');
+  const breakdown = document.getElementById('statsBreakdown');
+
+  if(stats.totalAttempts === 0){
+    summary.innerHTML = '<p class="stats-empty">ما فيه محاولات محفوظة بعد — خذ اختبارًا وفعّل الوصول لتبدأ إحصائياتك.</p>';
+    breakdown.innerHTML = '';
+    return;
+  }
+
+  summary.innerHTML = `
+    <div class="stat-box"><strong>${stats.totalAttempts}</strong><span>إجمالي المحاولات</span></div>
+    <div class="stat-box"><strong>${stats.totalQuestions}</strong><span>سؤال تم حله</span></div>
+    <div class="stat-box good"><strong>${stats.totalPassed}</strong><span>محاولات ناجحة</span></div>
+    <div class="stat-box bad"><strong>${stats.totalFailed}</strong><span>محاولات راسبة</span></div>
+    <div class="stat-box" style="grid-column:span 2;"><strong>${stats.overallAvgPct}%</strong><span>متوسط النسبة الكلي</span></div>
+  `;
+
+  breakdown.innerHTML = Object.values(stats.perCourse)
+    .filter(c => c.attempts > 0)
+    .map(c => `
+      <div class="brow">
+        <span><b>${c.label}</b> — ${c.attempts} محاولة (${c.passed} ناجحة / ${c.failed} راسبة)</span>
+        <span class="bpct">${c.avgPct}%</span>
+      </div>
+    `).join('') || '<p class="stats-empty">لا توجد محاولات محفوظة بعد.</p>';
+}
+
+onAuthStateChanged(auth, (user)=>{
+  currentUser = user;
+  window.renderUserBar();
+  closeStatsDropdown();
+  const resultScreen = document.getElementById('screenResult');
+  if(resultScreen && resultScreen.classList.contains('show') && typeof window.renderResults === 'function'){
+    window.renderResults();
+  }
+});
+
+window.handleRegister = async function(){
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const password = document.getElementById('regPassword').value;
+  if(!name || !email || !password){ window.showAuthError('الرجاء تعبئة جميع الحقول.'); return; }
+  if(!window.isValidEmail(email)){ window.showAuthError('البريد الإلكتروني غير صحيح.'); return; }
+  if(password.length < 6){ window.showAuthError('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
+    try{ await sendEmailVerification(cred.user); } catch(e2){ /* verification email is a bonus, not required */ }
+    window.showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها).');
+    setTimeout(()=>{ window.closeAuthModal(); }, 3200);
+  } catch(e){
+    window.showAuthError(mapFirebaseError(e));
+  }
+};
+
+window.handleLogin = async function(){
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    if(!cred.user.emailVerified){
+      window.showAuthSuccess('تنبيه: بريدك الإلكتروني غير مُفعّل بعد. تحقق من بريدك لتفعيل حسابك (هذا لا يمنعك من استخدام الموقع حاليًا).');
+      setTimeout(()=>{ window.closeAuthModal(); }, 3200);
+    } else {
+      window.closeAuthModal();
+    }
+  } catch(e){
+    window.showAuthError(mapFirebaseError(e));
+  }
+};
+
+window.handleForgotPassword = async function(){
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  if(!email || !window.isValidEmail(email)){
+    window.showAuthError('اكتب بريدك الإلكتروني في الحقل أعلاه أولًا، ثم اضغط "نسيت كلمة المرور؟".');
+    return;
+  }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    window.showAuthSuccess('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك — تحقق من صندوق الوارد.');
+  } catch(e){
+    window.showAuthError(mapFirebaseError(e));
+  }
+};
+
+window.logout = async function(){
+  try{ await signOut(auth); } catch(e){ /* ignore */ }
+};
+
+window.hasPurchased = async function(courseId){
+  if(!currentUser) return false;
+  try{
+    const snap = await getDoc(doc(db, 'users', currentUser.uid, 'purchases', courseId));
+    return snap.exists();
+  } catch(e){ return false; }
+};
+
+window.markPurchased = async function(courseId){
+  if(!currentUser) return;
+  await setDoc(doc(db, 'users', currentUser.uid, 'purchases', courseId), { purchasedAt: serverTimestamp() });
+};
+
+window.fakePay = function(){
+  const btn = document.getElementById('payBtn');
+  const processing = document.getElementById('payProcessing');
+  btn.disabled = true;
+  processing.classList.add('show');
+  setTimeout(async ()=>{
+    try{
+      await window.markPurchased(window.COURSE_ID);
+    } finally{
+      processing.classList.remove('show');
+      btn.disabled = false;
+      window.closePaymentModal();
+      const resultScreen = document.getElementById('screenResult');
+      if(resultScreen.classList.contains('show') && typeof window.renderResults === 'function'){
+        window.renderResults();
+      }
+    }
+  }, 1400);
+};
+
+window.saveAttempt = async function(record){
+  if(!currentUser) return;
+  await addDoc(collection(db, 'users', currentUser.uid, 'attempts_' + window.COURSE_ID), {
+    ...record, createdAt: serverTimestamp()
+  });
+};
+
+window.renderAttemptHistory = async function(){
+  const box = document.getElementById('historyBox');
+  const list = document.getElementById('historyList');
+  if(!currentUser){ box.style.display = 'none'; return; }
+  try{
+    const q = query(
+      collection(db, 'users', currentUser.uid, 'attempts_' + window.COURSE_ID),
+      orderBy('createdAt', 'desc'),
+      limit(10)
+    );
+    const snap = await getDocs(q);
+    if(snap.empty){ box.style.display = 'none'; return; }
+    box.style.display = 'block';
+    list.innerHTML = '';
+    snap.forEach(docSnap=>{
+      const a = docSnap.data();
+      const modeLabel = a.mode === 'timed' ? 'محاكاة فعلية' : 'تدريبي';
+      list.innerHTML += `<div class="history-row"><span>${a.date} · ${modeLabel} · ${a.correct}/${a.total}</span><span class="hscore">${a.pct}%</span></div>`;
+    });
+  } catch(e){
+    box.style.display = 'none';
+  }
+};
+</script>
+</body>
+</html>
