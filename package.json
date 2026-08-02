@@ -1,0 +1,7 @@
+{
+  "name": "ncpm-netlify-functions",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
