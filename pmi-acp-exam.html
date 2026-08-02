@@ -1034,15 +1034,47 @@ window.renderUserBar = function(){
 
 const verifyActionSettings = { url: window.location.origin + '/index.html', handleCodeInApp: true };
 
+async function callVerificationEmailFunction(user){
+  const idToken = await user.getIdToken();
+  const resp = await fetch('/.netlify/functions/send-verification-email', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${idToken}` },
+  });
+  if(!resp.ok){
+    const data = await resp.json().catch(()=>({}));
+    throw new Error(data.error || 'تعذّر إرسال إيميل التفعيل.');
+  }
+  return resp.json();
+}
+
+async function callPasswordResetFunction(email){
+  const resp = await fetch('/.netlify/functions/send-password-reset-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if(!resp.ok){
+    const data = await resp.json().catch(()=>({}));
+    throw new Error(data.error || 'تعذّر إرسال إيميل استرجاع كلمة المرور.');
+  }
+  return resp.json();
+}
+
 window.resendVerification = async function(){
   if(!currentUser) return;
   document.getElementById('authModalOverlay').classList.add('show');
   resetAuthModalView();
   try{
-    await sendEmailVerification(currentUser, verifyActionSettings);
+    await callVerificationEmailFunction(currentUser);
     window.showAuthSuccess('تم إرسال رابط تفعيل جديد إلى بريدك الإلكتروني.');
   } catch(e){
-    window.showAuthError(mapFirebaseError(e));
+    console.error('Branded verification email failed, falling back:', e);
+    try{
+      await sendEmailVerification(currentUser, verifyActionSettings);
+      window.showAuthSuccess('تم إرسال رابط تفعيل جديد إلى بريدك الإلكتروني.');
+    } catch(e2){
+      window.showAuthError(mapFirebaseError(e2));
+    }
   }
 };
 
@@ -1166,7 +1198,10 @@ window.handleRegister = async function(){
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
-    try{ await sendEmailVerification(cred.user, verifyActionSettings); } catch(e2){ /* verification email is a bonus, not required */ }
+    try{ await callVerificationEmailFunction(cred.user); } catch(e2){
+      console.error('Branded verification email failed, falling back:', e2);
+      try{ await sendEmailVerification(cred.user, verifyActionSettings); } catch(e3){ /* verification email is a bonus, not required */ }
+    }
     window.showAuthSuccess('تم إنشاء حسابك بنجاح! أرسلنا رابط تأكيد إلى بريدك الإلكتروني — تحقق من الوارد (وربما الرسائل غير المرغوب فيها). اضغط × لإغلاق هذه الرسالة والمتابعة.');
   } catch(e){
     window.showAuthError(mapFirebaseError(e));
@@ -1191,10 +1226,16 @@ window.handleForgotPassword = async function(){
     return;
   }
   try{
-    await sendPasswordResetEmail(auth, email);
-    window.showAuthSuccess('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك — تحقق من صندوق الوارد.');
+    await callPasswordResetFunction(email);
+    window.showAuthSuccess('إذا كان هذا البريد مسجّلًا لدينا، ستصلك رسالة لإعادة تعيين كلمة المرور خلال لحظات.');
   } catch(e){
-    window.showAuthError(mapFirebaseError(e));
+    console.error('Branded password reset email failed, falling back:', e);
+    try{
+      await sendPasswordResetEmail(auth, email);
+      window.showAuthSuccess('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك — تحقق من صندوق الوارد.');
+    } catch(e2){
+      window.showAuthError(mapFirebaseError(e2));
+    }
   }
 };
 
