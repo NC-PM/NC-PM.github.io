@@ -19,10 +19,10 @@ const SITE_BASE_URL = process.env.SITE_BASE_URL || 'https://nc-pm.com';
 
 // عدّل الأسعار حسب منتجاتك الفعلية
 const COURSE_PRICES = {
-  capm: 49,
-  pmp: 199,
-  acp: 149,
-  rmp: 149,
+  capm: 200,
+  pmp: 200,
+  acp: 200,
+  rmp: 200,
 };
 
 exports.handler = async (event) => {
