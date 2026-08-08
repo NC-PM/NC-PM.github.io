@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التسجيل والدفع — NC-PM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:        #6C6CE1;
+  --navy-dark:   #46469C;
+  --ivory:       #FAF8F2;
+  --paper:       #FFFFFF;
+  --gold:        #C89B3C;
+  --teal:        #1F6F5C;
+  --charcoal:    #171A21;
+  --slate:       #5B6472;
+  --border:      #E5E1D6;
+  --danger:      #B5502F;
+  --font-display: "Tajawal", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+  --radius-md: 10px;
+  --radius-lg: 22px;
+  --shadow-card: 0 1px 2px rgba(15,27,51,0.06), 0 12px 32px -16px rgba(15,27,51,0.18);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+body{ margin:0; background:var(--ivory); font-family:var(--font-display); color:var(--charcoal); }
+.wrap{ max-width:560px; margin:0 auto; padding:40px 20px; }
+.brand{ text-align:center; font-family:var(--font-mono); font-weight:700; color:var(--navy); font-size:20px; letter-spacing:1px; margin-bottom:28px; }
+.card{ background:var(--paper); border:1.5px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); overflow:hidden; }
+.hidden{ display:none !important; }
+
+.info-hero{ background:linear-gradient(135deg, var(--navy) 0%, #8285EA 100%); color:#fff; padding:32px 28px 26px; }
+.info-hero .tag{ font-family:var(--font-mono); font-size:11px; background:rgba(255,255,255,.18); padding:4px 12px; border-radius:999px; display:inline-block; margin-bottom:12px; }
+.info-hero h1{ font-size:22px; margin:0 0 8px; }
+.info-hero p{ font-size:14px; opacity:.9; margin:0; line-height:1.7; }
+.info-body{ padding:26px 28px; }
+.price-row{ display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+.price-now{ font-family:var(--font-mono); font-size:32px; font-weight:700; color:var(--navy); }
+.price-old{ font-family:var(--font-mono); font-size:16px; color:var(--slate); text-decoration:line-through; }
+.price-unit{ font-size:13px; color:var(--slate); }
+.feature-list{ list-style:none; margin:18px 0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.feature-list li{ display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--charcoal); }
+.feature-list li .ic{ color:var(--teal); flex:0 0 auto; font-weight:700; }
+.domain-mini{ display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 18px; }
+.domain-mini span{ font-family:var(--font-mono); font-size:10.5px; background:var(--ivory); border:1px solid var(--border); border-radius:999px; padding:4px 10px; color:var(--slate); }
+.guarantee-box{ background:rgba(31,111,92,.07); border:1px solid rgba(31,111,92,.25); border-radius:var(--radius-md); padding:14px 16px; font-size:12.5px; color:var(--teal); line-height:1.8; margin-bottom:20px; }
+.guarantee-box b{ display:block; margin-bottom:4px; font-size:13.5px; }
+
+.btn{ display:flex; align-items:center; justify-content:center; gap:6px; padding:14px 20px; border-radius:999px; font-weight:700; font-size:15px; border:none; cursor:pointer; width:100%; font-family:var(--font-display); }
+.btn-gold{ background:var(--gold); color:var(--charcoal); }
+.btn-navy{ background:var(--navy-dark); color:#fff; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+.auth-wrap{ padding:36px 30px; }
+.auth-wrap h2{ text-align:center; font-size:22px; margin:0 0 6px; }
+.auth-wrap .sub{ text-align:center; color:var(--slate); font-size:13.5px; margin:0 0 24px; }
+.field{ margin-bottom:16px; }
+.field label{ display:block; font-size:12.5px; color:var(--slate); margin-bottom:6px; font-weight:700; }
+.field-input{ position:relative; }
+.field-input .ic{ position:absolute; inset-inline-start:14px; top:50%; transform:translateY(-50%); color:var(--slate); font-size:15px; }
+.field-input input{
+  width:100%; padding:12px 14px; padding-inline-start:38px; border:1.5px solid var(--border); border-radius:var(--radius-md);
+  font-family:var(--font-display); font-size:14px; background:var(--ivory);
+}
+.field-input input:focus{ outline:none; border-color:var(--navy); }
+.switch-row{ display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:12.5px; flex-wrap:wrap; gap:8px; }
+.switch-row a{ color:var(--navy); text-decoration:none; cursor:pointer; font-weight:700; }
+.switch-row .muted{ color:var(--slate); }
+.auth-error{ color:var(--danger); font-size:13px; margin-top:10px; min-height:0; text-align:center; }
+.auth-success{ color:var(--teal); font-size:13px; margin-top:10px; text-align:center; }
+.back-link{ display:block; text-align:center; margin-top:18px; font-size:12.5px; color:var(--slate); cursor:pointer; }
+
+.pay-step{ padding:36px 30px; text-align:center; }
+.pay-step h2{ font-size:18px; margin:0 0 10px; }
+.pay-step p{ color:var(--slate); font-size:14px; line-height:1.8; }
+.pay-price{ font-family:var(--font-mono); font-size:34px; color:var(--navy); font-weight:700; margin:16px 0 22px; }
+.pay-price span{ font-size:14px; color:var(--slate); font-weight:500; }
+.processing{ display:flex; align-items:center; gap:8px; justify-content:center; margin-top:14px; color:var(--slate); font-size:13px; }
+.center{ text-align:center; padding:40px 20px; }
+.small-note{ font-size:12px; color:var(--slate); text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand">NC-PM</div>
+
+  <div class="card">
+
+    <div id="stepInfo">
+      <div class="info-hero">
+        <span class="tag" id="courseTag">شهادة مهنية معتمدة</span>
+        <h1 id="courseName">—</h1>
+        <p id="courseDesc">بنك أسئلة تدريبي شامل بمحاكاة كاملة لتجربة الاختبار الفعلي.</p>
+      </div>
+      <div class="info-body">
+        <div class="price-row">
+          <span class="price-now" id="priceNow">200</span>
+          <span class="price-old" id="priceOld">400</span>
+          <span class="price-unit">ر.س (دفعة واحدة، وصول دائم)</span>
+        </div>
+
+        <ul class="feature-list">
+          <li><span class="ic">✓</span> وضع تدريبي — شرح فوري بعد كل سؤال</li>
+          <li><span class="ic">✓</span> نموذج اختبار فعلي بزمن محدد — 90 سؤال</li>
+          <li><span class="ic">✓</span> نموذج اختبار فعلي بزمن محدد — 180 سؤال</li>
+          <li><span class="ic">✓</span> ترجمة عربية فورية لأي سؤال</li>
+        </ul>
+
+        <div class="domain-mini" id="domainMini"></div>
+
+        <div class="guarantee-box">
+          <b>🛡️ ضمان استرجاع كامل المبلغ</b>
+          لو حققت 90% أو أكثر في 5 محاولات نموذج 90 و5 محاولات نموذج 180 على منصتنا ثم لم تنجح بالاختبار الفعلي، نرجع لك المبلغ كامل حسب سياسة الاسترجاع.
+        </div>
+
+        <button class="btn btn-gold" onclick="goToAuthOrPayment()">اختر الآن ←</button>
+      </div>
+    </div>
+
+    <div id="stepLogin" class="hidden">
+      <div class="auth-wrap">
+        <h2>مرحبًا بعودتك</h2>
+        <p class="sub">سجّل الدخول لإكمال تفعيل وصولك</p>
+
+        <div class="field">
+          <label for="loginEmail">البريد الإلكتروني</label>
+          <div class="field-input"><span class="ic">✉</span><input type="email" id="loginEmail" placeholder="example@email.com"></div>
+        </div>
+        <div class="field">
+          <label for="loginPassword">كلمة المرور</label>
+          <div class="field-input"><span class="ic">🔒</span><input type="password" id="loginPassword"></div>
+        </div>
+
+        <button class="btn btn-navy" onclick="doLogin()" id="loginBtn">دخول</button>
+
+        <div class="switch-row">
+          <span class="muted">ليس لديك حساب؟ <a onclick="showRegister()">إنشاء حساب</a></span>
+          <a onclick="doForgotPassword()">نسيت كلمة المرور؟</a>
+        </div>
+
+        <p class="auth-error" id="loginError"></p>
+        <p class="auth-success" id="loginSuccess"></p>
+        <span class="back-link" onclick="backToInfo()">← رجوع لتفاصيل الشهادة</span>
+      </div>
+    </div>
+
+    <div id="stepRegister" class="hidden">
+      <div class="auth-wrap">
+        <h2>إنشاء حساب جديد</h2>
+        <p class="sub">خطوة وحدة وتصير جاهز للدفع</p>
+
+        <div class="field">
+          <label for="regName">الاسم</label>
+          <div class="field-input"><span class="ic">👤</span><input type="text" id="regName"></div>
+        </div>
+        <div class="field">
+          <label for="regEmail">البريد الإلكتروني</label>
+          <div class="field-input"><span class="ic">✉</span><input type="email" id="regEmail"></div>
+        </div>
+        <div class="field">
+          <label for="regEmailConfirm">تأكيد البريد الإلكتروني</label>
+          <div class="field-input"><span class="ic">✉</span><input type="email" id="regEmailConfirm"></div>
+        </div>
+        <div class="field">
+          <label for="regPassword">كلمة المرور</label>
+          <div class="field-input"><span class="ic">🔒</span><input type="password" id="regPassword"></div>
+        </div>
+
+        <button class="btn btn-navy" onclick="doRegister()" id="registerBtn">إنشاء الحساب ومتابعة</button>
+
+        <div class="switch-row">
+          <span class="muted">عندك حساب أصلًا؟ <a onclick="showLogin()">تسجيل الدخول</a></span>
+        </div>
+
+        <p class="auth-error" id="registerError"></p>
+        <p class="auth-success" id="registerSuccess"></p>
+        <span class="back-link" onclick="backToInfo()">← رجوع لتفاصيل الشهادة</span>
+      </div>
+    </div>
+
+    <div id="stepPayment" class="hidden">
+      <div class="pay-step">
+        <h2>خطوة أخيرة — فعّل وصولك</h2>
+        <p>ادفع مرة واحدة لتفتح بنك الأسئلة كامل ونماذج الاختبار الفعلي، مع ضمان استرجاع كامل المبلغ.</p>
+        <div class="pay-price" id="priceDisplay">— <span>ر.س</span></div>
+        <button class="btn btn-gold" onclick="startPayment()" id="payBtn">ادفع الآن ←</button>
+        <div class="processing hidden" id="payProcessing"><span>⏳</span><span>جاري التحويل لصفحة الدفع...</span></div>
+      </div>
+    </div>
+
+    <div id="stepVerifying" class="hidden center">
+      <p style="color:var(--slate);">⏳ جاري التحقق من الدفع...</p>
+    </div>
+
+    <div id="stepReady" class="hidden center">
+      <p style="color:var(--teal); font-weight:700;">✅ وصولك مفعّل — جاري تحويلك لصفحة الأسئلة...</p>
+    </div>
+
+  </div>
+  <p class="small-note">نفس تسجيل دخولك هنا يستمر معك بصفحة الأسئلة — ما تحتاج تسجّل دخول مرة ثانية.</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, updateProfile, sendPasswordResetEmail, sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXebiDdl4_ksWTr-UC7lXMNq2BRBNrqfU",
+  authDomain: "ncpm-platform.firebaseapp.com",
+  projectId: "ncpm-platform",
+  storageBucket: "ncpm-platform.firebasestorage.app",
+  messagingSenderId: "93200453111",
+  appId: "1:93200453111:web:db7cc90675220ae55ef2f2"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const COURSES = {
+  capm: {
+    name: 'CAPM — الشهادة المهنية المعتمدة في إدارة المشاريع', price: 200, oldPrice: 400,
+    examPage: 'capm-exam.html', tag: 'PMI · تأسيسي',
+    domains: ['Fundamentals 36%', 'Business Analysis 27%', 'Agile 20%', 'Predictive 17%']
+  },
+  pmp: {
+    name: 'PMP — محترف إدارة المشاريع', price: 200, oldPrice: 400,
+    examPage: 'pmp-exam.html', tag: 'PMI · إدارة مشاريع',
+    domains: ['الأفراد', 'العمليات', 'بيئة الأعمال']
+  },
+  acp: {
+    name: 'PMI-ACP — ممارس معتمد في المشاريع الرشيقة', price: 200, oldPrice: 400,
+    examPage: 'pmi-acp-exam.html', tag: 'PMI · أجايل',
+    domains: ['المبادئ والقيم', 'الممارسات الأساسية', 'الفريق وأصحاب المصلحة']
+  },
+  rmp: {
+    name: 'PMI-RMP — محترف إدارة المخاطر', price: 200, oldPrice: 400,
+    examPage: 'pmi-rmp-exam.html', tag: 'PMI · المخاطر',
+    domains: []
+  },
+};
+
+const params = new URLSearchParams(window.location.search);
+const courseId = params.get('course');
+const course = COURSES[courseId];
+
+if(!course){
+  document.querySelector('.card').innerHTML = '<p style="text-align:center; color:var(--danger); padding:30px;">شهادة غير معروفة. ارجع للصفحة الرئيسية واختر شهادة صحيحة.</p><a href="index.html" style="display:block; text-align:center; margin:0 30px 24px; padding:12px; text-decoration:none; border:1.5px solid var(--border); border-radius:999px; color:var(--charcoal);">الرجوع للرئيسية</a>';
+  throw new Error('unknown course');
+}
+
+document.getElementById('courseTag').textContent = course.tag;
+document.getElementById('courseName').textContent = course.name;
+document.getElementById('priceNow').textContent = course.price;
+document.getElementById('priceOld').textContent = course.oldPrice;
+document.getElementById('priceDisplay').innerHTML = course.price + ' <span>ر.س</span>';
+document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span>${d}</span>`).join('');
+
+let currentUser = null;
+
+function showErr(id, msg){ document.getElementById(id).textContent = msg; }
+function clearAuthMsgs(){
+  ['loginError','loginSuccess','registerError','registerSuccess'].forEach(id => document.getElementById(id).textContent = '');
+}
+
+function setStep(step){
+  const all = ['stepInfo','stepLogin','stepRegister','stepPayment','stepVerifying','stepReady'];
+  all.forEach(id => document.getElementById(id).classList.toggle('hidden', id !== step));
+}
+
+window.goToAuthOrPayment = function(){
+  clearAuthMsgs();
+  if(currentUser){ setStep('stepPayment'); } else { setStep('stepLogin'); }
+};
+
+window.showRegister = function(){ clearAuthMsgs(); setStep('stepRegister'); };
+window.showLogin = function(){ clearAuthMsgs(); setStep('stepLogin'); };
+window.backToInfo = function(){ clearAuthMsgs(); setStep('stepInfo'); };
+
+function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+function getPasswordStrength(pw){
+  const hasLower = /[a-z]/.test(pw), hasUpper = /[A-Z]/.test(pw), hasDigit = /[0-9]/.test(pw), hasSymbol = /[^a-zA-Z0-9]/.test(pw);
+  const varietyCount = [hasLower, hasUpper, hasDigit, hasSymbol].filter(Boolean).length;
+  const longEnough = pw.length >= 8;
+  let score = 0;
+  if(pw.length > 0) score = 1;
+  if(longEnough) score = 2;
+  if(longEnough && varietyCount >= 2) score = 3;
+  if(pw.length >= 12 && varietyCount >= 3) score = 4;
+  return { score };
+}
+
+function mapFirebaseError(e){
+  const code = (e && e.code) || '';
+  if(code.includes('email-already-in-use')) return 'هذا البريد مسجّل مسبقًا — جرّب تسجيل الدخول بدلًا من ذلك.';
+  if(code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  if(code.includes('weak-password')) return 'كلمة المرور ضعيفة جدًا — استخدم 6 أحرف على الأقل.';
+  if(code.includes('invalid-email')) return 'البريد الإلكتروني غير صحيح.';
+  if(code.includes('network-request-failed')) return 'تعذّر الاتصال — تحقق من الإنترنت وحاول مرة أخرى.';
+  return 'حدث خطأ غير متوقع، حاول مرة أخرى.';
+}
+
+async function callVerificationEmailFunction(user){
+  const idToken = await user.getIdToken();
+  const resp = await fetch('/.netlify/functions/send-verification-email', {
+    method: 'POST', headers: { 'Authorization': `Bearer ${idToken}` },
+  });
+  if(!resp.ok) throw new Error('verification email failed');
+}
+
+window.doRegister = async function(){
+  clearAuthMsgs();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const emailConfirm = document.getElementById('regEmailConfirm').value.trim().toLowerCase();
+  const password = document.getElementById('regPassword').value;
+  if(!name || !email || !emailConfirm || !password){ showErr('registerError', 'الرجاء تعبئة جميع الحقول.'); return; }
+  if(!isValidEmail(email)){ showErr('registerError', 'البريد الإلكتروني غير صحيح.'); return; }
+  if(email !== emailConfirm){ showErr('registerError', 'البريد الإلكتروني غير متطابق في الحقلين.'); return; }
+  if(password.length < 6){ showErr('registerError', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
+  if(getPasswordStrength(password).score < 3){ showErr('registerError', 'كلمة المرور ضعيفة — استخدم 8 أحرف على الأقل مع مزيج من الحروف والأرقام والرموز.'); return; }
+
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
+    try{ await callVerificationEmailFunction(cred.user); } catch(e2){
+      try{ await sendEmailVerification(cred.user); } catch(e3){ /* bonus, not required */ }
+    }
+    document.getElementById('registerSuccess').textContent = 'تم إنشاء الحساب! جاري المتابعة للدفع...';
+  } catch(e){
+    showErr('registerError', mapFirebaseError(e));
+  } finally{
+    btn.disabled = false;
+  }
+};
+
+window.doLogin = async function(){
+  clearAuthMsgs();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  if(!email || !password){ showErr('loginError', 'الرجاء تعبئة البريد وكلمة المرور.'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch(e){
+    showErr('loginError', mapFirebaseError(e));
+  } finally{
+    btn.disabled = false;
+  }
+};
+
+window.doForgotPassword = async function(){
+  clearAuthMsgs();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  if(!email || !isValidEmail(email)){ showErr('loginError', 'اكتب بريدك الإلكتروني بالحقل أعلاه أولًا.'); return; }
+  try{
+    const resp = await fetch('/.netlify/functions/send-password-reset-email', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }),
+    });
+    if(!resp.ok) throw new Error();
+    document.getElementById('loginSuccess').textContent = 'إذا كان هذا البريد مسجّلًا، وصلتك رسالة لإعادة تعيين كلمة المرور.';
+  } catch(e){
+    try{ await sendPasswordResetEmail(auth, email); document.getElementById('loginSuccess').textContent = 'تم إرسال رابط إعادة التعيين.'; }
+    catch(e2){ showErr('loginError', mapFirebaseError(e2)); }
+  }
+};
+
+async function hasPurchased(uid, courseId){
+  try{
+    const snap = await getDoc(doc(db, 'users', uid, 'purchases', courseId));
+    return snap.exists();
+  } catch(e){ return false; }
+}
+
+window.startPayment = async function(){
+  const btn = document.getElementById('payBtn');
+  const processing = document.getElementById('payProcessing');
+  btn.disabled = true;
+  processing.classList.remove('hidden');
+  try{
+    const idToken = await currentUser.getIdToken();
+    const res = await fetch('/.netlify/functions/initiate-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+      body: JSON.stringify({ courseId })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'تعذر بدء عملية الدفع');
+    window.location.href = data.invoiceURL;
+  } catch(e){
+    processing.classList.add('hidden');
+    btn.disabled = false;
+    alert(e.message || 'تعذر بدء عملية الدفع، حاول مرة أخرى');
+  }
+};
+
+async function checkPendingPaymentReturn(){
+  const paymentId = params.get('paymentId');
+  if(!paymentId) return false;
+  setStep('stepVerifying');
+  try{
+    const idToken = await currentUser.getIdToken();
+    const res = await fetch('/.netlify/functions/verify-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+      body: JSON.stringify({ paymentId, courseId })
+    });
+    const data = await res.json();
+    if(res.ok && data.paid) return true;
+    alert('لم يتم تأكيد الدفع بعد (الحالة: ' + (data.status || 'غير معروفة') + '). لو خُصم المبلغ تواصل معنا عبر واتساب.');
+    return false;
+  } catch(e){
+    alert('تعذر التحقق من حالة الدفع، حاول مرة أخرى أو تواصل معنا.');
+    return false;
+  }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+
+  if(!user){
+    return;
+  }
+
+  const justPaid = await checkPendingPaymentReturn();
+  if(justPaid){
+    setStep('stepReady');
+    setTimeout(() => { window.location.href = course.examPage; }, 1200);
+    return;
+  }
+
+  const purchased = await hasPurchased(user.uid, courseId);
+  if(purchased){
+    setStep('stepReady');
+    setTimeout(() => { window.location.href = course.examPage; }, 900);
+    return;
+  }
+
+  const loginVisible = !document.getElementById('stepLogin').classList.contains('hidden');
+  const registerVisible = !document.getElementById('stepRegister').classList.contains('hidden');
+  if(loginVisible || registerVisible){
+    setStep('stepPayment');
+  }
+});
+</script>
+</body>
+</html>

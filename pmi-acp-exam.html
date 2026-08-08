@@ -289,15 +289,15 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
         <span class="mtag">Practice</span>
         <h3>وضع التدريب</h3>
         <p>تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
-        <button class="btn btn-gold" onclick="startQuiz('practice', null)">ابدأ الوضع التدريبي</button>
+        <button class="btn btn-gold" onclick="startPracticeGuarded(this)">ابدأ الوضع التدريبي</button>
       </div>
       <div class="mode-card timed">
         <span class="mtag">Timed simulation</span>
         <h3>وضع الاختبار الفعلي</h3>
         <p id="timedDesc">اختبار بزمن محدد بدون إظهار الإجابات أثناء الحل — تمامًا كتجربة الاختبار العالمي. النتيجة والتفسير يظهران فقط بعد الإنهاء.</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-          <button class="btn btn-outline-dark" onclick="startQuiz('timed', null, 90)">نموذج 90 سؤال</button>
-          <button class="btn btn-outline-dark" onclick="startQuiz('timed', null, 180)">نموذج 180 سؤال</button>
+          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 90)">نموذج 90 سؤال</button>
+          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 180)">نموذج 180 سؤال</button>
         </div>
         <p class="hint" id="bankSizeNote" style="margin-top:4px;"></p>
       </div>
@@ -434,14 +434,14 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
     <span class="eyebrow" style="color:var(--gold);">خطوة أخيرة</span>
     <h3 style="margin-top:10px; font-size:20px; color:var(--navy);">فعّل بنك أسئلة PMI-ACP التجريبي</h3>
     <p style="color:var(--slate); font-size:14px; margin-top:10px;">ادفع مرة واحدة لحفظ نتائجك وإنجازك بشكل دائم مرتبط بحسابك.</p>
-    <div class="pay-price">49 <span>ر.س</span></div>
+    <div class="pay-price">200 <span>ر.س</span></div>
     <div class="pay-methods">
       <div class="chip">VISA</div>
       <div class="chip">مدى</div>
       <div class="chip">tamara</div>
       <div class="chip">tabby</div>
     </div>
-    <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="fakePay()" id="payBtn">ادفع الآن (تجريبي) ←</button>
+    <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="realPay()" id="payBtn">ادفع الآن ←</button>
     <div class="pay-processing" id="payProcessing"><span>⏳</span><span>جاري تأكيد الدفع...</span></div>
     <p class="auth-note">هذه بوابة دفع تجريبية لعرض الفكرة فقط — لن يتم خصم أي مبلغ حقيقي.</p>
   </div>
@@ -451,7 +451,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 const DOMAIN_AR = {values:'المبادئ والقيم', practices:'الممارسات الأساسية', team:'الفريق وأصحاب المصلحة'};
 const SECONDS_PER_QUESTION = 60; // real PMI-ACP pacing (~3 hrs / 120q)
 const COURSE_ID = 'acp';
-const COURSE_PRICE = 59;
+const COURSE_PRICE = 200;
 window.COURSE_ID = COURSE_ID;
 window.COURSE_PRICE = COURSE_PRICE;
 
@@ -682,6 +682,48 @@ document.getElementById('bankSizeNote').textContent =
     ? `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (90 و180) تلقائيًا عند تحديث البنك.`
     : `يتم سحب الأسئلة عشوائيًا من بنك يضم ${QUESTIONS.length} سؤال — كل محاولة تحصل على مجموعة جديدة.`;
 
+
+// البوابة الحقيقية: لازم تسجيل دخول + دفع فعلي قبل ما يبدأ أي اختبار
+// (تدريبي أو نموذج 90/180) — قبل السحب، مو بعد الانتهاء.
+async function ensureAccessOrPrompt(){
+  const loggedIn = typeof window.isLoggedIn === 'function' && window.isLoggedIn();
+  if(!loggedIn){
+    if(typeof window.openAuthModal === 'function') window.openAuthModal();
+    return false;
+  }
+  const purchased = typeof window.hasPurchased === 'function' && await window.hasPurchased(window.COURSE_ID);
+  if(!purchased){
+    if(typeof window.openPaymentModal === 'function') window.openPaymentModal();
+    return false;
+  }
+  return true;
+}
+
+async function startPracticeGuarded(btn){
+  const original = btn.textContent;
+  btn.disabled = true;
+  try{
+    if(!(await ensureAccessOrPrompt())) return;
+    await startQuiz('practice', null);
+  } finally{
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+async function startQuizGuarded(btn, desiredCount){
+  const original = btn.textContent;
+  btn.disabled = true;
+  try{
+    if(!(await ensureAccessOrPrompt())) return;
+    btn.textContent = 'جاري تحضير الأسئلة...';
+    await startQuiz('timed', null, desiredCount);
+  } finally{
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
 function startQuiz(selectedMode, idsSubset, desiredCount){
   mode = selectedMode;
   const baseSet = idsSubset && idsSubset.length ? idsSubset.slice() : QUESTIONS.map(q => q.id);
@@ -861,7 +903,7 @@ async function renderResults(){
     cta.innerHTML = '';
   } else if(email){
     cta.classList.add('show');
-    cta.innerHTML = `<p>سجّلت الدخول لكن لم تفعّل الوصول بعد — ادفع مرة واحدة لحفظ هذه النتيجة وسجل إنجازك بشكل دائم.</p><button class="btn btn-gold btn-sm" onclick="openPaymentModal()">تفعيل الوصول (49 ر.س)</button>`;
+    cta.innerHTML = `<p>سجّلت الدخول لكن لم تفعّل الوصول بعد — ادفع مرة واحدة لحفظ هذه النتيجة وسجل إنجازك بشكل دائم.</p><button class="btn btn-gold btn-sm" onclick="openPaymentModal()">تفعيل الوصول (200 ر.س)</button>`;
   } else {
     cta.classList.add('show');
     cta.innerHTML = `<p>نتيجتك لن تُحفظ ما لم تسجّل الدخول — أنشئ حسابًا أو سجّل الدخول لحفظ إنجازك.</p><button class="btn btn-gold btn-sm" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>`;
@@ -1181,6 +1223,9 @@ onAuthStateChanged(auth, (user)=>{
   if(resultScreen && resultScreen.classList.contains('show') && typeof window.renderResults === 'function'){
     window.renderResults();
   }
+  if(user && typeof window.checkPendingPaymentReturn === 'function'){
+    window.checkPendingPaymentReturn();
+  }
 });
 
 window.handleRegister = async function(){
@@ -1255,6 +1300,72 @@ window.markPurchased = async function(courseId){
   if(!currentUser) return;
   await setDoc(doc(db, 'users', currentUser.uid, 'purchases', courseId), { purchasedAt: serverTimestamp() });
 };
+
+
+// الدفع الحقيقي عبر MyFatoorah — يستدعي Netlify Function ويوجّه المستخدم
+// لصفحة الدفع الاستضافية. التفعيل الفعلي للاشتراك يصير من السيرفر فقط
+// بعد التحقق من MyFatoorah (verify-payment)، مو من المتصفح مباشرة.
+window.realPay = async function(){
+  if(!currentUser){
+    window.showAuthError && window.showAuthError('سجّل دخول أولاً');
+    return;
+  }
+  const btn = document.getElementById('payBtn');
+  const processing = document.getElementById('payProcessing');
+  btn.disabled = true;
+  processing.classList.add('show');
+  try{
+    const idToken = await currentUser.getIdToken();
+    const res = await fetch('/.netlify/functions/initiate-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+      body: JSON.stringify({ courseId: window.COURSE_ID })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'تعذر بدء عملية الدفع');
+    window.location.href = data.invoiceURL; // توجيه لصفحة MyFatoorah
+  } catch(e){
+    processing.classList.remove('show');
+    btn.disabled = false;
+    alert(e.message || 'تعذر بدء عملية الدفع، حاول مرة أخرى');
+  }
+};
+
+// يُستدعى تلقائيًا عند رجوع المستخدم من MyFatoorah (paymentId يجي بالرابط)
+window.checkPendingPaymentReturn = async function(){
+  const params = new URLSearchParams(window.location.search);
+  const paymentId = params.get('paymentId');
+  if(!paymentId || !currentUser) return;
+
+  try{
+    const idToken = await currentUser.getIdToken();
+    const res = await fetch('/.netlify/functions/verify-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+      body: JSON.stringify({ paymentId, courseId: window.COURSE_ID })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'تعذر التحقق من حالة الدفع');
+    if(data.paid){
+      alert('تم تأكيد الدفع بنجاح — تم تفعيل اشتراكك 🎉');
+    } else {
+      alert('لم يتم تأكيد الدفع بعد (الحالة: ' + data.status + '). لو خُصم المبلغ تواصل معنا.');
+    }
+  } catch(e){
+    alert(e.message || 'تعذر التحقق من حالة الدفع');
+  } finally{
+    // نظّف الرابط من paymentId عشان ما يتكرر التحقق لو المستخدم عمل رفرش
+    params.delete('paymentId');
+    const cleanUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', cleanUrl);
+    if(typeof window.renderResults === 'function'){
+      const resultScreen = document.getElementById('screenResult');
+      if(resultScreen && resultScreen.classList.contains('show')) window.renderResults();
+    }
+  }
+};
+
+window.isLoggedIn = function(){ return !!currentUser; };
 
 window.fakePay = function(){
   const btn = document.getElementById('payBtn');
