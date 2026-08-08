@@ -421,6 +421,7 @@ window.checkEmailVerified = async function(){
   try{
     await currentUser.reload();
     if(currentUser.emailVerified){
+      await currentUser.getIdToken(true); // إجبار تحديث التوكن فورًا عشان الدفع يشتغل من أول محاولة
       document.getElementById('verifySuccess').textContent = 'تم التفعيل! جاري المتابعة...';
       const purchased = await hasPurchased(currentUser.uid, courseId);
       setStep(purchased ? 'stepReady' : 'stepPayment');
@@ -470,7 +471,7 @@ window.startPayment = async function(){
   btn.disabled = true;
   processing.classList.remove('hidden');
   try{
-    const idToken = await currentUser.getIdToken();
+    const idToken = await currentUser.getIdToken(true); // إجبار تحديث التوكن عشان يعكس تفعيل البريد فورًا
     const res = await fetch('/.netlify/functions/initiate-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
