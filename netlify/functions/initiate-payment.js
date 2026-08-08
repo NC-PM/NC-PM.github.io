@@ -45,6 +45,11 @@ exports.handler = async (event) => {
     return { statusCode: 401, body: JSON.stringify({ error: 'جلسة غير صالحة، سجّل الدخول من جديد.' }) };
   }
 
+  // ممنوع الدفع بدون بريد مفعّل — قرار نهائي من السيرفر، ما يُلتف عليه من المتصفح
+  if (!decoded.email_verified) {
+    return { statusCode: 403, body: JSON.stringify({ error: 'يجب تفعيل بريدك الإلكتروني أولًا قبل الدفع.' }) };
+  }
+
   let courseId;
   try {
     courseId = JSON.parse(event.body || '{}').courseId;
@@ -76,8 +81,8 @@ exports.handler = async (event) => {
     InvoiceValue: price,
     DisplayCurrencyIso: 'SAR',
     CustomerEmail: email,
-    CallBackUrl: `${SITE_BASE_URL}/${courseId}-exam.html?course=${courseId}`,
-    ErrorUrl: `${SITE_BASE_URL}/${courseId}-exam.html?course=${courseId}&payment=failed`,
+    CallBackUrl: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
+    ErrorUrl: `${SITE_BASE_URL}/enroll.html?course=${courseId}&payment=failed`,
     Language: 'AR',
     CustomerReference: reference,
     InvoiceItems: [
