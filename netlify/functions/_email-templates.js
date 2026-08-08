@@ -15,11 +15,11 @@ exports.verificationTemplate = `<!DOCTYPE html>
 <tr>
 <td align="center">
 
-<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; width:100%; background:#FFFFFF; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(108,108,225,0.18);">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; width:100%; background:#FAF8F2; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(108,108,225,0.18);">
 
   <!-- Header band with signature diagonal pattern -->
   <tr>
-    <td style="background:linear-gradient(135deg,#6C6CE1 0%,#8285EA 60%,#6C6CE1 100%); background-color:#6C6CE1; padding:0;">
+    <td style="background:radial-gradient(circle at 20% -20%, rgba(200,155,60,.35), transparent 60%), repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 2px, transparent 2px, transparent 16px), linear-gradient(180deg,#6C6CE1 0%,#8285EA 100%); background-color:#6C6CE1; padding:0;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td style="padding:36px 40px 30px; text-align:center;">
@@ -52,11 +52,11 @@ exports.verificationTemplate = `<!DOCTYPE html>
   <!-- Body -->
   <tr>
     <td style="padding:40px 40px 8px; text-align:right;">
-      <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:bold; color:#171A21; margin-bottom:14px;">
-        أهلًا {{NAME}} 👋
+      <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:bold; color:#171A21; margin-bottom:14px;">
+        يا هلا فيك، {{NAME}}! 👋 نورتنا!
       </div>
-      <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.9; color:#5B6472;">
-        سعداء بانضمامك إلى <b style="color:#6C6CE1;">NC-PM</b> — بقي خطوة وحدة بسيطة لتفعيل حسابك والبدء في رحلتك نحو شهاداتك المهنية في إدارة المشاريع.
+      <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.9; color:#5B6472;">
+        يسعدنا انضمامك لعائلة <b style="color:#6C6CE1;">NC-PM</b> 🎉 باقي خطوة وحدة بسيطة عشان تفعّل حسابك وتبدأ رحلتك في شهاداتك المهنية فورًا.
       </div>
     </td>
   </tr>
@@ -98,22 +98,22 @@ exports.verificationTemplate = `<!DOCTYPE html>
   <!-- what's next mini section -->
   <tr>
     <td style="padding:24px 40px 8px; text-align:right;">
-      <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; font-weight:bold; color:#171A21; margin-bottom:12px;">
-        بعد التفعيل، بيكون بإمكانك:
+      <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; font-weight:bold; color:#171A21; margin-bottom:12px;">
+        وبعدها بتقدر:
       </div>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
-          <td style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472;">
-            <span style="color:#6C6CE1;">◆</span>&nbsp; دخول بنك أسئلة PMP وPMI-ACP وPMI-RMP وCAPM
+          <td dir="rtl" style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472; text-align:right;">
+            <span style="color:#6C6CE1;">◆</span>&nbsp; دخول بنك أسئلة الاختبار الدولي من PMI
           </td>
         </tr>
         <tr>
-          <td style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472;">
+          <td dir="rtl" style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472; text-align:right;">
             <span style="color:#6C6CE1;">◆</span>&nbsp; محاكاة اختبار فعلي بزمن محدد
           </td>
         </tr>
         <tr>
-          <td style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472;">
+          <td dir="rtl" style="padding:6px 0; font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472; text-align:right;">
             <span style="color:#6C6CE1;">◆</span>&nbsp; حفظ نتائجك وتتبّع إنجازك عبر أي جهاز
           </td>
         </tr>
@@ -125,7 +125,7 @@ exports.verificationTemplate = `<!DOCTYPE html>
   <tr>
     <td style="padding:32px 40px 36px; text-align:center;">
       <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:11.5px; color:#9AA0AC; line-height:1.8;">
-        إذا لم تطلب إنشاء هذا الحساب، تجاهل هذا البريد ولن يتم اتخاذ أي إجراء.<br>
+        ما طلبت هذا؟ ولا مشكلة، تجاهل الرسالة وما راح يتغيّر شي بحسابك.<br>
         © 2026 المركز الوطني لإدارة المشاريع NC-PM
       </div>
     </td>
@@ -159,11 +159,11 @@ exports.passwordResetTemplate = `<!DOCTYPE html>
 <tr>
 <td align="center">
 
-<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; width:100%; background:#FFFFFF; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(108,108,225,0.18);">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; width:100%; background:#FAF8F2; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(108,108,225,0.18);">
 
   <!-- Header band with signature diagonal pattern -->
   <tr>
-    <td style="background:linear-gradient(135deg,#6C6CE1 0%,#8285EA 60%,#6C6CE1 100%); background-color:#6C6CE1; padding:0;">
+    <td style="background:radial-gradient(circle at 20% -20%, rgba(200,155,60,.35), transparent 60%), repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 2px, transparent 2px, transparent 16px), linear-gradient(180deg,#6C6CE1 0%,#8285EA 100%); background-color:#6C6CE1; padding:0;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td style="padding:36px 40px 30px; text-align:center;">
@@ -196,11 +196,11 @@ exports.passwordResetTemplate = `<!DOCTYPE html>
   <!-- Body -->
   <tr>
     <td style="padding:40px 40px 8px; text-align:right;">
-      <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:bold; color:#171A21; margin-bottom:14px;">
-        أهلًا {{NAME}} 🔒
+      <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:bold; color:#171A21; margin-bottom:14px;">
+        يا هلا فيك، {{NAME}}! 🔒
       </div>
-      <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.9; color:#5B6472;">
-        وصلنا طلب لإعادة تعيين كلمة المرور الخاصة بحسابك في <b style="color:#6C6CE1;">NC-PM</b>. اضغط الزر أدناه لاختيار كلمة مرور جديدة.
+      <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:15px; line-height:1.9; color:#5B6472;">
+        وصلنا طلب لتغيير كلمة مرور حسابك في <b style="color:#6C6CE1;">NC-PM</b>. اضغط الزر تحت وحط كلمة مرور جديدة، بكل بساطة.
       </div>
     </td>
   </tr>
@@ -245,9 +245,9 @@ exports.passwordResetTemplate = `<!DOCTYPE html>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F2; border-radius:12px;">
         <tr>
           <td style="padding:16px 18px;">
-            <div style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472; line-height:1.8;">
-              <b style="color:#171A21;">لم تطلب هذا؟</b><br>
-              إذا لم تطلب إعادة تعيين كلمة المرور، تجاهل هذا البريد — حسابك آمن ولن يتغيّر شيء ما لم تضغط الرابط أعلاه.
+            <div dir="rtl" style="font-family:'Tahoma','Segoe UI',Arial,sans-serif; font-size:13px; color:#5B6472; line-height:1.8; text-align:right;">
+              <b style="color:#171A21;">ما طلبت هذا؟</b><br>
+              ولا يهمك، تجاهل الرسالة وحسابك بيبقى آمن — ما راح يتغيّر شي إلا لو ضغطت الرابط فوق بنفسك.
             </div>
           </td>
         </tr>
