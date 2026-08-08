@@ -332,10 +332,18 @@ function mapFirebaseError(e){
 
 async function callVerificationEmailFunction(user){
   const idToken = await user.getIdToken();
+  // نرجّع رابط التفعيل لنفس صفحة enroll بنفس الشهادة، مو للصفحة الرئيسية
+  const continueUrl = window.location.origin + window.location.pathname + '?course=' + courseId;
   const resp = await fetch('/.netlify/functions/send-verification-email', {
-    method: 'POST', headers: { 'Authorization': `Bearer ${idToken}` },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+    body: JSON.stringify({ continueUrl }),
   });
   if(!resp.ok) throw new Error('verification email failed');
+}
+
+function getVerifyActionSettings(){
+  return { url: window.location.origin + window.location.pathname + '?course=' + courseId, handleCodeInApp: false };
 }
 
 window.doRegister = async function(){
@@ -357,7 +365,7 @@ window.doRegister = async function(){
     await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db, 'users', cred.user.uid), { name, email, createdAt: serverTimestamp() });
     try{ await callVerificationEmailFunction(cred.user); } catch(e2){
-      try{ await sendEmailVerification(cred.user); } catch(e3){ /* bonus, not required */ }
+      try{ await sendEmailVerification(cred.user, getVerifyActionSettings()); } catch(e3){ /* bonus, not required */ }
     }
     document.getElementById('registerSuccess').textContent = 'تم إنشاء الحساب! جاري المتابعة للدفع...';
   } catch(e){
@@ -388,8 +396,9 @@ window.doForgotPassword = async function(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   if(!email || !isValidEmail(email)){ showErr('loginError', 'اكتب بريدك الإلكتروني بالحقل أعلاه أولًا.'); return; }
   try{
+    const continueUrl = window.location.origin + window.location.pathname + '?course=' + courseId;
     const resp = await fetch('/.netlify/functions/send-password-reset-email', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }),
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, continueUrl }),
     });
     if(!resp.ok) throw new Error();
     document.getElementById('loginSuccess').textContent = 'إذا كان هذا البريد مسجّلًا، وصلتك رسالة لإعادة تعيين كلمة المرور.';
@@ -433,7 +442,7 @@ window.resendVerifyEmail = async function(){
   document.getElementById('verifySuccess').textContent = '';
   try{
     try{ await callVerificationEmailFunction(currentUser); }
-    catch(e2){ await sendEmailVerification(currentUser); }
+    catch(e2){ await sendEmailVerification(currentUser, getVerifyActionSettings()); }
     document.getElementById('verifySuccess').textContent = 'تم إرسال رابط تفعيل جديد.';
   } catch(e){
     document.getElementById('verifyError').textContent = 'تعذّر إرسال الرابط، حاول لاحقًا.';
