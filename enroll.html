@@ -182,6 +182,17 @@ body{ margin:0; background:var(--ivory); font-family:var(--font-display); color:
       </div>
     </div>
 
+    <div id="stepVerifyEmail" class="hidden">
+      <div class="pay-step">
+        <h2>📬 فعّل بريدك الإلكتروني</h2>
+        <p>أرسلنا رابط تفعيل إلى <b id="verifyEmailAddr">بريدك</b>. افتح الرابط من صندوق الوارد (أو الرسائل غير المرغوب فيها)، ثم ارجع هنا واضغط الزر تحت.</p>
+        <button class="btn btn-gold" onclick="checkEmailVerified()" id="verifyCheckBtn">تحققت من التفعيل، تابع ←</button>
+        <button class="btn btn-navy" style="margin-top:10px;" onclick="resendVerifyEmail()" id="verifyResendBtn">إعادة إرسال رابط التفعيل</button>
+        <p class="auth-error" id="verifyError"></p>
+        <p class="auth-success" id="verifySuccess"></p>
+      </div>
+    </div>
+
     <div id="stepPayment" class="hidden">
       <div class="pay-step">
         <h2>خطوة أخيرة — فعّل وصولك</h2>
@@ -273,13 +284,22 @@ function clearAuthMsgs(){
 }
 
 function setStep(step){
-  const all = ['stepInfo','stepLogin','stepRegister','stepPayment','stepVerifying','stepReady'];
+  const all = ['stepInfo','stepLogin','stepRegister','stepVerifyEmail','stepPayment','stepVerifying','stepReady'];
   all.forEach(id => document.getElementById(id).classList.toggle('hidden', id !== step));
 }
 
 window.goToAuthOrPayment = function(){
   clearAuthMsgs();
-  if(currentUser){ setStep('stepPayment'); } else { setStep('stepLogin'); }
+  if(currentUser){
+    if(!currentUser.emailVerified){
+      document.getElementById('verifyEmailAddr').textContent = currentUser.email;
+      setStep('stepVerifyEmail');
+    } else {
+      setStep('stepPayment');
+    }
+  } else {
+    setStep('stepLogin');
+  }
 };
 
 window.showRegister = function(){ clearAuthMsgs(); setStep('stepRegister'); };
@@ -386,7 +406,56 @@ async function hasPurchased(uid, courseId){
   } catch(e){ return false; }
 }
 
+window.checkEmailVerified = async function(){
+  const btn = document.getElementById('verifyCheckBtn');
+  btn.disabled = true;
+  try{
+    await currentUser.reload();
+    if(currentUser.emailVerified){
+      document.getElementById('verifySuccess').textContent = 'تم التفعيل! جاري المتابعة...';
+      const purchased = await hasPurchased(currentUser.uid, courseId);
+      setStep(purchased ? 'stepReady' : 'stepPayment');
+      if(purchased) setTimeout(() => { window.location.href = course.examPage; }, 900);
+    } else {
+      document.getElementById('verifyError').textContent = 'لسه ما فعّلت البريد — افتح الرابط من إيميلك أول.';
+    }
+  } catch(e){
+    document.getElementById('verifyError').textContent = 'تعذّر التحقق، حاول مرة أخرى.';
+  } finally{
+    btn.disabled = false;
+  }
+};
+
+window.resendVerifyEmail = async function(){
+  const btn = document.getElementById('verifyResendBtn');
+  btn.disabled = true;
+  document.getElementById('verifyError').textContent = '';
+  document.getElementById('verifySuccess').textContent = '';
+  try{
+    try{ await callVerificationEmailFunction(currentUser); }
+    catch(e2){ await sendEmailVerification(currentUser); }
+    document.getElementById('verifySuccess').textContent = 'تم إرسال رابط تفعيل جديد.';
+  } catch(e){
+    document.getElementById('verifyError').textContent = 'تعذّر إرسال الرابط، حاول لاحقًا.';
+  } finally{
+    btn.disabled = false;
+  }
+};
+
 window.startPayment = async function(){
+  // بوابة صارمة: ممنوع أي محاولة دفع بدون تسجيل دخول + بريد مفعّل،
+  // حتى لو تم استدعاء هذي الدالة مباشرة (مثلًا من الـ Console).
+  if(!currentUser){
+    clearAuthMsgs();
+    setStep('stepLogin');
+    return;
+  }
+  if(!currentUser.emailVerified){
+    document.getElementById('verifyEmailAddr').textContent = currentUser.email;
+    setStep('stepVerifyEmail');
+    return;
+  }
+
   const btn = document.getElementById('payBtn');
   const processing = document.getElementById('payProcessing');
   btn.disabled = true;
@@ -453,7 +522,12 @@ onAuthStateChanged(auth, async (user) => {
   const loginVisible = !document.getElementById('stepLogin').classList.contains('hidden');
   const registerVisible = !document.getElementById('stepRegister').classList.contains('hidden');
   if(loginVisible || registerVisible){
-    setStep('stepPayment');
+    if(!user.emailVerified){
+      document.getElementById('verifyEmailAddr').textContent = user.email;
+      setStep('stepVerifyEmail');
+    } else {
+      setStep('stepPayment');
+    }
   }
 });
 </script>
