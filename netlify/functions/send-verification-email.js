@@ -18,9 +18,22 @@
 const { getAdmin } = require('./_firebase-admin');
 const { verificationTemplate } = require('./_email-templates');
 
+// نتأكد من توفر fetch بغض النظر عن نسخة Node على Netlify
+const fetchFn = (typeof fetch !== 'undefined') ? fetch : require('node-fetch');
+
 const SENDER_EMAIL = process.env.SENDER_EMAIL || 'verify@nc-pm.com';
 const SENDER_NAME = process.env.SENDER_NAME || 'NC-PM';
-const CONTINUE_URL = process.env.CONTINUE_URL || 'https://nc-pm.com/index.html';
+const DEFAULT_CONTINUE_URL = process.env.CONTINUE_URL || 'https://nc-pm.com/index.html';
+const ALLOWED_ORIGIN = 'https://nc-pm.com';
+
+// يقبل continueUrl مخصص (مثلًا enroll.html?course=capm) فقط لو كان على نفس
+// دومين الموقع — يمنع استغلال هذا الحقل لإعادة توجيه المستخدم لموقع خارجي.
+function resolveContinueUrl(requested){
+  if (typeof requested === 'string' && requested.startsWith(ALLOWED_ORIGIN)) {
+    return requested;
+  }
+  return DEFAULT_CONTINUE_URL;
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -32,6 +45,11 @@ exports.handler = async (event) => {
   if (!idToken) {
     return { statusCode: 401, body: JSON.stringify({ error: 'يجب تسجيل الدخول أولًا.' }) };
   }
+
+  let continueUrl;
+  try {
+    continueUrl = JSON.parse(event.body || '{}').continueUrl;
+  } catch (e) { /* body اختياري — تجاهل لو ما وصل JSON صالح */ }
 
   const admin = getAdmin();
 
@@ -51,14 +69,14 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'لا يوجد بريد إلكتروني مرتبط بهذا الحساب.' }) };
     }
 
-    const actionCodeSettings = { url: CONTINUE_URL, handleCodeInApp: false };
+    const actionCodeSettings = { url: resolveContinueUrl(continueUrl), handleCodeInApp: false };
     const verificationLink = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
 
     const html = verificationTemplate
       .replace(/{{VERIFICATION_LINK}}/g, verificationLink)
       .replace(/{{NAME}}/g, name);
 
-    const resp = await fetch('https://api.resend.com/emails', {
+    const resp = await fetchFn('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,

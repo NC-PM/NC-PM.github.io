@@ -15,18 +15,31 @@
 const { getAdmin } = require('./_firebase-admin');
 const { passwordResetTemplate } = require('./_email-templates');
 
+// نتأكد من توفر fetch بغض النظر عن نسخة Node على Netlify
+const fetchFn = (typeof fetch !== 'undefined') ? fetch : require('node-fetch');
+
 const SENDER_EMAIL = process.env.SENDER_EMAIL || 'verify@nc-pm.com';
 const SENDER_NAME = process.env.SENDER_NAME || 'NC-PM';
-const CONTINUE_URL = process.env.CONTINUE_URL || 'https://nc-pm.com/index.html';
+const DEFAULT_CONTINUE_URL = process.env.CONTINUE_URL || 'https://nc-pm.com/index.html';
+const ALLOWED_ORIGIN = 'https://nc-pm.com';
+
+function resolveContinueUrl(requested){
+  if (typeof requested === 'string' && requested.startsWith(ALLOWED_ORIGIN)) {
+    return requested;
+  }
+  return DEFAULT_CONTINUE_URL;
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  let email;
+  let email, continueUrl;
   try {
-    email = (JSON.parse(event.body || '{}').email || '').trim().toLowerCase();
+    const parsed = JSON.parse(event.body || '{}');
+    email = (parsed.email || '').trim().toLowerCase();
+    continueUrl = parsed.continueUrl;
   } catch (e) {
     return { statusCode: 400, body: JSON.stringify({ error: 'طلب غير صالح.' }) };
   }
@@ -46,14 +59,14 @@ exports.handler = async (event) => {
   }
 
   try {
-    const actionCodeSettings = { url: CONTINUE_URL, handleCodeInApp: false };
+    const actionCodeSettings = { url: resolveContinueUrl(continueUrl), handleCodeInApp: false };
     const resetLink = await admin.auth().generatePasswordResetLink(email, actionCodeSettings);
 
     const html = passwordResetTemplate
       .replace(/{{RESET_LINK}}/g, resetLink)
       .replace(/{{NAME}}/g, userRecord.displayName || 'عميلنا العزيز');
 
-    const resp = await fetch('https://api.resend.com/emails', {
+    const resp = await fetchFn('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,

@@ -14,6 +14,10 @@
 
 const { getAdmin } = require('./_firebase-admin');
 
+// نتأكد من توفر fetch بغض النظر عن نسخة Node على Netlify —
+// لو مو متوفرة تلقائيًا (global fetch)، نستخدم مكتبة node-fetch كبديل.
+const fetchFn = (typeof fetch !== 'undefined') ? fetch : require('node-fetch');
+
 const MYFATOORAH_BASE_URL = 'https://api.myfatoorah.com'; // مفتاح Live حقيقي
 const SITE_BASE_URL = process.env.SITE_BASE_URL || 'https://nc-pm.com';
 
@@ -91,7 +95,7 @@ exports.handler = async (event) => {
   };
 
   try {
-    const res = await fetch(`${MYFATOORAH_BASE_URL}/v2/SendPayment`, {
+    const res = await fetchFn(`${MYFATOORAH_BASE_URL}/v2/SendPayment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
