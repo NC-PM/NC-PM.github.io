@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سياسة الاسترجاع — NC-PM</title>
+<meta name="description" content="سياسة الاسترجاع الخاصة بمنصة NC-PM، وتشمل شروط ضمان استرداد الأموال لمن لا يجتاز اختباره الرسمي.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:        #6C6CE1;
+  --navy-light:  #8285EA;
+  --navy-lighter:#9B9DEF;
+  --ivory:       #FAF8F2;
+  --paper:       #FFFFFF;
+  --gold:        #C89B3C;
+  --gold-light:  #E4C878;
+  --teal:        #1F6F5C;
+  --charcoal:    #171A21;
+  --slate:       #5B6472;
+  --border:      #E5E1D6;
+
+  --font-display: "Aref Ruqaa", "Tajawal", serif;
+  --font-body: "Tajawal", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+
+  --radius-lg: 22px;
+  --shadow-card: 0 1px 2px rgba(15,27,51,0.06), 0 12px 32px -16px rgba(15,27,51,0.18);
+  --max-w: 880px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--ivory);
+  color:var(--charcoal);
+  line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:var(--navy); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+
+.wrap{ max-width:var(--max-w); margin:0 auto; padding:0 28px; }
+
+/* ---------- Header ---------- */
+.site-header{
+  background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(15,27,51,.08);
+  box-shadow:0 1px 3px rgba(15,27,51,.05);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 28px; max-width:1180px; margin:0 auto; }
+.brand{ display:flex; align-items:center; gap:10px; color:var(--navy); }
+.brand strong{ font-family:var(--font-display); font-size:20px; }
+.back-link{
+  font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--navy);
+  border:1.5px solid var(--border); padding:8px 16px; border-radius:999px; transition:all .15s ease;
+}
+.back-link:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); text-decoration:none; }
+
+/* ---------- Policy content ---------- */
+.policy{ padding:64px 0 88px; }
+.policy-head{ margin-bottom:44px; }
+.policy-head .eyebrow{
+  font-family:var(--font-mono); font-size:12.5px; letter-spacing:.02em; color:var(--gold);
+  font-weight:600; display:block; margin-bottom:14px;
+}
+.policy-head h1{ font-family:var(--font-display); font-size:clamp(28px,4vw,40px); color:var(--navy); margin:0 0 10px; line-height:1.3; }
+.policy-head .updated{ color:var(--slate); font-size:14px; font-family:var(--font-mono); }
+
+.policy-card{
+  background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:40px; box-shadow:var(--shadow-card);
+}
+.policy-card p{ color:var(--charcoal); margin:0 0 18px; font-size:15.5px; }
+.policy-card p:last-child{ margin-bottom:0; }
+
+section.policy-section{ margin-bottom:36px; }
+section.policy-section:last-child{ margin-bottom:0; }
+section.policy-section h2{
+  font-family:var(--font-display); font-size:22px; color:var(--navy); margin:0 0 16px;
+  display:flex; align-items:center; gap:10px;
+}
+section.policy-section h2 .num{
+  font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--paper);
+  background:var(--gold); width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+section.policy-section p{ color:var(--slate); font-size:15.5px; margin:0 0 14px; }
+
+.guarantee-list{ margin:0 0 18px; padding:0; list-style:none; display:flex; flex-direction:column; gap:12px; }
+.guarantee-list li{
+  display:flex; gap:12px; align-items:flex-start; font-size:15px; color:var(--charcoal);
+  background:rgba(31,111,92,.05); border:1px solid rgba(31,111,92,.15); border-radius:12px; padding:14px 16px;
+}
+.guarantee-list li svg{ width:20px; height:20px; color:var(--teal); flex-shrink:0; margin-top:2px; }
+
+.callout{
+  background:rgba(200,155,60,.08); border:1px solid rgba(200,155,60,.3); border-radius:14px;
+  padding:16px 20px; font-size:14.5px; color:var(--charcoal); margin-top:8px;
+}
+.callout strong{ color:var(--gold); }
+
+.contact-box{
+  display:flex; align-items:center; gap:14px; background:rgba(108,108,225,.06);
+  border:1px solid rgba(108,108,225,.2); border-radius:14px; padding:18px 20px; margin-top:8px;
+}
+.contact-box svg{ width:22px; height:22px; color:var(--navy); flex-shrink:0; }
+.contact-box a{ font-weight:700; }
+
+hr.divider{ border:none; border-top:1px dashed var(--border); margin:36px 0; }
+
+/* ---------- Footer (matches site identity) ---------- */
+.site-footer{ background:linear-gradient(180deg, #C89B3C 0%, #A9711E 100%); color:#FFFFFF; padding:48px 0 28px; margin-top:40px; }
+.footer-top p{ max-width:420px; font-size:13.5px; margin:8px 0 0; }
+.footer-bottom-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; margin-top:36px; }
+.footer-signature-block{ display:flex; flex-direction:column; gap:6px; }
+.footer-mini-brand{ font-family:"Aref Ruqaa", serif; font-size:20px; color:#FFFFFF; }
+.footer-signature{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.footer-signature .sig-text{ font-family:"Tajawal", sans-serif; font-size:14px; color:#FFFFFF; }
+.footer-signature .sig-name{ font-family:"Aref Ruqaa", serif; font-size:24px; color:#FFFFFF; }
+.footer-map{ width:150px; flex-shrink:0; opacity:.9; }
+.footer-map svg{ width:100%; height:auto; display:block; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.3); margin-top:32px; padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:12.5px; }
+
+@media (max-width:640px){
+  .policy-card{ padding:26px 22px; }
+  .footer-bottom-row{ justify-content:center; text-align:center; }
+  .footer-map{ width:120px; margin:0 auto; }
+  .footer-bottom{ justify-content:center; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <strong>NC-PM</strong>
+    </a>
+    <a href="index.html" class="back-link">← الرجوع للرئيسية</a>
+  </nav>
+</header>
+
+<section class="policy">
+  <div class="wrap">
+    <div class="policy-head">
+      <span class="eyebrow">سياسة الاسترجاع</span>
+      <h1>سياسة الاسترجاع وضمان استرداد الأموال</h1>
+      <span class="updated">آخر تحديث: 31 أغسطس 2026</span>
+    </div>
+
+    <div class="policy-card">
+      <p>توضح هذه السياسة طريقة عمل الاسترجاع لمشتريات منصة NC-PM، بما في ذلك ضمان استرداد الأموال المتاح للمتقدمين المستوفين لشروطه. تُعتبر هذه السياسة جزءًا من شروط الاستخدام الخاصة بالمنصة.</p>
+
+      <hr class="divider">
+
+      <section class="policy-section">
+        <h2><span class="num">1</span> ضمان استرداد الأموال</h2>
+        <p>المتقدمون المستوفون للشروط والذين لا يجتازون اختبارهم الرسمي مع PMI قد يستحقون استرداد كامل رسوم الدورة بموجب ضمان NC-PM. للاستفادة من الضمان، يجب أن تكون قد أكملت استعدادك بالكامل عبر منصة NC-PM قبل التقدّم للاختبار الرسمي. تحديدًا، يجب قبل موعد اختبارك أن:</p>
+        <ul class="guarantee-list">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>تحقق نسبة 90% أو أعلى في 5 محاولات كاملة من نموذج الاختبار المكوّن من 180 سؤال، على المنصة.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>تحقق نسبة 90% أو أعلى في 5 محاولات كاملة من نموذج الاختبار المكوّن من 90 سؤال، على المنصة (10 محاولات إجمالًا بين النموذجين).</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>تتقدّم لاختبار PMI الرسمي المطابق ضمن فترة الوصول المؤهّلة لاشتراكك.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>لا تجتاز ذلك الاختبار الرسمي.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>تقدّم طلب الاسترجاع مرفقًا بما يثبت ذلك (مثل نتيجتك الرسمية) خلال 30 يومًا من استلامك لنتيجة اختبارك الرسمي.</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="policy-section">
+        <h2><span class="num">2</span> شروط الأهلية قابلة للتغيير</h2>
+        <p>بما أن شروط الأهلية قد تتغيّر مع الوقت، يُرجى دائمًا مراجعة الشروط الكاملة والسارية حاليًا قبل الاعتماد على الضمان أو تقديم طلب استرجاع. الشروط المعمول بها وقت شرائك للدورة هي التي تُطبَّق على طلبك.</p>
+      </section>
+
+      <section class="policy-section">
+        <h2><span class="num">3</span> الاسترجاعات خارج نطاق الضمان</h2>
+        <p>خارج نطاق الضمان أعلاه، تتم مراجعة طلبات الاسترجاع كل حالة على حدة، وبما يتوافق مع أنظمة حماية المستهلك المعمول بها بحقك وشروط مزوّد خدمة الدفع (MyFatoorah). وبما أن الوصول للدورة عملية شراء رقمية لمرة واحدة لكل اختبار تُسلَّم فور إتمام الدفع، فإن الاسترجاع بسبب تغيير الرأي بعد استخدام فعلي وملموس للدورة قد لا يكون متاحًا إلا في الحالات التي يُلزم فيها النظام بذلك.</p>
+      </section>
+
+      <section class="policy-section">
+        <h2><span class="num">4</span> كيف تقدّم طلب استرجاع</h2>
+        <p>راسلنا عبر البريد الإلكتروني <strong>admin@nc-pm.com</strong> مرفقًا بريد حسابك المسجّل والتفاصيل ذات الصلة (الشهادة، تفاصيل عملية الشراء، وبالنسبة لمطالبات الضمان، المستند المثبت لعدم اجتيازك الاختبار). تُصرف الاسترجاعات المعتمدة لنفس وسيلة الدفع الأصلية عبر مزوّد خدمة الدفع MyFatoorah، وقد تستغرق عدة أيام عمل لتظهر في حسابك.</p>
+        <div class="contact-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>
+          <span>لأي استفسار حول طلبات الاسترجاع: <a href="mailto:admin@nc-pm.com">admin@nc-pm.com</a></span>
+        </div>
+      </section>
+
+      <section class="policy-section">
+        <h2><span class="num">5</span> التواصل</h2>
+        <p>لأي أسئلة أخرى حول هذه السياسة، تواصل معنا عبر <a href="mailto:admin@nc-pm.com">admin@nc-pm.com</a>.</p>
+        <div class="callout">
+          هذه السياسة جزء من <strong>شروط الاستخدام</strong> الخاصة بمنصة NC-PM، ويُقصد بها استكمال بنود الضمان الموضّحة في الصفحة الرئيسية، لا استبدالها.
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <strong style="font-family:'Aref Ruqaa',serif; font-size:22px;">NC-PM</strong>
+      <p>المركز الوطني لإدارة المشاريع — كل شي تحتاجه لمسيرتك المهنية بإدارة المشاريع، نجمعه لك بمكان وحد.</p>
+    </div>
+    <div class="footer-bottom-row">
+      <div class="footer-signature-block">
+        <div class="footer-signature">
+          <span class="sig-text">صُنع بحب من قِبل</span>
+          <span class="sig-name">August12</span>
+        </div>
+      </div>
+      <div class="footer-map" aria-hidden="true">
+        <svg viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#9B9DEF" stroke-width="1" opacity="0.55">
+            <line x1="20" y1="15" x2="20" y2="155"/>
+            <line x1="55" y1="15" x2="55" y2="155"/>
+            <line x1="90" y1="15" x2="90" y2="155"/>
+            <line x1="125" y1="15" x2="125" y2="155"/>
+            <line x1="160" y1="15" x2="160" y2="155"/>
+            <line x1="10" y1="30" x2="185" y2="30"/>
+            <line x1="10" y1="65" x2="185" y2="65"/>
+            <line x1="10" y1="100" x2="185" y2="100"/>
+            <line x1="10" y1="135" x2="185" y2="135"/>
+          </g>
+          <path d="M 12,150 C 45,120 40,90 70,80 C 100,70 100,45 135,35 C 155,28 165,25 188,18"
+                stroke="#6C6CE1" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+          <g transform="translate(97, 88)">
+            <path d="M0,-14 C7,-14 12,-9 12,-2 C12,7 0,18 0,18 C0,18 -12,7 -12,-2 C-12,-9 -7,-14 0,-14 Z"
+                  fill="#6C6CE1" opacity="0.95"/>
+            <circle cx="0" cy="-2" r="4" fill="#FAF8F2"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 المركز الوطني لإدارة المشاريع NC-PM. جميع الحقوق محفوظة.</span>
+      <span>الرياض، المملكة العربية السعودية</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
