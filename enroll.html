@@ -490,7 +490,9 @@ window.startPayment = async function(){
 };
 
 async function checkPendingPaymentReturn(){
-  const paymentId = params.get('paymentId');
+  // ميسر يرجّع الاستعلام بالرابط باسم invoice_id (مو paymentId) —
+  // verify-payment.js يتحقق عبر GET /v1/invoices/{id}.
+  const paymentId = params.get('invoice_id');
   if(!paymentId) return false;
   setStep('stepVerifying');
   try{
