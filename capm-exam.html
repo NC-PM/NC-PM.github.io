@@ -85,7 +85,7 @@ button{ font-family:inherit; cursor:pointer; }
 .progress-fill{ height:100%; background:linear-gradient(90deg,var(--gold),var(--teal-light)); border-radius:999px; transition:width .35s ease; }
 .progress-label{ font-family:var(--font-mono); font-size:12.5px; color:var(--slate); white-space:nowrap; direction:ltr; }
 
-.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; overflow:hidden; }
 .qcard .domain-tag{ font-family:var(--font-mono); font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-bottom:16px; display:inline-block; }
 .qcard .cat-tag{ font-family:var(--font-mono); font-size:11px; font-weight:600; color:#6C6CE1; background:rgba(108,108,225,.10); border:1px solid rgba(108,108,225,.25); padding:4px 10px 4px 8px; border-radius:6px; width:fit-content; margin-bottom:16px; margin-inline-start:8px; display:inline-flex; align-items:center; gap:6px; }
 .cat-dot{ width:9px; height:9px; border-radius:50%; flex:0 0 auto; display:inline-block; box-shadow:0 0 0 2px rgba(255,255,255,.6) inset; }
@@ -284,18 +284,24 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 .exit-mode-btn:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); }
 
 /* ===== ملاحظة 4: خلفية متحركة شفافة (كوب قهوة + بخار) بصفحات الأسئلة ===== */
+/* زاوية صغيرة ثابتة بالشاشة — تُستخدم بشاشة اختيار الوضع فقط، وتختفي أثناء حل الأسئلة */
 .coffee-bg{
   position:fixed; bottom:26px; left:26px; width:130px; height:186px;
-  pointer-events:none; z-index:0; opacity:.26; transition:all .4s ease;
+  pointer-events:none; z-index:0; opacity:.26;
 }
 @media (max-width:780px){ .coffee-bg{ width:88px; height:126px; bottom:14px; left:14px; opacity:.2; } }
-/* أثناء حل الأسئلة فقط: ينتقل الكوب لمنتصف الصفحة خلف بطاقة السؤال */
-.coffee-bg.centered{
-  bottom:auto; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:min(360px, 55vw); height:min(520px, 78vh); opacity:.22;
+.coffee-bg.hide-on-quiz{ display:none; }
+.coffee-bg svg{ width:100%; height:100%; display:block; }
+
+/* أثناء حل الأسئلة: كوب مستقل مرسوم داخل بطاقة السؤال نفسها (خلفية للسؤال) —
+   بما إنه جزء فعلي من محتوى البطاقة، يتحرك معها بثبات أثناء السكرول ولا
+   يختفي أبدًا، ويبقى دائمًا بمنتصف نفس البطاقة بالضبط. */
+.qcard-inner{ position:relative; z-index:1; }
+.coffee-bg-card{
+  display:block; width:100px; height:144px; margin:4px auto 20px; opacity:.85; pointer-events:none;
 }
-@media (max-width:780px){ .coffee-bg.centered{ width:min(220px, 62vw); height:min(320px, 60vh); opacity:.16; } }
-.coffee-bg svg{ width:100%; height:100%; }
+@media (max-width:640px){ .coffee-bg-card{ width:78px; height:112px; margin:2px auto 16px; } }
+.coffee-bg-card svg{ width:100%; height:100%; display:block; }
 .steam{ transform-origin:center bottom; animation:steamRise 4.5s ease-in-out infinite; }
 .steam.s2{ animation-delay:.9s; }
 .steam.s3{ animation-delay:1.8s; }
@@ -351,9 +357,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
 
 <section class="exam-hero">
   <div class="wrap">
-    <p class="eyebrow">بنك أسئلة تجريبي</p>
-    <h1>اختبار CAPM التجريبي — محاكاة لنمط الاختبار الفعلي</h1>
-    <p>عشر أسئلة تأسيسية باللغة الإنجليزية حول المفاهيم والمصطلحات الأساسية في إدارة المشاريع، بنفس صيغة الاختبار الفعلي — مع خيار عرض ترجمة عربية لأي سؤال عبر نافذة منبثقة صغيرة.</p>
+    <h1>اختبار CAPM</h1>
   </div>
 </section>
 
@@ -400,6 +404,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
     </div>
 
     <div class="qcard">
+      <div class="qcard-inner">
       <div class="tags-row">
         <span class="domain-tag" id="domainTag">—</span>
         <span class="cat-tag" id="catTag">—</span>
@@ -407,6 +412,16 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
       <h3 id="questionText" class="ltr">—</h3>
       <div class="translate-row">
         <button class="translate-btn" onclick="openTranslate()"><span class="globe">🌐</span> عرض السؤال بالعربي</button>
+      </div>
+      <div class="coffee-bg-card" aria-hidden="true">
+        <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+          <path class="steam s1" d="M38,60 C34,52 44,46 40,38 C36,30 44,24 42,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path class="steam s2" d="M50,60 C46,52 56,46 52,38 C48,30 56,24 54,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path class="steam s3" d="M62,60 C58,52 68,46 64,38 C60,30 68,24 66,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M22,64 h56 l-6,52 a8,8 0 0 1 -8,7 H36 a8,8 0 0 1 -8,-7 Z" fill="#6C6CE1" opacity="0.9"/>
+          <path d="M78,72 c14,0 14,26 0,26" stroke="#6C6CE1" stroke-width="6" fill="none"/>
+          <ellipse cx="50" cy="64" rx="28" ry="6" fill="#8285EA"/>
+        </svg>
       </div>
       <div class="qimg-wrap" id="qImgWrap" style="display:none;"><img id="qImg" src="" alt="question illustration"></div>
       <ul class="options ltr" id="optionsList"></ul>
@@ -416,6 +431,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <button class="btn btn-ghost" id="prevBtn" onclick="goPrev()">السابق</button>
         <span class="hint" id="hintText">اختر إجابة لعرض التفسير</span>
         <button class="btn btn-gold" id="nextBtn" disabled onclick="goNext()">السؤال التالي ←</button>
+      </div>
       </div>
     </div>
   </div>
@@ -4506,9 +4522,10 @@ function showScreen(name){
   ['screenStart','screenQuiz','screenResult'].forEach(id=>{
     document.getElementById(id).classList.toggle('show', id === name);
   });
-  // خلفية كوب القهوة: صغيرة بالزاوية بشاشة الاختيار، وسط الصفحة أثناء حل الأسئلة فقط
+  // كوب القهوة بالزاوية يبان بشاشة اختيار الوضع بس — أثناء حل الأسئلة يظهر
+  // بدله كوب مرسوم داخل بطاقة السؤال نفسها (خلفية ثابتة تتحرك مع البطاقة).
   const coffeeBg = document.querySelector('.coffee-bg');
-  if(coffeeBg) coffeeBg.classList.toggle('centered', name === 'screenQuiz');
+  if(coffeeBg) coffeeBg.classList.toggle('hide-on-quiz', name === 'screenQuiz');
 }
 
 /* ---------------- UI-only helpers (data logic lives in the Firebase module script below) ---------------- */
@@ -4639,7 +4656,7 @@ if(QUESTIONS.length < 90){
   document.getElementById('bankSizeNote').textContent =
     `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (90 و180) تلقائيًا عند تحديث البنك.`;
 } else {
-  document.getElementById('bankSizeNote').textContent = '';
+  document.getElementById('bankSizeNote').textContent = `يتم سحب الأسئلة عشوائيًا من بنك يضم +1000 سؤال — كل محاولة تحصل على مجموعة جديدة.`;
   const list = document.getElementById('domainWeightsList');
   const weightsOrder = [
     'Domain (01) Fundamentals and core concepts',
