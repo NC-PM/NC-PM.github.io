@@ -67,7 +67,7 @@ button{ font-family:inherit; cursor:pointer; }
 .mode-card .btn{ margin-top:8px; align-self:flex-start; }
 @media (max-width:640px){ .mode-grid{ grid-template-columns:1fr; } }
 
-.timed-bar{ display:none; align-items:center; justify-content:space-between; gap:16px; background:var(--navy); color:var(--ivory); border-radius:16px; padding:14px 20px; margin-bottom:20px; flex-wrap:wrap; }
+.timed-bar{ display:none; align-items:center; justify-content:space-between; gap:16px; background:var(--navy); color:var(--ivory); border-radius:16px; padding:14px 20px; margin-bottom:20px; flex-wrap:wrap; position:relative; z-index:2; }
 .timed-bar.show{ display:flex; }
 .timer-box{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); }
 .timer-box .clock{ font-size:22px; font-weight:600; letter-spacing:.03em; direction:ltr; }
@@ -80,12 +80,12 @@ button{ font-family:inherit; cursor:pointer; }
 .timed-submit{ font-family:var(--font-mono); font-size:12px; background:transparent; border:1.5px solid rgba(255,255,255,.35); color:#FF8A73; padding:8px 16px; border-radius:999px; font-weight:700; }
 .timed-submit:hover{ border-color:#FF8A73; }
 
-.progress-row{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+.progress-row{ display:flex; align-items:center; gap:14px; margin-bottom:22px; position:relative; z-index:2; }
 .progress-track{ flex:1; height:6px; background:var(--border); border-radius:999px; overflow:hidden; }
 .progress-fill{ height:100%; background:linear-gradient(90deg,var(--gold),var(--teal-light)); border-radius:999px; transition:width .35s ease; }
 .progress-label{ font-family:var(--font-mono); font-size:12.5px; color:var(--slate); white-space:nowrap; direction:ltr; }
 
-.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); }
+.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
 .qcard .domain-tag{ font-family:var(--font-mono); font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-bottom:16px; display:inline-block; }
 .qcard .cat-tag{ font-family:var(--font-mono); font-size:11px; font-weight:600; color:#6C6CE1; background:rgba(108,108,225,.10); border:1px solid rgba(108,108,225,.25); padding:4px 10px 4px 8px; border-radius:6px; width:fit-content; margin-bottom:16px; margin-inline-start:8px; display:inline-flex; align-items:center; gap:6px; }
 .cat-dot{ width:9px; height:9px; border-radius:50%; flex:0 0 auto; display:inline-block; box-shadow:0 0 0 2px rgba(255,255,255,.6) inset; }
@@ -273,6 +273,7 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
 /* ===== ملاحظة 1/2/3: زر الرجوع لاختيار الوضع (تدريبي/فعلي) داخل الاختبار ===== */
 .exit-mode-btn{
+  position:relative; z-index:2;
   display:inline-flex; align-items:center; gap:6px;
   font-family:'IBM Plex Mono', monospace;
   font-size:12.5px; font-weight:600; color:var(--navy);
@@ -284,10 +285,16 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
 /* ===== ملاحظة 4: خلفية متحركة شفافة (كوب قهوة + بخار) بصفحات الأسئلة ===== */
 .coffee-bg{
-  position:fixed; bottom:22px; left:22px; width:92px; height:132px;
-  pointer-events:none; z-index:1; opacity:.14;
+  position:fixed; bottom:26px; left:26px; width:130px; height:186px;
+  pointer-events:none; z-index:0; opacity:.26; transition:all .4s ease;
 }
-@media (max-width:780px){ .coffee-bg{ width:64px; height:92px; bottom:12px; left:12px; } }
+@media (max-width:780px){ .coffee-bg{ width:88px; height:126px; bottom:14px; left:14px; opacity:.2; } }
+/* أثناء حل الأسئلة فقط: ينتقل الكوب لمنتصف الصفحة خلف بطاقة السؤال */
+.coffee-bg.centered{
+  bottom:auto; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:min(360px, 55vw); height:min(520px, 78vh); opacity:.22;
+}
+@media (max-width:780px){ .coffee-bg.centered{ width:min(220px, 62vw); height:min(320px, 60vh); opacity:.16; } }
 .coffee-bg svg{ width:100%; height:100%; }
 .steam{ transform-origin:center bottom; animation:steamRise 4.5s ease-in-out infinite; }
 .steam.s2{ animation-delay:.9s; }
@@ -312,9 +319,9 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
     <path class="steam s1" d="M38,60 C34,52 44,46 40,38 C36,30 44,24 42,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
     <path class="steam s2" d="M50,60 C46,52 56,46 52,38 C48,30 56,24 54,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
     <path class="steam s3" d="M62,60 C58,52 68,46 64,38 C60,30 68,24 66,16" stroke="#6C6CE1" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M22,64 h56 l-6,52 a8,8 0 0 1 -8,7 H36 a8,8 0 0 1 -8,-7 Z" fill="#C89B3C" opacity="0.9"/>
-    <path d="M78,72 c14,0 14,26 0,26" stroke="#C89B3C" stroke-width="6" fill="none"/>
-    <ellipse cx="50" cy="64" rx="28" ry="6" fill="#A9711E"/>
+    <path d="M22,64 h56 l-6,52 a8,8 0 0 1 -8,7 H36 a8,8 0 0 1 -8,-7 Z" fill="#6C6CE1" opacity="0.9"/>
+    <path d="M78,72 c14,0 14,26 0,26" stroke="#6C6CE1" stroke-width="6" fill="none"/>
+    <ellipse cx="50" cy="64" rx="28" ry="6" fill="#8285EA"/>
   </svg>
 </div>
 
@@ -4499,6 +4506,9 @@ function showScreen(name){
   ['screenStart','screenQuiz','screenResult'].forEach(id=>{
     document.getElementById(id).classList.toggle('show', id === name);
   });
+  // خلفية كوب القهوة: صغيرة بالزاوية بشاشة الاختيار، وسط الصفحة أثناء حل الأسئلة فقط
+  const coffeeBg = document.querySelector('.coffee-bg');
+  if(coffeeBg) coffeeBg.classList.toggle('centered', name === 'screenQuiz');
 }
 
 /* ---------------- UI-only helpers (data logic lives in the Firebase module script below) ---------------- */
