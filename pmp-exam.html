@@ -4443,7 +4443,11 @@ function renderQuestion(){
     img.src = '';
   }
 
-  document.getElementById('progressLabel').textContent = `${posIndex + 1} / ${order.length}`;
+  // بوضع التدريب: ما نعرض المقام (order.length) لأنه يساوي حجم البنك الحقيقي الكامل
+  // بدون أي حد أقصى — عرضه كان يفضح الرقم الحقيقي. بوضع الاختبار الفعلي (90/180)
+  // المقام محدود فعليًا (90 أو 180) فآمن نعرضه زي ما هو.
+  document.getElementById('progressLabel').textContent =
+    mode === 'practice' ? `السؤال ${posIndex + 1}` : `${posIndex + 1} / ${order.length}`;
   document.getElementById('progressFill').style.width = ((posIndex) / order.length * 100 + 10) + '%';
 
   const correctCountSoFar = Object.keys(answers).reduce((n, k) => {
