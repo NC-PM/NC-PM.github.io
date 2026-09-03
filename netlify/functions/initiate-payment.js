@@ -93,11 +93,15 @@ exports.handler = async (event) => {
     // Moyasar يستخدم Basic Auth: المفتاح السري كاسم مستخدم، بدون كلمة مرور
     const authToken = Buffer.from(`${process.env.MOYASAR_SECRET_KEY}:`).toString('base64');
 
+    // ملاحظة مهمة: بخلاف Payments، حقل callback_url بالفواتير (Invoices) عند ميسر
+    // لا يُستخدم لتوجيه المتصفح — هو فقط إشعار خلفي (Webhook POST) يوصل السيرفر.
+    // التوجيه الفعلي للمستخدم بعد نجاح الدفع يتم عبر success_url فقط.
     const body = {
       amount: amountInHalalas,
       currency: 'SAR',
       description: `اشتراك ${courseId.toUpperCase()} - ${userRecord.displayName || email}`,
-      callback_url: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
+      success_url: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
+      back_url: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
       metadata: {
         reference,
         uid,
