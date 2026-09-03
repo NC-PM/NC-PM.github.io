@@ -1,13 +1,12 @@
 // netlify/functions/initiate-payment.js
 //
 // Called by the client with the user's Firebase ID token in the
-// Authorization header + { courseId } in the body. Creates a MyFatoorah
-// hosted payment invoice and returns its URL for the browser to redirect to.
+// Authorization header + { courseId } in the body. Creates a Moyasar
+// hosted invoice and returns its URL for the browser to redirect to.
 //
-// Required environment variables (Netlify dashboard — نفس الموجودة
-// أصلاً لملفات الإيميل + وحدة جديدة):
+// Required environment variables (Netlify dashboard):
 //   FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY  (موجودة أصلاً)
-//   MYFATOORAH_API_KEY   (جديد — التوكن اللي أنشأته بحساب MyFatoorah)
+//   MOYASAR_SECRET_KEY   (جديد — المفتاح السري sk_live_... أو sk_test_... من لوحة ميسر)
 //
 // Optional:
 //   SITE_BASE_URL   (default: https://nc-pm.com)
@@ -18,10 +17,10 @@ const { getAdmin } = require('./_firebase-admin');
 // لو مو متوفرة تلقائيًا (global fetch)، نستخدم مكتبة node-fetch كبديل.
 const fetchFn = (typeof fetch !== 'undefined') ? fetch : require('node-fetch');
 
-const MYFATOORAH_BASE_URL = 'https://api.myfatoorah.com'; // مفتاح Live حقيقي
+const MOYASAR_BASE_URL = 'https://api.moyasar.com/v1';
 const SITE_BASE_URL = process.env.SITE_BASE_URL || 'https://nc-pm.com';
 
-// عدّل الأسعار حسب منتجاتك الفعلية
+// عدّل الأسعار حسب منتجاتك الفعلية (بالريال السعودي — يتحول لهللات تلقائيًا تحت)
 const COURSE_PRICES = {
   capm: 200,
   pmp: 200,
@@ -83,31 +82,34 @@ exports.handler = async (event) => {
     const email = userRecord.email || '';
     const reference = `${uid}_${courseId}`;
 
-    if (!process.env.MYFATOORAH_API_KEY) {
-      console.error('MYFATOORAH_API_KEY is not set in environment variables');
-      return { statusCode: 500, body: JSON.stringify({ error: 'إعداد بوابة الدفع ناقص من جهة السيرفر (مفتاح MyFatoorah غير موجود).' }) };
+    if (!process.env.MOYASAR_SECRET_KEY) {
+      console.error('MOYASAR_SECRET_KEY is not set in environment variables');
+      return { statusCode: 500, body: JSON.stringify({ error: 'إعداد بوابة الدفع ناقص من جهة السيرفر (مفتاح Moyasar غير موجود).' }) };
     }
 
+    // ميسر يتطلب المبلغ بالهللة (أصغر وحدة عملة) — 1 ريال = 100 هللة
+    const amountInHalalas = Math.round(price * 100);
+
+    // Moyasar يستخدم Basic Auth: المفتاح السري كاسم مستخدم، بدون كلمة مرور
+    const authToken = Buffer.from(`${process.env.MOYASAR_SECRET_KEY}:`).toString('base64');
+
     const body = {
-      CustomerName: userRecord.displayName || (email.split('@')[0] || 'Customer'),
-      NotificationOption: 'LNK',
-      InvoiceValue: price,
-      DisplayCurrencyIso: 'SAR',
-      CustomerEmail: email,
-      CallBackUrl: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
-      ErrorUrl: `${SITE_BASE_URL}/enroll.html?course=${courseId}&payment=failed`,
-      Language: 'AR',
-      CustomerReference: reference,
-      InvoiceItems: [
-        { ItemName: `اشتراك ${courseId.toUpperCase()}`, Quantity: 1, UnitPrice: price },
-      ],
+      amount: amountInHalalas,
+      currency: 'SAR',
+      description: `اشتراك ${courseId.toUpperCase()} - ${userRecord.displayName || email}`,
+      callback_url: `${SITE_BASE_URL}/enroll.html?course=${courseId}`,
+      metadata: {
+        reference,
+        uid,
+        courseId,
+      },
     };
 
-    const res = await fetchFn(`${MYFATOORAH_BASE_URL}/v2/SendPayment`, {
+    const res = await fetchFn(`${MOYASAR_BASE_URL}/invoices`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.MYFATOORAH_API_KEY}`,
+        Authorization: `Basic ${authToken}`,
       },
       body: JSON.stringify(body),
     });
@@ -117,24 +119,24 @@ exports.handler = async (event) => {
     try {
       data = JSON.parse(rawText);
     } catch (e) {
-      console.error('MyFatoorah returned non-JSON response:', res.status, rawText);
-      return { statusCode: 502, body: JSON.stringify({ error: `استجابة غير متوقعة من MyFatoorah (HTTP ${res.status}): ${rawText.slice(0, 300)}` }) };
+      console.error('Moyasar returned non-JSON response:', res.status, rawText);
+      return { statusCode: 502, body: JSON.stringify({ error: `استجابة غير متوقعة من Moyasar (HTTP ${res.status}): ${rawText.slice(0, 300)}` }) };
     }
 
-    if (!data.IsSuccess) {
-      console.error('MyFatoorah SendPayment failed:', JSON.stringify(data));
-      const validationDetail = Array.isArray(data.ValidationErrors)
-        ? data.ValidationErrors.map(v => `${v.Name}: ${v.Error}`).join(' | ')
-        : '';
+    if (!res.ok || !data.url) {
+      console.error('Moyasar invoice creation failed:', JSON.stringify(data));
+      const errorDetail = data && data.errors
+        ? Object.entries(data.errors).map(([k, v]) => `${k}: ${v}`).join(' | ')
+        : (data && data.message) || '';
       return {
         statusCode: 502,
-        body: JSON.stringify({ error: [data.Message, validationDetail].filter(Boolean).join(' — ') || 'تعذر إنشاء عملية الدفع.' }),
+        body: JSON.stringify({ error: errorDetail || 'تعذر إنشاء عملية الدفع.' }),
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ invoiceURL: data.Data.InvoiceURL, invoiceId: data.Data.InvoiceId }),
+      body: JSON.stringify({ invoiceURL: data.url, invoiceId: data.id }),
     };
   } catch (e) {
     console.error('initiate-payment unhandled error:', e && e.stack ? e.stack : e);

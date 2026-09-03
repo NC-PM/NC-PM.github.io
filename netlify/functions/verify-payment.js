@@ -1,13 +1,14 @@
 // netlify/functions/verify-payment.js
 //
-// Called by the client after returning from MyFatoorah's hosted payment
-// page (paymentId comes back in the redirect URL). Verifies the payment
-// status directly with MyFatoorah's server (never trusts the browser),
-// and if paid + matches this user/course, marks the purchase in Firestore
-// using the Admin SDK — the only path that can write to `purchases` now
-// that the Firestore rules deny client writes there.
+// Called by the client after returning from Moyasar's hosted invoice
+// page (invoice id comes back as "id" in the redirect URL query string).
+// Verifies the payment status directly with Moyasar's server (never
+// trusts the browser), and if paid + matches this user/course, marks the
+// purchase in Firestore using the Admin SDK — the only path that can
+// write to `purchases` now that the Firestore rules deny client writes there.
 //
 // Required environment variables: same as initiate-payment.js
+//   MOYASAR_SECRET_KEY
 
 const { getAdmin } = require('./_firebase-admin');
 
@@ -15,7 +16,7 @@ const { getAdmin } = require('./_firebase-admin');
 // لو مو متوفرة تلقائيًا (global fetch)، نستخدم مكتبة node-fetch كبديل.
 const fetchFn = (typeof fetch !== 'undefined') ? fetch : require('node-fetch');
 
-const MYFATOORAH_BASE_URL = 'https://api.myfatoorah.com';
+const MOYASAR_BASE_URL = 'https://api.moyasar.com/v1';
 
 exports.handler = async (event) => {
   // نغلّف الدالة كاملة بـ try/catch عام لنفس الأسباب الموجودة بـinitiate-payment.js
@@ -39,6 +40,7 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: JSON.stringify({ error: 'جلسة غير صالحة، سجّل الدخول من جديد.' }) };
     }
 
+    // paymentId هنا هو invoice id اللي يرجع بالـ callback من ميسر (?id=...)
     let paymentId, courseId;
     try {
       const parsed = JSON.parse(event.body || '{}');
@@ -54,18 +56,18 @@ exports.handler = async (event) => {
 
     const uid = decoded.uid;
 
-    if (!process.env.MYFATOORAH_API_KEY) {
-      console.error('MYFATOORAH_API_KEY is not set in environment variables');
+    if (!process.env.MOYASAR_SECRET_KEY) {
+      console.error('MOYASAR_SECRET_KEY is not set in environment variables');
       return { statusCode: 500, body: JSON.stringify({ error: 'إعداد بوابة الدفع ناقص من جهة السيرفر.' }) };
     }
 
-    const res = await fetchFn(`${MYFATOORAH_BASE_URL}/v2/GetPaymentStatus`, {
-      method: 'POST',
+    const authToken = Buffer.from(`${process.env.MOYASAR_SECRET_KEY}:`).toString('base64');
+
+    const res = await fetchFn(`${MOYASAR_BASE_URL}/invoices/${paymentId}`, {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.MYFATOORAH_API_KEY}`,
+        Authorization: `Basic ${authToken}`,
       },
-      body: JSON.stringify({ Key: paymentId, KeyType: 'PaymentId' }),
     });
 
     const rawText = await res.text();
@@ -73,14 +75,20 @@ exports.handler = async (event) => {
     try {
       data = JSON.parse(rawText);
     } catch (e) {
-      console.error('MyFatoorah returned non-JSON response:', res.status, rawText);
-      return { statusCode: 502, body: JSON.stringify({ error: `استجابة غير متوقعة من MyFatoorah (HTTP ${res.status}): ${rawText.slice(0, 300)}` }) };
+      console.error('Moyasar returned non-JSON response:', res.status, rawText);
+      return { statusCode: 502, body: JSON.stringify({ error: `استجابة غير متوقعة من Moyasar (HTTP ${res.status}): ${rawText.slice(0, 300)}` }) };
     }
 
-    const status = data && data.Data && data.Data.InvoiceStatus;
-    const reference = (data && data.Data && data.Data.CustomerReference) || '';
+    if (!res.ok) {
+      console.error('Moyasar GetInvoice failed:', JSON.stringify(data));
+      return { statusCode: 502, body: JSON.stringify({ error: (data && data.message) || 'تعذر الاستعلام عن حالة الدفع.' }) };
+    }
 
-    if (status !== 'Paid') {
+    const status = data && data.status; // 'initiated' | 'paid' | 'failed' | 'expired' ...
+    const metadata = (data && data.metadata) || {};
+    const reference = metadata.reference || '';
+
+    if (status !== 'paid') {
       return { statusCode: 200, body: JSON.stringify({ paid: false, status: status || 'unknown' }) };
     }
 
@@ -91,9 +99,9 @@ exports.handler = async (event) => {
     const db = admin.firestore();
     await db.doc(`users/${uid}/purchases/${courseId}`).set({
       purchasedAt: admin.firestore.FieldValue.serverTimestamp(),
-      amount: data.Data.InvoiceValue,
-      gateway: 'myfatoorah',
-      invoiceId: data.Data.InvoiceId,
+      amount: (data.amount || 0) / 100, // تحويل من هللات لريال
+      gateway: 'moyasar',
+      invoiceId: data.id,
     });
 
     return { statusCode: 200, body: JSON.stringify({ paid: true }) };
