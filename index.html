@@ -146,14 +146,18 @@ section{ padding:88px 0; }
 .hero-panel .hero-actions{ justify-content:center; }
 .hero-panel .hero-stats{ justify-content:center; }
 .hero-panel .promise-banner{ margin-top:32px; }
+.hero .wrap{ max-width:760px; }
+.hero h1{ font-size:clamp(32px,4.4vw,52px); margin-top:16px; text-align:right; padding-right:20px; }
+.hero h1 span.line2{ display:block; color:var(--gold-light); padding-right:220px; margin-top:6px; }
+/* ملاحظة: قاعدة الجوال تحت هذي لازم تجي بعد القواعد الأساسية أعلاه —
+   قبل كذا كانت مكتوبة قبلها بنفس مستوى التحديد (specificity)، فكانت
+   قواعد سطح المكتب تلغيها دايمًا بغض النظر عن حجم الشاشة، وهذا سبب
+   انزياح سطر "وإحنا معاك لين توصلها" لجهة اليسار بالجوال. */
 @media (max-width:640px){
   .hero-panel{ padding:40px 22px 36px; border-radius:24px; }
   .hero h1{ text-align:center; padding-right:0; }
   .hero h1 span.line2{ padding-right:0; }
 }
-.hero .wrap{ max-width:760px; }
-.hero h1{ font-size:clamp(32px,4.4vw,52px); margin-top:16px; text-align:right; padding-right:20px; }
-.hero h1 span.line2{ display:block; color:var(--gold-light); padding-right:220px; margin-top:6px; }
 .hero p.lead{ font-size:18px; color:#C9D0E2; margin-top:20px; max-width:520px; }
 .hero-actions{ display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; }
 .hero-stats{ display:flex; gap:34px; margin-top:48px; flex-wrap:wrap; }
@@ -253,7 +257,14 @@ section{ padding:88px 0; }
 .footer-mini-brand{ font-family:"Aref Ruqaa", serif; font-size:20px; color:#FFFFFF; }
 .footer-signature{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .footer-signature .sig-text{ font-family:"Tajawal", sans-serif; font-size:14px; color:#FFFFFF; }
-.footer-signature .sig-name{ font-family:"Aref Ruqaa", serif; font-size:24px; color:#FFFFFF; }
+.footer-signature .sig-name{ font-family:"Aref Ruqaa", serif; font-size:24px; color:#FFFFFF; display:inline-block; animation:signatureFloat 3.6s ease-in-out infinite; }
+@keyframes signatureFloat{
+  0%{ transform:translateY(0) rotate(0deg); }
+  25%{ transform:translateY(-4px) rotate(-1.5deg); }
+  50%{ transform:translateY(0) rotate(0deg); }
+  75%{ transform:translateY(3px) rotate(1.5deg); }
+  100%{ transform:translateY(0) rotate(0deg); }
+}
 .footer-map{ width:170px; flex-shrink:0; opacity:.9; }
 .footer-map svg{ width:100%; height:auto; display:block; }
 @media (max-width:640px){
@@ -315,10 +326,21 @@ section{ padding:88px 0; }
   .nav-links{ display:none; }
   .nav-toggle{ display:inline-flex; }
   section{ padding:64px 0; }
+  .nav-actions{ gap:6px; }
+  .nav-actions .btn-sm{ padding:7px 12px; font-size:12px; }
+}
+@media (max-width: 380px){
+  .nav-actions .btn-sm{ padding:6px 9px; font-size:11px; }
 }
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; }
 }
+
+/* ===== ملاحظة 6: تحسينات عامة للتوافق مع الجوال على مستوى الصفحة ===== */
+html{ overflow-x:hidden; }
+body{ overflow-x:hidden; max-width:100vw; }
+img,svg{ max-width:100%; height:auto; }
+table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch; }
 </style>
 </head>
 <body>
@@ -352,11 +374,14 @@ section{ padding:88px 0; }
   <div class="wrap">
     <div class="hero-panel">
       <h1 data-i18n="heroH1">وظيفة أحلامك تبدأ من هنا<span class="line2">وإحنا معاك لين توصلها</span></h1>
-      <p class="lead" data-i18n="heroLead">في المركز الوطني لإدارة المشاريع ما راح تدرس لحالك ولا تتوه بين المصادر — نجهّزك خطوة خطوة للاختبارات الدولية، ونضمن لك النجاح، ولو ما نجحت لا سمح الله فلوسك ترجع لك!</p>
-      <div class="stat-box">💡 <span data-i18n="heroStatLine">تدري إن شهادة PMP وحدها ترفع راتبك من 17% إلى 33% مقارنة بغير الحاصلين عليها، حسب بيانات معهد إدارة المشاريع (PMI) العالمي، وعدد حامليها تجاوز +41,000 بالسعودية.</span></div>
+      <p class="lead" data-i18n="heroLead">في المركز الوطني لإدارة المشاريع ما راح تدرس لحالك ولا تتوه بين المصادر — نجهّزك خطوة خطوة للاختبارات الدولية، ونضمن لك النجاح.</p>
+      <div class="stat-box">💡 <span data-i18n="heroStatLine">تدري ان شهادة PMP حسب احصائيات معهد ادارة المشاريع الامريكية تقول انها تساعد برفع راتب حاملها من 17%-33%؟ وعدد حاملينها بالسعودية يتجاوز 41 الف؟</span></div>
       <div class="hero-actions">
         <a href="#courses" class="btn btn-gold" data-i18n="heroBrowse">شوف شهاداتنا</a>
-        <a href="https://wa.me/966500000000" target="_blank" rel="noopener" class="btn btn-outline" data-i18n="heroWhatsapp">كلّمنا واتساب ←</a>
+        <a href="https://wa.me/966500000000" target="_blank" rel="noopener" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:8px;">
+          <span data-i18n="heroWhatsapp">كلّمنا واتساب</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0012 0 11.9 11.9 0 000 12a11.8 11.8 0 001.6 6L0 24l6.3-1.6A11.9 11.9 0 0012 24a11.9 11.9 0 0012-12 11.8 11.8 0 00-3.5-8.5zM12 22a9.9 9.9 0 01-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A10 10 0 1122 12a10 10 0 01-10 10zm5.6-7.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.1-.8 1-.9 1.2-.3.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.5.1-.6l.4-.5.3-.4a.6.6 0 000-.5c-.1-.2-.7-1.8-1-2.4s-.5-.6-.7-.6h-.6a1.2 1.2 0 00-.8.4 3.5 3.5 0 00-1.1 2.6c0 1.5 1.1 3 1.3 3.2s2.2 3.4 5.3 4.7a17.7 17.7 0 001.8.7 4.3 4.3 0 002 .1 3.3 3.3 0 002.1-1.5 2.6 2.6 0 00.2-1.5c-.1-.1-.3-.2-.6-.3z"/></svg>
+        </a>
       </div>
       <div class="hero-stats">
         <div><strong>4</strong><span data-i18n="heroStat1">شهادات إدارة مشاريع</span></div>
