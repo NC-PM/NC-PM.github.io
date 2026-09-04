@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<!-- Google Analytics 4 — استبدل G-XXXXXXXXXX برقم القياس الفعلي من حسابك -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>التسجيل والدفع — NC-PM</title>
@@ -47,6 +55,21 @@ body{ margin:0; background:var(--ivory); font-family:var(--font-display); color:
 .domain-mini{ display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 18px; }
 .domain-mini span{ font-family:var(--font-mono); font-size:10.5px; background:var(--ivory); border:1px solid var(--border); border-radius:999px; padding:4px 10px; color:var(--slate); }
 .guarantee-box{ background:rgba(31,111,92,.07); border:1px solid rgba(31,111,92,.25); border-radius:var(--radius-md); padding:14px 16px; font-size:12.5px; color:var(--teal); line-height:1.8; margin-bottom:20px; }
+
+/* ---------- معاينة مجانية تفاعلية (سؤال حقيقي من البنك) ---------- */
+.preview-box{ background:var(--ivory); border:1.5px dashed var(--gold); border-radius:var(--radius-md); padding:18px 20px; margin:18px 0 22px; }
+.preview-label{ font-family:var(--font-mono); font-size:11.5px; font-weight:700; color:var(--gold); margin-bottom:10px; }
+.preview-translate{ font-family:var(--font-mono); font-size:11.5px; color:var(--navy); background:var(--paper); border:1.5px solid var(--border); padding:6px 12px; border-radius:999px; margin:10px 0; cursor:pointer; }
+.preview-translate:hover{ border-color:var(--gold); }
+.preview-q{ font-size:14.5px; font-weight:700; color:var(--navy); line-height:1.7; margin:0; }
+.preview-opts{ list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+.preview-opt{ display:flex; align-items:center; gap:10px; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; color:var(--charcoal); background:var(--paper); cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.preview-opt:hover{ border-color:var(--gold); }
+.preview-opt.correct{ border-color:var(--teal); background:rgba(31,111,92,.08); font-weight:700; }
+.preview-opt.wrong{ border-color:#C0392B; background:rgba(192,57,43,.07); }
+.preview-opt.disabled{ pointer-events:none; }
+.preview-explain{ margin-top:12px; background:rgba(108,108,225,.06); border:1px solid rgba(108,108,225,.2); border-radius:10px; padding:12px 14px; font-size:12.5px; color:var(--charcoal); line-height:1.8; }
+.preview-cta{ margin-top:14px; font-size:12.5px; font-weight:700; color:var(--gold); text-align:center; }
 .guarantee-box b{ display:block; margin-bottom:4px; font-size:13.5px; }
 
 .btn{ display:flex; align-items:center; justify-content:center; gap:6px; padding:14px 20px; border-radius:999px; font-weight:700; font-size:15px; border:none; cursor:pointer; width:100%; font-family:var(--font-display); }
@@ -111,6 +134,15 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <p id="courseDesc">بنك أسئلة تدريبي شامل بمحاكاة كاملة لتجربة الاختبار الفعلي.</p>
       </div>
       <div class="info-body">
+
+        <div class="preview-box" id="previewBox">
+          <div class="preview-label">🎯 جرّب سؤال حقيقي من بنك الأسئلة — مجانًا بدون تسجيل</div>
+          <p class="preview-q" id="previewQ">—</p>
+          <button class="preview-translate" onclick="togglePreviewAr()" id="previewTranslateBtn">🌐 عرض السؤال بالعربي</button>
+          <ul class="preview-opts" id="previewOpts"></ul>
+          <div class="preview-explain" id="previewExplain" style="display:none;"></div>
+        </div>
+
         <div class="price-row">
           <span class="price-now" id="priceNow">200</span>
           <span class="price-old" id="priceOld">400</span>
@@ -288,6 +320,99 @@ document.getElementById('priceNow').textContent = course.price;
 document.getElementById('priceOld').textContent = course.oldPrice;
 document.getElementById('priceDisplay').innerHTML = course.price + ' <span>ر.س</span>';
 document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span>${d}</span>`).join('');
+
+// ---------- معاينة مجانية: سؤال حقيقي واحد من بنك كل شهادة ----------
+const PREVIEW_SAMPLES = {
+  pmp: {
+    en: { q:'The executive sponsor of an agile project is concerned because the last four project iterations have not produced completed backlog items. The team is pulling stories into sprints that are too large and vague, making it impossible to complete them within a single iteration. What should the project manager do?',
+      opts:['Conduct a team retrospective to identify behavioral and process gaps that are preventing story completion within iterations.','Reduce sprint length to create more frequent delivery cycles and increase pressure on the team to complete stories on time.','Escalate the incomplete stories to the executive sponsor and request additional resources to improve team delivery capacity.','Help ensure upcoming backlog items are elaborated in greater detail with the team before they are accepted into a sprint.'],
+      correct:3, exp:'The root cause is stories entering sprints without being properly refined and sized. Ensuring backlog items are elaborated in sufficient detail with the team before being pulled into a sprint addresses the actual problem, rather than adding pressure, escalating, or merely reflecting after the fact.' },
+    ar: { q:'الراعي التنفيذي لمشروع رشيق قلق لأن آخر أربع تكرارات (iterations) للمشروع لم تُنتج عناصر backlog مكتملة. الفريق يستمر بسحب قصص (stories) للسبرنت تكون كبيرة الحجم وغير واضحة، مما يجعل إنجازها داخل تكرار واحد مستحيلاً. ما الإجراء الصحيح لمدير المشروع؟',
+      opts:['عقد اجتماع استعادة (Retrospective) مع الفريق لتحديد الفجوات السلوكية والإجرائية التي تمنع إنجاز القصص داخل التكرارات.','تقصير مدة السبرنت لخلق دورات تسليم أكثر تكرارًا وزيادة الضغط على الفريق لإنجاز القصص في الوقت المحدد.','تصعيد القصص غير المكتملة للراعي التنفيذي وطلب موارد إضافية لتحسين قدرة الفريق على التسليم.','التأكد من صقل عناصر الـ backlog القادمة بتفصيل أكبر مع الفريق قبل قبولها في السبرنت.'] }
+  },
+  capm: {
+    en: { q:'An executive sponsor wants to be briefed on how the product will change over time. Which document should the business analyst use to prepare their presentation?',
+      opts:['Product requirement','Project charter','Project management plan','Product roadmap'],
+      correct:3, exp:'A product roadmap shows how the product is expected to evolve over time, which is exactly what the sponsor wants to be briefed on.' },
+    ar: { q:'يريد الراعي التنفيذي إحاطة حول كيفية تطور المنتج بمرور الوقت. أي وثيقة يجب أن يستخدمها محلل الأعمال لإعداد عرضه؟',
+      opts:['متطلب المنتج','ميثاق المشروع','خطة إدارة المشروع','خارطة طريق المنتج'] }
+  },
+  acp: {
+    en: { q:'Stakeholders have conflicting requirements, and the product owner is struggling to decide which user stories to write. What should the product owner do?',
+      opts:['Ask the agile practitioner to help write the user stories.','Ask the agile practitioner to facilitate a story-writing workshop.','Ask subject matter experts (SMEs) to help write the user stories.','Ask the agile team to facilitate a story-writing workshop.'],
+      correct:1, exp:'The agile practitioner serves as a servant leader and facilitator, not a technical writer. His role is to facilitate a story-writing workshop and coach stakeholders about agile, engaging all relevant people to reach a group decision.' },
+    ar: { q:'أصحاب مصلحة لديهم متطلبات متعارضة، ومالك المنتج يواجه صعوبة في تحديد قصص المستخدم المطلوب كتابتها. ماذا يجب أن يفعل مالك المنتج؟',
+      opts:['أن يطلب من ممارس أجايل المساعدة في كتابة قصص المستخدم.','أن يطلب من ممارس أجايل تيسير ورشة عمل لكتابة القصص.','أن يطلب من خبراء الموضوع (SMEs) المساعدة في كتابة القصص.','أن يطلب من فريق أجايل تيسير ورشة عمل لكتابة القصص.'] }
+  },
+  rmp: {
+    en: { q:'You know that the success of your project will be determined by how well you manage risks. You discuss and consult with other project managers in the company. One manager suggests the usage of SWOT to identify risks. What would you do next as a part of this technique?',
+      opts:['Identify the Organization\'s strengths and weaknesses','Gather team members and experts together and discuss to identify risks','Perform root cause analysis to identify problems, their cause, and potential response','Gather anonymous responses from experts and identify risks'],
+      correct:0, exp:'SWOT involves identification of the strengths and weaknesses of the organization. This technique then identifies the threats due to the organization\'s weakness as well as opportunities due to the organization\'s strengths.' },
+    ar: { q:'تعلم أن نجاح مشروعك سيتحدد بمدى جودة إدارتك للمخاطر. ناقشت الأمر مع مديري مشاريع آخرين في الشركة، واقترح أحدهم استخدام تحليل SWOT لتحديد المخاطر. ماذا تفعل بعد ذلك كجزء من هذه التقنية؟',
+      opts:['تحديد نقاط القوة والضعف في المؤسسة','جمع أعضاء الفريق والخبراء ومناقشتهم لتحديد المخاطر','إجراء تحليل السبب الجذري لتحديد المشكلات وأسبابها والاستجابة المحتملة','جمع ردود مجهولة من الخبراء وتحديد المخاطر'] }
+  },
+};
+
+let previewShowingAr = false;
+let previewAnswered = false;
+const previewSample = PREVIEW_SAMPLES[courseId];
+
+function renderPreview(){
+  const data = previewShowingAr ? previewSample.ar : previewSample.en;
+  const qEl = document.getElementById('previewQ');
+  qEl.textContent = data.q;
+  qEl.className = 'preview-q' + (previewShowingAr ? '' : ' ltr');
+  qEl.style.direction = previewShowingAr ? 'rtl' : 'ltr';
+  qEl.style.textAlign = previewShowingAr ? 'right' : 'left';
+
+  const list = document.getElementById('previewOpts');
+  list.innerHTML = '';
+  list.style.direction = previewShowingAr ? 'rtl' : 'ltr';
+  data.opts.forEach((optText, idx) => {
+    const li = document.createElement('li');
+    li.className = 'preview-opt';
+    li.style.textAlign = previewShowingAr ? 'right' : 'left';
+    li.textContent = optText;
+    if(!previewAnswered){
+      li.onclick = () => answerPreview(idx);
+    } else {
+      li.classList.add('disabled');
+      if(idx === previewSample.en.correct) li.classList.add('correct');
+    }
+    list.appendChild(li);
+  });
+}
+
+function answerPreview(idx){
+  if(previewAnswered) return;
+  previewAnswered = true;
+  const isCorrect = idx === previewSample.en.correct;
+  renderPreview();
+  const opts = document.querySelectorAll('#previewOpts .preview-opt');
+  if(!isCorrect) opts[idx].classList.add('wrong');
+
+  const explainBox = document.getElementById('previewExplain');
+  explainBox.style.display = 'block';
+  explainBox.innerHTML = `<b>${isCorrect ? '✅ إجابة صحيحة!' : '❌ إجابة غير صحيحة.'}</b><br>${previewSample.en.exp}`;
+
+  const cta = document.createElement('div');
+  cta.className = 'preview-cta';
+  cta.textContent = 'عجبك الأسلوب؟ 👇 اشترك الآن وشوف +1000 سؤال بنفس الجودة';
+  document.getElementById('previewBox').appendChild(cta);
+}
+
+window.togglePreviewAr = function(){
+  previewShowingAr = !previewShowingAr;
+  document.getElementById('previewTranslateBtn').textContent =
+    previewShowingAr ? '🌐 Show question in English' : '🌐 عرض السؤال بالعربي';
+  renderPreview();
+};
+
+if(previewSample){
+  renderPreview();
+} else {
+  document.getElementById('previewBox').style.display = 'none';
+}
 
 let currentUser = null;
 

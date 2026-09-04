@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
+<!-- Google Analytics 4 — استبدل G-XXXXXXXXXX برقم القياس الفعلي من حسابك -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PMP — بنك أسئلة تجريبي | NC-PM</title>
+<title>PMP | NC-PM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +29,7 @@
   --neutral:#6B5FB0; --neutral-bg:rgba(107,95,176,.09);
   --font-display:"Tajawal","Segoe UI",sans-serif;
   --font-body:"Tajawal","Segoe UI",sans-serif;
-  --font-en:"Inter","Segoe UI",sans-serif;
+  --font-en:"Calibri","Segoe UI",Arial,sans-serif;
   --font-mono:"IBM Plex Mono","SFMono-Regular",monospace;
   --radius-sm:4px; --radius-md:10px; --radius-lg:22px;
   --shadow-card:0 1px 2px rgba(15,27,51,0.06), 0 12px 32px -16px rgba(15,27,51,0.18);
@@ -44,7 +52,7 @@ button{ font-family:inherit; cursor:pointer; }
 .brand{ display:flex; align-items:center; gap:10px; color:var(--navy); }
 .brand .mark{ width:30px; height:30px; }
 .brand strong{ font-family:var(--font-display); font-size:18px; }
-.crumb{ font-family:var(--font-mono); font-size:11.5px; color:var(--slate); letter-spacing:.02em; direction:ltr; }
+.crumb{ font-family:var(--font-mono); font-size:11.5px; color:var(--slate); letter-spacing:.02em; direction:ltr; position:relative; top:9px; }
 .back-home{ font-family:var(--font-mono); font-size:12px; color:var(--navy); font-weight:700; padding:6px 12px; border:1px solid rgba(15,27,51,.18); border-radius:999px; transition:all .15s ease; }
 .back-home:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); }
 .crumb b{ color:var(--gold-light); font-weight:600; }
@@ -87,18 +95,23 @@ button{ font-family:inherit; cursor:pointer; }
 
 .qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; overflow:hidden; }
 .qcard .domain-tag{ font-family:var(--font-mono); font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-bottom:16px; display:inline-block; }
-.qcard h3{ font-size:19px; color:var(--navy); font-weight:700; font-family:var(--font-en); line-height:1.6; }
+.qcard h3{ font-size:19px; color:#000000; font-weight:700; font-family:var(--font-en); line-height:1.6; }
 .translate-row{ margin-top:14px; }
 .translate-btn{ display:inline-flex; align-items:center; gap:7px; background:transparent; border:1.5px dashed var(--border); color:var(--slate); font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:999px; font-family:var(--font-body); transition:all .15s ease; }
 .translate-btn:hover{ border-color:var(--gold); color:var(--navy); border-style:solid; }
 .translate-btn .globe{ font-size:14px; }
 .options{ margin-top:18px; display:flex; flex-direction:column; gap:11px; list-style:none; padding:0; }
-.opt{ display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; font-size:14.5px; font-family:var(--font-en); transition:border-color .15s ease, background .15s ease; text-align:left; width:100%; background:var(--paper); color:var(--charcoal); }
+.opt{ display:flex; align-items:flex-start; gap:12px; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; font-size:14.5px; font-family:var(--font-en); transition:border-color .15s ease, background .15s ease; text-align:left; width:100%; background:var(--paper); color:#000000; }
 .opt:hover:not(:disabled){ border-color:var(--gold); background:rgba(200,155,60,.05); }
 .opt .letter{ flex-shrink:0; width:26px; height:26px; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--slate); font-weight:600; }
 .opt.selected-neutral{ border-color:var(--neutral); background:var(--neutral-bg); }
 .opt.selected-neutral .letter{ background:var(--neutral); border-color:var(--neutral); color:#fff; }
-.opt.correct{ border-color:var(--good); background:var(--good-bg); }
+@keyframes correctPulse{
+  0%{ transform:scale(1); box-shadow:none; }
+  40%{ transform:scale(1.025); box-shadow:0 0 0 7px rgba(30,138,76,.14); }
+  100%{ transform:scale(1); box-shadow:none; }
+}
+.opt.correct{ border-color:var(--good); background:var(--good-bg); animation:correctPulse .5s ease; }
 .opt.correct .letter{ background:var(--good); border-color:var(--good); color:#fff; }
 .opt.incorrect{ border-color:var(--bad); background:var(--bad-bg); }
 .opt.incorrect .letter{ background:var(--bad); border-color:var(--bad); color:#fff; }
@@ -124,6 +137,7 @@ button{ font-family:inherit; cursor:pointer; }
 .qimg-wrap img{ max-width:100%; border:1px solid var(--border); border-radius:10px; background:#fff; }
 
 .explain{ margin-top:20px; padding:16px 18px; background:var(--ivory); border-left:3px solid var(--gold); border-radius:8px; font-size:13.5px; color:var(--slate); display:none; font-family:var(--font-en); direction:ltr; text-align:left; }
+.domain-weight-note{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-family:var(--font-body); font-size:12px; color:var(--gold); direction:rtl; text-align:right; }
 .explain.show{ display:block; }
 .explain b{ color:var(--navy); }
 
@@ -361,13 +375,11 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
   <div class="screen show" id="screenStart">
     <div class="mode-grid">
       <div class="mode-card practice">
-        <span class="mtag">Practice</span>
         <h3>وضع التدريب</h3>
         <p>تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
         <button class="btn btn-gold" onclick="startPracticeGuarded(this)">ابدأ الوضع التدريبي</button>
       </div>
       <div class="mode-card timed">
-        <span class="mtag">Timed simulation</span>
         <h3>وضع الاختبار الفعلي</h3>
         <p id="timedDesc">اختبار بزمن محدد بدون إظهار الإجابات أثناء الحل — تمامًا كتجربة الاختبار العالمي. النتيجة والتفسير يظهران فقط بعد الإنهاء.</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
@@ -421,7 +433,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
       <div class="qcard-actions">
         <button class="btn btn-ghost" id="prevBtn" onclick="goPrev()">السابق</button>
         <span class="hint" id="hintText">اختر إجابة لعرض التفسير</span>
-        <button class="btn btn-gold" id="nextBtn" disabled onclick="goNext()">السؤال التالي ←</button>
+        <button class="btn btn-gold" id="nextBtn" disabled onclick="goNext()">السؤال التالي</button>
       </div>
       </div>
     </div>
@@ -457,7 +469,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
   </div>
 </main>
 
-<footer class="mini-footer">NC-PM · PMP Practice Bank v4</footer>
+<footer class="mini-footer">NC-PM</footer>
 
 <div class="modal-overlay" id="translateModal">
   <div class="modal-box">
@@ -540,6 +552,8 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
 
 <script>
 const DOMAIN_AR = {people:'الأفراد', process:'العمليات', biz:'بيئة الأعمال'};
+// ملاحظة 25: النسب الرسمية لدومينات اختبار PMP (ECO 2026، ساري من 9 يوليو 2026)
+const DOMAIN_WEIGHT = {people:33, process:41, biz:26};
 const SECONDS_PER_QUESTION = 77; // ~230min / 180q real PMP pacing
 const COURSE_ID = 'pmp';
 const COURSE_PRICE = 200;
@@ -4151,6 +4165,26 @@ const QUESTIONS = [
 let mode = null;
 let activeSet = [];
 let order = [];
+let answerFeedback = {}; // ملاحظة 24: العبارة العشوائية المختارة لكل سؤال (تبقى ثابتة لو رجعت له)
+
+const CORRECT_PHRASES = ['🎯 بالضبط!', '✅ صحيح تمامًا', '👏 ممتاز', '💪 استمررر', 'احسنت احسنت'];
+const WRONG_PHRASES = ['💡 حاول مرة ثانية', '🤔 فيه خيار أفضل', '📌 لا، مو هذا الجواب', '🔄 عطها نظرة ثانية', '🧭 راجع الخيارات، وترى فهم السؤال نص الجواب!'];
+function randomPhrase(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+// ملاحظة 23: عدّاد الإجابات الصحيحة المتتالية بوضع التدريب — يُحسب من حالة
+// الإجابات نفسها (مو متغير منفصل) عشان يضل صحيح حتى لو رجع المستخدم للخلف بالأسئلة
+function computeCurrentStreak(){
+  let streak = 0;
+  for(let i = posIndex; i >= 0; i--){
+    const qid = order[i];
+    const qq = qById(qid);
+    const sel = answers[qid];
+    if(!isAnswerComplete(qq, sel)) break;
+    if(isAnswerCorrect(qq, sel)) streak++;
+    else break;
+  }
+  return streak;
+}
 let posIndex = 0;
 let answers = {};
 let timeLeft = 0;
@@ -4360,6 +4394,7 @@ function startQuiz(selectedMode, idsSubset, desiredCount){
   order = shuffle(activeSet);
   posIndex = 0;
   answers = {};
+  answerFeedback = {};
   clearInterval(timerHandle);
 
   document.getElementById('timedBar').classList.toggle('show', mode === 'timed');
@@ -4454,7 +4489,10 @@ function renderQuestion(){
     const qq = qById(Number(k));
     return n + (isAnswerCorrect(qq, answers[k]) ? 1 : 0);
   }, 0);
-  document.getElementById('scoreLabel').textContent = mode === 'practice' ? `${correctCountSoFar} إجابة صحيحة حتى الآن` : '';
+  const currentStreak = mode === 'practice' ? computeCurrentStreak() : 0;
+  document.getElementById('scoreLabel').textContent = mode === 'practice'
+    ? `${correctCountSoFar} إجابة صحيحة حتى الآن` + (currentStreak >= 2 ? ` · 🔥 ${currentStreak} متتالية` : '')
+    : '';
 
   const list = document.getElementById('optionsList');
   const dragWrap = document.getElementById('dragWrap');
@@ -4501,8 +4539,10 @@ function renderQuestion(){
 
   if(mode === 'practice'){
     if(answered){
+      const isCorrectAns = isAnswerCorrect(q, selected);
+      if(!answerFeedback[id]) answerFeedback[id] = isCorrectAns ? randomPhrase(CORRECT_PHRASES) : randomPhrase(WRONG_PHRASES);
       explainBox.classList.add('show');
-      explainBox.innerHTML = `<b>Explanation:</b> ${data.exp}`;
+      explainBox.innerHTML = `<b>${answerFeedback[id]}</b><br>${data.exp}<div class="domain-weight-note">📊 هذا الدومين (${DOMAIN_AR[q.domain]}) يمثل ${DOMAIN_WEIGHT[q.domain]}% من أسئلة اختبار PMP الفعلي</div>`;
       nextBtn.disabled = false;
     } else {
       explainBox.classList.remove('show');
@@ -4518,7 +4558,7 @@ function renderQuestion(){
     document.getElementById('hintText').textContent = 'اختر إجابة ثم انتقل — النتيجة تظهر بعد الإنهاء';
     renderNavDots();
   }
-  nextBtn.textContent = isLast ? 'إنهاء الاختبار' : 'السؤال التالي ←';
+  nextBtn.textContent = isLast ? 'إنهاء الاختبار' : 'السؤال التالي';
   document.getElementById('prevBtn').disabled = posIndex === 0;
 }
 
