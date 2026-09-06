@@ -56,6 +56,18 @@ body{ margin:0; background:var(--ivory); font-family:var(--font-display); color:
 .domain-mini span{ font-family:var(--font-mono); font-size:10.5px; background:var(--ivory); border:1px solid var(--border); border-radius:999px; padding:4px 10px; color:var(--slate); }
 .guarantee-box{ background:rgba(31,111,92,.07); border:1px solid rgba(31,111,92,.25); border-radius:var(--radius-md); padding:14px 16px; font-size:12.5px; color:var(--teal); line-height:1.8; margin-bottom:20px; }
 
+/* ---------- نبذة تفصيلية عن الشهادة (نبذة PMI الرسمية + مدة/عدد أسئلة/سعر/أهلية) ---------- */
+.course-detail-box{ background:var(--paper); border:1.5px solid var(--border); border-radius:var(--radius-md); padding:18px 20px; margin:0 0 18px; }
+.course-detail-box .detail-brief{ font-size:13.5px; color:var(--charcoal); line-height:1.9; margin:0 0 16px; }
+.detail-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.detail-cell{ background:var(--ivory); border:1px solid var(--border); border-radius:10px; padding:10px 12px; text-align:center; }
+.detail-cell-label{ display:block; font-family:var(--font-mono); font-size:10px; color:var(--slate); margin-bottom:4px; }
+.detail-cell-value{ display:block; font-weight:700; font-size:14px; color:var(--navy); }
+.detail-item{ margin-bottom:12px; }
+.detail-item:last-child{ margin-bottom:0; }
+.detail-item .detail-label{ display:block; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--gold); margin-bottom:5px; }
+.detail-item p{ margin:0; font-size:13px; color:var(--charcoal); line-height:1.8; }
+
 /* ---------- معاينة مجانية تفاعلية (سؤال حقيقي من البنك) ---------- */
 .preview-box{ background:var(--ivory); border:1.5px dashed var(--gold); border-radius:var(--radius-md); padding:18px 20px; margin:18px 0 22px; }
 .preview-label{ font-family:var(--font-mono); font-size:11.5px; font-weight:700; color:var(--gold); margin-bottom:10px; }
@@ -134,6 +146,28 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <p id="courseDesc">بنك أسئلة تدريبي شامل بمحاكاة كاملة لتجربة الاختبار الفعلي.</p>
       </div>
       <div class="info-body">
+
+        <div class="course-detail-box" id="courseDetailBox">
+          <p class="detail-brief" id="detailBrief">—</p>
+          <div class="detail-grid">
+            <div class="detail-cell">
+              <span class="detail-cell-label">⏱️ مدة الاختبار</span>
+              <span class="detail-cell-value" id="detailDuration">—</span>
+            </div>
+            <div class="detail-cell">
+              <span class="detail-cell-label">📝 عدد الأسئلة</span>
+              <span class="detail-cell-value" id="detailQuestions">—</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">💵 سعر الاختبار الرسمي لدى PMI</span>
+            <p id="detailPrice">—</p>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">🎓 متطلبات الأهلية</span>
+            <p id="detailEligibility">—</p>
+          </div>
+        </div>
 
         <div class="preview-box" id="previewBox">
           <div class="preview-label">🎯 جرّب سؤال حقيقي من بنك الأسئلة — مجانًا بدون تسجيل</div>
@@ -305,6 +339,34 @@ const COURSES = {
   },
 };
 
+// ---------- نبذة PMI الرسمية ومعلومات كل اختبار (المدة/عدد الأسئلة/السعر/الأهلية) ----------
+const COURSE_DETAILS = {
+  capm: {
+    brief: 'لا يُشترط أي خبرة عملية. تثبت شهادة CAPM امتلاكك المعرفة والمهارات الأساسية التي تحتاجها فرق المشاريع، وجاهزيتك للتعامل مع مجموعة واسعة من المشاريع بأساليب عمل تشمل الإدارة التنبؤية للمشاريع ومبادئ أجايل وتحليل الأعمال.',
+    duration: '180 دقيقة', questions: '150 سؤال',
+    price: '225$ للأعضاء / 300$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
+    eligibility: 'دبلوم ثانوي (أو معادل) + 23 ساعة تدريب بإدارة المشاريع — بدون اشتراط أي خبرة عملية'
+  },
+  pmp: {
+    brief: '3+ سنوات خبرة بقيادة المشاريع. أظهر قدرتك على قيادة المشاريع بأي قطاع مع هذه الشهادة المعترف بها عالميًا، وافتح الباب لعالم من الفرص — تُقرّ الشهادة بمهارتك بإدارة الأفراد والعمليات والأولويات التجارية للمشاريع الاحترافية.',
+    duration: '240 دقيقة', questions: '180 سؤال',
+    price: '405$ للأعضاء / 655$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
+    eligibility: '60 شهر خبرة مع دبلوم ثانوي، أو 36 شهر مع بكالوريوس، أو 24 شهر مع بكالوريوس معتمد GAC — بالإضافة لـ35 ساعة تدريب تجاري (الخبرة خلال آخر 10 سنوات)'
+  },
+  acp: {
+    brief: '2+ سنة خبرة. تُبرز شهادة PMI-ACP خبرتك بأجايل عبر اختبار محايد المنهجية ومبني على الخبرة ومعتمد ISO، وتصادق على قدرتك على تحقيق التميز عبر منهجيات مختلفة (Scrum وLean وKanban وغيرها) بأسلوب أجايل يركّز على الفريق.',
+    duration: '180 دقيقة', questions: '120 سؤال',
+    price: '435$ للأعضاء / 495$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
+    eligibility: 'دبلوم ثانوي + 21 ساعة تدريب أجايل، بالإضافة لسنتين خبرة أجايل خلال آخر 5 سنوات (أو بدائل: سنة خبرة + شهادة GAC، سنة خبرة + شهادة أجايل خارجية سارية، أو حاملو PMP® الفعّالة)'
+  },
+  rmp: {
+    brief: '3-5 سنوات خبرة. حوّل المخاطر إلى فرص — إدارة المخاطر أساسية لتجنب التأخير والتكاليف الإضافية وفشل المشاريع. تمنحك شهادة PMI-RMP خبرة اكتشاف المشاكل مبكرًا وإتقان أساسيات المخاطر وتحسين نتائج المشاريع لميزة تنافسية.',
+    duration: '150 دقيقة', questions: '115 سؤال',
+    price: '520$ للأعضاء / 670$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
+    eligibility: '36 شهر خبرة مع دبلوم ثانوي، أو 24 شهر مع بكالوريوس، أو 12 شهر مع بكالوريوس معتمد GAC — بالإضافة لساعات تدريب مخصصة بإدارة مخاطر المشاريع (الخبرة خلال آخر 5 سنوات)'
+  },
+};
+
 const params = new URLSearchParams(window.location.search);
 const courseId = params.get('course');
 const course = COURSES[courseId];
@@ -320,6 +382,15 @@ document.getElementById('priceNow').textContent = course.price;
 document.getElementById('priceOld').textContent = course.oldPrice;
 document.getElementById('priceDisplay').innerHTML = course.price + ' <span>ر.س</span>';
 document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span>${d}</span>`).join('');
+
+const details = COURSE_DETAILS[courseId];
+if(details){
+  document.getElementById('detailBrief').textContent = details.brief;
+  document.getElementById('detailDuration').textContent = details.duration;
+  document.getElementById('detailQuestions').textContent = details.questions;
+  document.getElementById('detailPrice').textContent = details.price;
+  document.getElementById('detailEligibility').textContent = details.eligibility;
+}
 
 // ---------- معاينة مجانية: سؤال حقيقي واحد من بنك كل شهادة ----------
 const PREVIEW_SAMPLES = {
