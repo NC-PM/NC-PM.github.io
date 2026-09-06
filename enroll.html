@@ -148,7 +148,6 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
       <div class="info-body">
 
         <div class="course-detail-box" id="courseDetailBox">
-          <p class="detail-brief" id="detailBrief">—</p>
           <div class="detail-grid">
             <div class="detail-cell">
               <span class="detail-cell-label">⏱️ مدة الاختبار</span>
@@ -386,7 +385,6 @@ document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span
 const details = COURSE_DETAILS[courseId];
 if(details){
   document.getElementById('courseDesc').textContent = details.brief;
-  document.getElementById('detailBrief').textContent = details.brief;
   document.getElementById('detailDuration').textContent = details.duration;
   document.getElementById('detailQuestions').textContent = details.questions;
   document.getElementById('detailPrice').textContent = details.price;
