@@ -67,6 +67,9 @@ body{ margin:0; background:var(--ivory); font-family:var(--font-display); color:
 .detail-item:last-child{ margin-bottom:0; }
 .detail-item .detail-label{ display:block; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--gold); margin-bottom:5px; }
 .detail-item p{ margin:0; font-size:13px; color:var(--charcoal); line-height:1.8; }
+.detail-bullets{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+.detail-bullets li{ font-size:13px; color:#000; line-height:1.7; padding-inline-start:16px; position:relative; }
+.detail-bullets li::before{ content:''; position:absolute; inline-size:6px; block-size:6px; border-radius:50%; background:#6C6CE1; inset-inline-start:0; top:7px; }
 
 /* ---------- معاينة مجانية تفاعلية (سؤال حقيقي من البنك) ---------- */
 .preview-box{ background:var(--ivory); border:1.5px dashed var(--gold); border-radius:var(--radius-md); padding:18px 20px; margin:18px 0 22px; }
@@ -160,11 +163,11 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
           </div>
           <div class="detail-item">
             <span class="detail-label">💵 سعر الاختبار الرسمي لدى PMI</span>
-            <p id="detailPrice">—</p>
+            <ul class="detail-bullets" id="detailPrice"></ul>
           </div>
           <div class="detail-item">
             <span class="detail-label">🎓 متطلبات الأهلية</span>
-            <p id="detailEligibility">—</p>
+            <ul class="detail-bullets" id="detailEligibility"></ul>
           </div>
         </div>
 
@@ -343,26 +346,26 @@ const COURSE_DETAILS = {
   capm: {
     brief: 'لا يُشترط أي خبرة عملية. تثبت شهادة CAPM امتلاكك المعرفة والمهارات الأساسية التي تحتاجها فرق المشاريع، وجاهزيتك للتعامل مع مجموعة واسعة من المشاريع بأساليب عمل تشمل الإدارة التنبؤية للمشاريع ومبادئ أجايل وتحليل الأعمال.',
     duration: '180 دقيقة', questions: '150 سؤال',
-    price: '225$ للأعضاء / 300$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
-    eligibility: 'دبلوم ثانوي (أو معادل) + 23 ساعة تدريب بإدارة المشاريع — بدون اشتراط أي خبرة عملية'
+    price: ['للأعضاء: 225$', 'للسعر الكامل (غير الأعضاء): 300$'],
+    eligibility: ['دبلوم ثانوي أو معادل', '23 ساعة تدريب بإدارة المشاريع', 'بدون اشتراط أي خبرة عملية']
   },
   pmp: {
     brief: '3+ سنوات خبرة بقيادة المشاريع. أظهر قدرتك على قيادة المشاريع بأي قطاع مع هذه الشهادة المعترف بها عالميًا، وافتح الباب لعالم من الفرص — تُقرّ الشهادة بمهارتك بإدارة الأفراد والعمليات والأولويات التجارية للمشاريع الاحترافية.',
     duration: '240 دقيقة', questions: '180 سؤال',
-    price: '405$ للأعضاء / 655$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
-    eligibility: '60 شهر خبرة مع دبلوم ثانوي، أو 36 شهر مع بكالوريوس، أو 24 شهر مع بكالوريوس معتمد GAC — بالإضافة لـ35 ساعة تدريب تجاري (الخبرة خلال آخر 10 سنوات)'
+    price: ['للأعضاء: 405$', 'للسعر الكامل (غير الأعضاء): 655$'],
+    eligibility: ['60 شهر خبرة مع دبلوم ثانوي', 'أو 36 شهر خبرة مع بكالوريوس', 'أو 24 شهر خبرة مع بكالوريوس معتمد GAC', 'بالإضافة لـ35 ساعة تدريب تجاري (الخبرة خلال آخر 10 سنوات)']
   },
   acp: {
-    brief: '2+ سنة خبرة. تُبرز شهادة PMI-ACP خبرتك بأجايل عبر اختبار محايد المنهجية ومبني على الخبرة ومعتمد ISO، وتصادق على قدرتك على تحقيق التميز عبر منهجيات مختلفة (Scrum وLean وKanban وغيرها) بأسلوب أجايل يركّز على الفريق.',
+    brief: 'تتطلب خبرة عملية سنتين فأكثر. تثبت شهادة PMI-ACP إتقانك لمبادئ أجايل من خلال اختبار معتمد دوليًا (ISO) ومبني على الخبرة العملية، بلا انحياز لمنهجية واحدة بعينها. تُظهر الشهادة قدرتك على العمل بكفاءة ضمن منهجيات أجايل المختلفة مثل Scrum وLean وKanban، بأسلوب يركّز على تمكين الفريق وتحقيق التميز.',
     duration: '180 دقيقة', questions: '120 سؤال',
-    price: '435$ للأعضاء / 495$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
-    eligibility: 'دبلوم ثانوي + 21 ساعة تدريب أجايل، بالإضافة لسنتين خبرة أجايل خلال آخر 5 سنوات (أو بدائل: سنة خبرة + شهادة GAC، سنة خبرة + شهادة أجايل خارجية سارية، أو حاملو PMP® الفعّالة)'
+    price: ['للأعضاء: 435$', 'للسعر الكامل (غير الأعضاء): 495$'],
+    eligibility: ['دبلوم ثانوي + 21 ساعة تدريب أجايل', 'سنتان خبرة أجايل خلال آخر 5 سنوات', 'أو سنة خبرة + شهادة معتمدة من GAC', 'أو سنة خبرة + شهادة أجايل خارجية سارية', 'أو حاملو شهادة PMP® الفعّالة']
   },
   rmp: {
     brief: '3-5 سنوات خبرة. حوّل المخاطر إلى فرص — إدارة المخاطر أساسية لتجنب التأخير والتكاليف الإضافية وفشل المشاريع. تمنحك شهادة PMI-RMP خبرة اكتشاف المشاكل مبكرًا وإتقان أساسيات المخاطر وتحسين نتائج المشاريع لميزة تنافسية.',
     duration: '150 دقيقة', questions: '115 سؤال',
-    price: '520$ للأعضاء / 670$ السعر الكامل (السعر الرسمي لدى PMI بالدولار الأمريكي)',
-    eligibility: '36 شهر خبرة مع دبلوم ثانوي، أو 24 شهر مع بكالوريوس، أو 12 شهر مع بكالوريوس معتمد GAC — بالإضافة لساعات تدريب مخصصة بإدارة مخاطر المشاريع (الخبرة خلال آخر 5 سنوات)'
+    price: ['للأعضاء: 520$', 'للسعر الكامل (غير الأعضاء): 670$'],
+    eligibility: ['36 شهر خبرة مع دبلوم ثانوي', 'أو 24 شهر خبرة مع بكالوريوس', 'أو 12 شهر خبرة مع بكالوريوس معتمد GAC', 'بالإضافة لساعات تدريب مخصصة بإدارة مخاطر المشاريع (الخبرة خلال آخر 5 سنوات)']
   },
 };
 
@@ -387,8 +390,8 @@ if(details){
   document.getElementById('courseDesc').textContent = details.brief;
   document.getElementById('detailDuration').textContent = details.duration;
   document.getElementById('detailQuestions').textContent = details.questions;
-  document.getElementById('detailPrice').textContent = details.price;
-  document.getElementById('detailEligibility').textContent = details.eligibility;
+  document.getElementById('detailPrice').innerHTML = details.price.map(item => `<li>${item}</li>`).join('');
+  document.getElementById('detailEligibility').innerHTML = details.eligibility.map(item => `<li>${item}</li>`).join('');
 }
 
 // ---------- معاينة مجانية: سؤال حقيقي واحد من بنك كل شهادة ----------
