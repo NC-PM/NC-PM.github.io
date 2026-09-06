@@ -344,7 +344,7 @@ const COURSES = {
 // ---------- نبذة PMI الرسمية ومعلومات كل اختبار (المدة/عدد الأسئلة/السعر/الأهلية) ----------
 const COURSE_DETAILS = {
   capm: {
-    brief: 'لا يُشترط أي خبرة عملية. تثبت شهادة CAPM امتلاكك المعرفة والمهارات الأساسية التي تحتاجها فرق المشاريع، وجاهزيتك للتعامل مع مجموعة واسعة من المشاريع بأساليب عمل تشمل الإدارة التنبؤية للمشاريع ومبادئ أجايل وتحليل الأعمال.',
+    brief: 'تثبت شهادة CAPM امتلاكك المعرفة والمهارات الأساسية التي تحتاجها فرق المشاريع، وجاهزيتك للتعامل مع مجموعة واسعة من المشاريع بأساليب عمل تشمل الإدارة التنبؤية للمشاريع ومبادئ أجايل وتحليل الأعمال.<br>لا يُشترط أي خبرة عملية.',
     duration: '180 دقيقة', questions: '150 سؤال',
     price: ['للأعضاء: 225$', 'للسعر الكامل (غير الأعضاء): 300$'],
     eligibility: ['دبلوم ثانوي أو معادل', '23 ساعة تدريب بإدارة المشاريع', 'بدون اشتراط أي خبرة عملية']
@@ -387,7 +387,7 @@ document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span
 
 const details = COURSE_DETAILS[courseId];
 if(details){
-  document.getElementById('courseDesc').textContent = details.brief;
+  document.getElementById('courseDesc').innerHTML = details.brief;
   document.getElementById('detailDuration').textContent = details.duration;
   document.getElementById('detailQuestions').textContent = details.questions;
   document.getElementById('detailPrice').innerHTML = details.price.map(item => `<li>${item}</li>`).join('');
