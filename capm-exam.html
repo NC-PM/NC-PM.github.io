@@ -4703,7 +4703,7 @@ function updatePasswordStrength(){
 }
 
 document.getElementById('timedDesc').textContent =
-  `اختبار بزمن محدد (بمعدل الاختبار العالمي) بدون إظهار الإجابات أثناء الحل. النتيجة والتفسير يظهران فقط بعد الإنهاء.`;
+  `اختبار فعلي بنفس الوقت وعدد الأسئلة كما لو أنك تخوض الاختبار الدولي!`;
 
 if(QUESTIONS.length < 150){
   document.getElementById('bankSizeNote').textContent =
@@ -5181,7 +5181,7 @@ function finishQuiz(timedOut){
 async function renderResults(){
   if(!lastRunResults) return;
   const { correct, wrong, total, details, timedOut } = lastRunResults;
-  const pct = Math.round((correct / total) * 100);
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
   const passed = pct >= 70;
 
   document.getElementById('ringScore').textContent = pct + '%';
