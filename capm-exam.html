@@ -75,7 +75,7 @@ button{ font-family:inherit; cursor:pointer; }
 .mode-card .btn{ margin-top:8px; align-self:flex-start; }
 @media (max-width:640px){ .mode-grid{ grid-template-columns:1fr; } }
 
-.timed-bar{ display:none; align-items:center; justify-content:space-between; gap:16px; background:var(--navy); color:var(--ivory); border-radius:16px; padding:14px 20px; margin-bottom:20px; flex-wrap:wrap; position:relative; z-index:2; }
+.timed-bar{ display:none; align-items:center; justify-content:center; gap:16px; background:var(--navy); color:var(--ivory); border-radius:16px; padding:14px 20px; margin-bottom:20px; flex-wrap:wrap; position:relative; z-index:2; }
 .timed-bar.show{ display:flex; }
 .timer-box{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); }
 .timer-box .clock{ font-size:22px; font-weight:600; letter-spacing:.03em; direction:ltr; }
@@ -170,7 +170,7 @@ button{ font-family:inherit; cursor:pointer; }
 .st-pct-line{ text-align:center; }
 .st-pct-line strong{ display:block; font-family:var(--font-mono); font-size:29px; color:#000; font-weight:700; }
 .st-pct-line span{ font-size:12.5px; color:var(--slate); }
-.st-details-row{ display:flex; gap:28px; justify-content:flex-start; flex-wrap:wrap; }
+.st-details-row{ display:flex; gap:28px; justify-content:center; flex-wrap:wrap; }
 .st-details-row div strong{ display:block; font-family:var(--font-mono); font-size:22px; }
 .st-details-row div span{ font-size:12.5px; color:var(--slate); }
 .st-details-row .st-correct strong{ color:var(--good); }
@@ -388,15 +388,15 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
     <div class="mode-grid">
       <div class="mode-card practice">
         <h3>وضع التدريب</h3>
-        <p>تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
+        <p>يتم سحب 10 أسئلة بشكل عشوائي في كل محاولة. تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
         <button class="btn btn-gold" onclick="startQuiz('practice', null)">ابدأ الوضع التدريبي</button>
       </div>
       <div class="mode-card timed">
         <h3>وضع الاختبار الفعلي</h3>
         <p id="timedDesc">اختبار بزمن محدد بدون إظهار الإجابات أثناء الحل — تمامًا كتجربة الاختبار العالمي. النتيجة والتفسير يظهران فقط بعد الإنهاء.</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 90)">نموذج 90 سؤال</button>
-          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 180)">نموذج 180 سؤال</button>
+          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 75)">نموذج 75 سؤال</button>
+          <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 150)">نموذج 150 سؤال</button>
         </div>
         <p class="hint" id="bankSizeNote" style="margin-top:4px;"></p>
         <ul class="domain-weights-list" id="domainWeightsList"></ul>
@@ -568,7 +568,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
 
 <script>
 const DOMAIN_AR = {basics:'أساسيات إدارة المشاريع', process:'مجموعات العمليات', terms:'المصطلحات والمخرجات', agile:'المرونة وأجايل', ba:'تحليل الأعمال', measurement:'قياس الأداء'};
-const SECONDS_PER_QUESTION = 66; // real CAPM pacing (~3 hrs / 150q)
+const SECONDS_PER_QUESTION = 72; // real CAPM pacing: 180 min / 150q = 72s/q بالضبط
 const COURSE_ID = 'capm';
 const COURSE_PRICE = 39;
 window.COURSE_ID = COURSE_ID;
@@ -2641,11 +2641,11 @@ const QUESTIONS = [
     ar:{q:'تشمل تكلفة الامتثال (Cost of Conformance):',
       opts:['التدريب','تكاليف الفشل الداخلي','الضمانات','إعادة العمل']} },
 
-  { id:288, cat:"Domain (03) Predictive", domain:'process', type:'single',
-    en:{q:'Given the following Risk Register, which threat is most urgent? (R1: Probability High, Impact Medium, Trigger Date June 30 | R2: Probability Low, Impact Low, Trigger Date June 14 | R3: Probability High, Impact High, Trigger Date June 21 | R4: Probability Medium, Impact Medium, Trigger Date June 10)',
+  { id:288, cat:"Domain (03) Predictive", domain:'process', type:'single', image:'q288-risk-register-table.png',
+    en:{q:'Given the following Risk Register, which threat is most urgent?',
       opts:['R1','R2','R3','R4'],
       correct:3, exp:'Urgency relates to how soon the risk may occur. R4 has the nearest trigger date (June 10), making it the most urgent risk to address, even though R3 has higher probability and impact.'},
-    ar:{q:'بالنظر إلى سجل المخاطر التالي، أي تهديد هو الأكثر إلحاحًا؟ (R1: احتمال مرتفع، تأثير متوسط، تاريخ التحفيز 30 يونيو | R2: احتمال منخفض، تأثير منخفض، تاريخ التحفيز 14 يونيو | R3: احتمال مرتفع، تأثير مرتفع، تاريخ التحفيز 21 يونيو | R4: احتمال متوسط، تأثير متوسط، تاريخ التحفيز 10 يونيو)',
+    ar:{q:'بالنظر إلى سجل المخاطر التالي، أي تهديد هو الأكثر إلحاحًا؟',
       opts:['R1','R2','R3','R4']} },
 
   { id:289, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single',
@@ -2864,7 +2864,7 @@ const QUESTIONS = [
     ar:{q:'وثيقة الشراء المستخدمة لنطاق أكثر تعقيدًا يبحث فيه المشتري عن مورد يقدم حلًا.',
       opts:['طلب عرض سعر (RFQ)','طلب معلومات (RFI)','طلب تقديم عرض (RFP)','طلب تقديم مستندات']} },
 
-  { id:317, cat:"Domain (03) Predictive", domain:'basics', type:'single',
+  { id:317, cat:"Domain (03) Predictive", domain:'basics', type:'single', image:'q317-precision-accuracy-target.png',
     en:{q:'A set of shots on a target are tightly clustered together, but the cluster is positioned far from the center (bullseye) of the target. What does this depict in terms of accuracy and precision?',
       opts:['High Precision & Low Accuracy','High Precision & High Accuracy','Low Precision & High Accuracy','Low Precision & Low Accuracy'],
       correct:0, exp:'Precision refers to how tightly clustered the results are (consistency); accuracy refers to how close they are to the target center (correctness). A tight cluster far from the center is high precision but low accuracy.'},
@@ -3004,11 +3004,11 @@ const QUESTIONS = [
     ar:{q:'خطة إدارة الموارد (Resource Management Plan):',
       opts:['تحدد كيفية حصول المشروع على السلع والخدمات من خارج المؤسسة المنفذة','تحدد الاستراتيجيات والإجراءات المطلوبة لإشراك أصحاب المصلحة في اتخاذ قرارات المشروع','تحدد كيفية الحصول على موارد المشروع واستخدامها طوال دورة حياة المشروع','تحدد سياسات التوظيف وإجراءات الإلحاق بالمؤسسة']} },
 
-  { id:337, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single',
-    en:{q:'This facilitation tool is used in Brainstorming sessions, prompting Who, What, Where, When, Why, and How.',
+  { id:337, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single', image:'q337-starbursting.png',
+    en:{q:'This facilitation tool is used in Brainstorming sessions.',
       opts:['Starbursting','Affinity Diagram','Pareto Chart','Kanban'],
       correct:0, exp:'Starbursting is a facilitation technique that uses the six questions (Who, What, Where, When, Why, How) to generate questions about an idea during brainstorming.'},
-    ar:{q:'هذه الأداة التيسيرية تُستخدم في جلسات العصف الذهني، وتطرح من ومماذا وأين ومتى ولماذا وكيف.',
+    ar:{q:'هذه الأداة التيسيرية تُستخدم في جلسات العصف الذهني.',
       opts:['الانفجار النجمي (Starbursting)','مخطط التقارب (Affinity Diagram)','مخطط باريتو','كانبان (Kanban)']} },
 
   { id:338, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single',
@@ -3388,11 +3388,11 @@ const QUESTIONS = [
     ar:{q:'أكد راعي مشروعك على الحاجة إلى ضبط التكاليف. لمعالجة هذه المخاوف، يجب عليك تقديم:',
       opts:['مقاييس أداء القيمة المكتسبة','مخططات التشغيل (Run Charts)','بيانات أداء العمل (Work Performance Data)','تقارير تفصيل الصرف']} },
 
-  { id:386, cat:"Domain (03) Predictive", domain:'process', type:'single',
-    en:{q:"Network diagram: Start branches into Activity A (5 days) and Activity B (7 days). Activity A leads to both Activity C (4 days) and Activity D (12 days). Activity B leads to both Activity D (12 days) and Activity E (11 days). Activities C, D, and E all lead to Finish. Which of the following methods of schedule compression would shorten the project's duration by the greatest number of days?",
+  { id:386, cat:"Domain (03) Predictive", domain:'process', type:'single', image:'q386-network-diagram.png',
+    en:{q:"Given the following network diagram, which of the following methods of schedule compression would shorten the project's duration by the greatest number of days?",
       opts:['Crashing Activity D by adding enough resources to reduce the activity duration by 50%','Fast Tracking Activity E by changing its predecessor relationship with Activity B to Start-to-Start (SS)','Crashing Activity A to complete in 2 days','Fast Tracking Activity C by changing its predecessor relationship with Activity A to Finish-to-Finish (FF)'],
       correct:0, exp:"The critical path is Start-B-D-Finish (7+12=19 days), the longest path in the network. Reducing Activity D's duration by 50% (6 days) cuts more time off the critical path than any of the other options."},
-    ar:{q:'مخطط شبكي: يتفرّع من البداية النشاط A (5 أيام) والنشاط B (7 أيام). يقود النشاط A إلى النشاط C (4 أيام) والنشاط D (12 يومًا). يقود النشاط B إلى النشاط D (12 يومًا) والنشاط E (11 يومًا). تقود الأنشطة C وD وE جميعها إلى النهاية. أي طرق ضغط الجدول التالية ستُقلّص مدة المشروع بأكبر عدد من الأيام؟',
+    ar:{q:'بالنظر إلى المخطط الشبكي التالي، أي طرق ضغط الجدول التالية ستُقلّص مدة المشروع بأكبر عدد من الأيام؟',
       opts:['تسريع (Crashing) النشاط D بإضافة موارد كافية لتقليل مدته بنسبة 50%','التتبع السريع (Fast Tracking) للنشاط E بتغيير علاقته السابقة مع النشاط B إلى بداية-إلى-بداية (SS)','تسريع (Crashing) النشاط A لينجز خلال يومين','التتبع السريع (Fast Tracking) للنشاط C بتغيير علاقته السابقة مع النشاط A إلى نهاية-إلى-نهاية (FF)']} },
 
   { id:387, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
@@ -3489,11 +3489,11 @@ const QUESTIONS = [
     ar:{q:'استنادًا إلى العوامل التالية، احسب انحراف التكلفة (Cost Variance): القيمة المكتسبة (EV) = 14,000$   القيمة المخططة (PV) = 15,000$   التكلفة الفعلية (AC) = 12,000$',
       opts:['0$','1,000$','2,000$','3,000$']} },
 
-  { id:399, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
-    en:{q:'The Estimate to Completion chart shows Planned Value (PV), Actual Costs (AC), and Earned Value (EV) curves rising over time toward a status date, with a Budget at Completion (BAC) point marked on the Planned Value curve. Beyond the status date, a dashed Estimate at Completion (EAC) projection continues upward, finishing higher on the cost axis and later in time than the BAC point, with the gap between the EAC and BAC points labeled as the Estimate to Complete (ETC). Which statement is true in regard to the Estimate to Completion chart described?',
+  { id:399, cat:"Domain (03) Predictive", domain:'measurement', type:'single', image:'q399-eac-chart.png',
+    en:{q:'Which statement is true in regard to the Estimate to Completion chart below?',
       opts:['The project is projected to complete ahead of schedule','The project is projected to complete on the status date','The project is projected to complete within budget','The project is projected to complete over budget'],
       correct:3, exp:'Since the projected Estimate at Completion (EAC) finishes above the Budget at Completion (BAC) point on the cost axis, the project is forecast to finish over budget.'},
-    ar:{q:'يوضّح مخطط تقدير الإتمام منحنيات القيمة المخططة (PV) والتكلفة الفعلية (AC) والقيمة المكتسبة (EV) وهي ترتفع بمرور الوقت نحو تاريخ الحالة (Status Date)، مع نقطة الميزانية عند الإتمام (BAC) محددة على منحنى القيمة المخططة. بعد تاريخ الحالة، يستمر إسقاط متقطع لتقدير الإتمام (EAC) في الارتفاع، لينتهي عند تكلفة أعلى ووقت أبعد من نقطة BAC، مع تسمية الفجوة بين نقطتي EAC وBAC بأنها تقدير الإكمال (ETC). أي عبارة صحيحة بخصوص مخطط تقدير الإتمام الموصوف؟',
+    ar:{q:'أي عبارة صحيحة بخصوص مخطط تقدير الإتمام أدناه؟',
       opts:['من المتوقع أن يكتمل المشروع قبل الجدول الزمني','من المتوقع أن يكتمل المشروع في تاريخ الحالة','من المتوقع أن يكتمل المشروع ضمن الميزانية','من المتوقع أن يكتمل المشروع متجاوزًا الميزانية']} },
 
   { id:400, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'multi',
@@ -3538,11 +3538,11 @@ const QUESTIONS = [
     ar:{q:'يُقدَّر تركيب وحدة تجارية بمدة يومين. عند تقديم طلب الوحدة في 1 أبريل، تُبلَّغ بأن التسليم لموقع العميل سيستغرق 5 أيام. متى تُجدوِل بدء التركيب:',
       opts:['1 أبريل','3 أبريل','5 أبريل','6 أبريل']} },
 
-  { id:406, cat:"Domain (03) Predictive", domain:'process', type:'single',
-    en:{q:'In the Gantt Chart below, Task 1 (3 days) is scheduled to finish before Task 2 (3 days) begins, but Task 2\'s bar does not start immediately after Task 1\'s finish; rather Task 2 begins some time after Task 1 has already finished, leaving a visible gap between the end of Task 1\'s bar and the start of Task 2\'s bar. Which statement below is TRUE regarding "Task 2"?',
+  { id:406, cat:"Domain (03) Predictive", domain:'process', type:'single', image:'q406-gantt-task2.png',
+    en:{q:'In the Gantt Chart below, which statement below is TRUE regarding "Task 2"?',
       opts:['Task 2 is the predecessor of Task 1','Task 2 has a lead','Task 2 is on the critical path','Task 2 has a lag'],
       correct:3, exp:'A visible gap between the finish of the predecessor (Task 1) and the start of the successor (Task 2) on a Gantt chart represents a lag — extra waiting time inserted between the two activities.'},
-    ar:{q:'في مخطط جانت أدناه، المهمة 1 (3 أيام) مُجدولة لتنتهي قبل بدء المهمة 2 (3 أيام)، لكن شريط المهمة 2 لا يبدأ مباشرة بعد انتهاء المهمة 1 — بل تبدأ المهمة 2 بعد فترة من انتهاء المهمة 1، تاركةً فجوة واضحة بين نهاية شريط المهمة 1 وبداية شريط المهمة 2. أي عبارة أدناه صحيحة بخصوص "المهمة 2"؟',
+    ar:{q:'في مخطط جانت أدناه، أي عبارة صحيحة بخصوص "المهمة 2"؟',
       opts:['المهمة 2 هي السابقة للمهمة 1','لدى المهمة 2 سبق زمني (Lead)','المهمة 2 على المسار الحرج','لدى المهمة 2 فجوة زمنية (Lag)']} },
 
   { id:407, cat:"Domain (03) Predictive", domain:'terms', type:'single',
@@ -3573,11 +3573,11 @@ const QUESTIONS = [
     ar:{q:'يتعرض مشروعك لضربة لمرة واحدة، تكلّف 4,000$ كرسوم وغرامات غير متوقعة. توقعك لتقدير الإتمام (EAC) هو:',
       opts:['التكلفة الفعلية (AC) + 4,000$','التكلفة الفعلية (AC) + القيمة المكتسبة (EV)','التكلفة الفعلية (AC) + تقدير الإكمال (ETC)','التكلفة الفعلية (AC) + تقدير الإكمال (ETC) + 4,000$']} },
 
-  { id:411, cat:"Domain (03) Predictive", domain:'process', type:'single',
-    en:{q:'Network diagram: Start branches into Activity A (5 days) and Activity B (7 days). Activity A leads to both Activity C (4 days) and Activity D (12 days). Activity B leads to Activity D (12 days) as well. Activities C and D both lead to Finish. In the example illustrated, what is the total float for "Activity D"?',
+  { id:411, cat:"Domain (03) Predictive", domain:'process', type:'single', image:'q411-network-float.png',
+    en:{q:'In the example illustrated below, what is the total float for "Activity D"?',
       opts:['0','2','5','8'],
       correct:0, exp:'The longest path through the network is Start-B-D-Finish (7+12=19 days), which is longer than Start-A-D-Finish (5+12=17) and Start-A-C-Finish (5+4=9). Since Activity D lies on this longest (critical) path, its total float is 0.'},
-    ar:{q:'مخطط شبكي: يتفرّع من البداية النشاط A (5 أيام) والنشاط B (7 أيام). يقود النشاط A إلى النشاط C (4 أيام) وإلى النشاط D (12 يومًا). يقود النشاط B أيضًا إلى النشاط D (12 يومًا). يقود كل من النشاطين C وD إلى النهاية. في المثال الموضح، ما الطفو الكلي للنشاط D؟',
+    ar:{q:'في المثال الموضح أدناه، ما الطفو الكلي للنشاط D؟',
       opts:['0','2','5','8']} },
 
   { id:412, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single',
@@ -3657,11 +3657,11 @@ const QUESTIONS = [
     ar:{q:'التكييف المتعمَّد للنهج و/أو العمليات لجعلها أكثر ملاءمة للبيئة المحددة والعمل المطروح يُشار إليه بـ:',
       opts:['الشلالي (Waterfall)','الرشاقة (Agility)','التنبؤ (Forecasting)','التخصيص/التكييف (Tailoring)']} },
 
-  { id:423, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
-    en:{q:'A "Planned and Actual Spend with Tolerances" chart shows an Upper and Lower planned-spend tolerance band alongside a Planned spend curve, plotted month by month. The Actual spend curve tracks closely with Planned through the middle months, then rises above the Upper tolerance band toward the end of the period. The trend depicted in the chart shows',
+  { id:423, cat:"Domain (03) Predictive", domain:'measurement', type:'single', image:'q423-tolerances-chart.png',
+    en:{q:'The trend depicted in the chart below shows',
       opts:['the project is to be within budget thresholds','the project is improving cost performance','the project is exceeding budget thresholds','the project is exceeding stakeholder expectations'],
       correct:2, exp:'Since the Actual spend curve rises above the Upper tolerance band, the project is exceeding its defined budget thresholds.'},
-    ar:{q:'يُظهر مخطط "الصرف المخطط والفعلي مع نطاقات التحمل" نطاقًا علويًا وسفليًا لتحمل الصرف المخطط إلى جانب منحنى الصرف المخطط، مرسومًا شهرًا بشهر. يتتبع منحنى الصرف الفعلي منحنى الصرف المخطط عن قرب خلال الأشهر الوسطى، ثم يرتفع فوق النطاق العلوي للتحمل قرب نهاية الفترة. الاتجاه الموضّح في المخطط يُظهر أن',
+    ar:{q:'الاتجاه الموضّح في المخطط أدناه يُظهر أن',
       opts:['المشروع سيكون ضمن حدود الميزانية','المشروع يُحسّن أداء التكلفة','المشروع يتجاوز حدود الميزانية','المشروع يتجاوز توقعات أصحاب المصلحة']} },
 
   { id:424, cat:"Domain (03) Predictive", domain:'terms', type:'single',
@@ -3706,11 +3706,11 @@ const QUESTIONS = [
     ar:{q:'دورة حياة مشروع يتم فيها التخطيط للنطاق والجدول الزمني والتكلفة للمشروع بأكمله خلال مرحلة مبكرة تُعرف باسم:',
       opts:['دورة الحياة التنبؤية','دورة الحياة التكيفية','دورة الحياة التزايدية','دورة الحياة الوظيفية']} },
 
-  { id:430, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
-    en:{q:'Given the following, which project is behind schedule? Project A: PV=500, EV=400, AC=500. Project B: PV=400, EV=500, AC=500. Project C: PV=300, EV=300, AC=200. Project D: PV=200, EV=300, AC=400.',
+  { id:430, cat:"Domain (03) Predictive", domain:'measurement', type:'single', image:'q430-pv-ev-ac-table.png',
+    en:{q:'Given the following, which project is behind schedule?',
       opts:['Project A','Project B','Project C','Project D'],
       correct:0, exp:'A project is behind schedule when EV is less than PV (negative Schedule Variance). Only Project A has EV (400) less than PV (500); Projects B and D have EV greater than PV, and Project C has EV equal to PV.'},
-    ar:{q:'بالنظر إلى الجدول التالي، أي مشروع متأخر عن الجدول الزمني؟ المشروع A: PV=500, EV=400, AC=500. المشروع B: PV=400, EV=500, AC=500. المشروع C: PV=300, EV=300, AC=200. المشروع D: PV=200, EV=300, AC=400.',
+    ar:{q:'بالنظر إلى الجدول التالي، أي مشروع متأخر عن الجدول الزمني؟',
       opts:['المشروع A','المشروع B','المشروع C','المشروع D']} },
 
   { id:431, cat:"Domain (01) Fundamentals and core concepts", domain:'basics', type:'single',
@@ -3748,11 +3748,11 @@ const QUESTIONS = [
     ar:{q:'لمشروع-X ميزانية معتمدة قدرها 10,000 دولار. للنشاط A قيمة مخطط لها 500 دولار، وللنشاط B قيمة مخطط لها 900 دولار، وللنشاط C قيمة مخطط لها 800 دولار. اكتمل النشاطان A وB بالكامل، بينما اكتمل النشاط C بنسبة 75% فقط. بلغت التكاليف الفعلية حتى الآن 2,500 دولار. ما هو تقدير الإتمام (EAC)، بافتراض أن كل العمل المتبقي سيُنجز وفق تقديرات العمل الأصلية:',
       opts:['8,900 دولار','10,200 دولار','10,500 دولار','12,500 دولار']} },
 
-  { id:436, cat:"Domain (03) Predictive", domain:'terms', type:'single',
-    en:{q:'In the example illustrated below, what is the total float for "Activity A"? Start branches to A(5 days) and B(7 days); A branches to C(4 days) and also feeds D(12 days); B feeds D(12 days); C and D both lead to Finish.',
+  { id:436, cat:"Domain (03) Predictive", domain:'terms', type:'single', image:'q436-network-float-a.png',
+    en:{q:'In the example illustrated below, what is the total float for "Activity A"?',
       opts:['0','2','5','8'],
       correct:1, exp:'The critical path (Start-B-D-Finish) is 7+12=19 days. The path through Activity A into D (Start-A-D-Finish) is 5+12=17 days. Total float for Activity A = 19 − 17 = 2 days.'},
-    ar:{q:'في المثال الموضح أدناه، ما هو الأثر الكلي (Total Float) للنشاط "A"؟ يتفرع Start إلى A (5 أيام) وB (7 أيام)؛ يتفرع A إلى C (4 أيام) ويغذي أيضًا D (12 يومًا)؛ يغذي B النشاط D (12 يومًا)؛ وينتهي كل من C وD عند Finish.',
+    ar:{q:'في المثال الموضح أدناه، ما هو الأثر الكلي (Total Float) للنشاط "A"؟',
       opts:['0','2','5','8']} },
 
   { id:437, cat:"Domain (03) Predictive", domain:'terms', type:'single',
@@ -3790,11 +3790,11 @@ const QUESTIONS = [
     ar:{q:'يستخدم التقدير متعدد النقاط (Multipoint Estimating) أي من العوامل التالية لحساب التقدير (اختر 3):',
       opts:['متفائل (Optimistic)','متشائم (Pessimistic)','تناظري (Analogous)','الأرجح (Most Likely)','الأقل احتمالًا (Least Likely)','بارامتري (Parametric)']} },
 
-  { id:442, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
-    en:{q:'Which statement is true in regard to the Earned Value Analysis chart below: the chart plots Planned Value (PV), Actual Costs (AC), and Earned Value (EV) curves over time, with SV and CV brackets shown at a measurement point.',
+  { id:442, cat:"Domain (03) Predictive", domain:'measurement', type:'single', image:'q442-eva-chart.png',
+    en:{q:'Which statement is true in regard to the Earned Value Analysis chart below?',
       opts:['Project is currently ahead of schedule and over budget','Project is currently ahead of schedule and under budget','Project is currently behind schedule and over budget','Project is currently behind schedule and under budget'],
       correct:3, exp:'Reading the EV curve relative to PV shows the project is behind schedule (EV below PV), and reading AC relative to EV shows the project is under budget at this point in the chart.'},
-    ar:{q:'أي عبارة صحيحة بخصوص مخطط تحليل القيمة المكتسبة (EVA) أدناه: يُظهر المخطط منحنيات القيمة المخططة (PV) والتكلفة الفعلية (AC) والقيمة المكتسبة (EV) عبر الزمن، مع توضيح فروقي SV وCV عند نقطة قياس معينة.',
+    ar:{q:'أي عبارة صحيحة بخصوص مخطط تحليل القيمة المكتسبة (EVA) أدناه؟',
       opts:['المشروع متقدم حاليًا عن الجدول الزمني ويتجاوز الميزانية','المشروع متقدم حاليًا عن الجدول الزمني وضمن الميزانية','المشروع متأخر حاليًا عن الجدول الزمني ويتجاوز الميزانية','المشروع متأخر حاليًا عن الجدول الزمني وضمن الميزانية']} },
 
   { id:443, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
@@ -3875,11 +3875,11 @@ const QUESTIONS = [
     ar:{q:'"يتمدد العمل ليملأ الوقت المتاح لإنجازه" هذا يصف:',
       opts:['قانون باركنسون (Parkinson\'s Law)','نظرية X/Y لماكجريجور','عوامل هيرزبرغ الصحية (Hygiene Factors)','مبدأ باريتو']} },
 
-  { id:453, cat:"Domain (03) Predictive", domain:'terms', type:'single',
-    en:{q:'This tool (shown below) is used to provide a visual representation of a project schedule, where activities are listed on the vertical axis, dates are shown on the horizontal axis, and activity durations are shown as horizontal bars placed according to start and finish dates.',
+  { id:453, cat:"Domain (03) Predictive", domain:'terms', type:'single', image:'q453-gantt-chart.png',
+    en:{q:'This tool (shown below) is used to provide a visual representation of a project schedule.',
       opts:['Burn Chart','Pareto Chart','Gantt Chart','Run Chart'],
       correct:2, exp:'This describes a Gantt Chart, a bar chart that shows activities on the vertical axis, dates on the horizontal axis, and durations as horizontal bars positioned by start and finish dates.'},
-    ar:{q:'تُستخدم هذه الأداة (الموضحة أدناه) لتقديم تمثيل مرئي لجدول المشروع، حيث تُدرَج الأنشطة على المحور الرأسي، وتُعرَض التواريخ على المحور الأفقي، وتُمثَّل مدد الأنشطة كأشرطة أفقية موضوعة وفق تاريخي البدء والانتهاء.',
+    ar:{q:'تُستخدم هذه الأداة (الموضحة أدناه) لتقديم تمثيل مرئي لجدول المشروع.',
       opts:['مخطط الاحتراق (Burn Chart)','مخطط باريتو','مخطط جانت (Gantt Chart)','مخطط التشغيل (Run Chart)']} },
 
   { id:454, cat:"Domain (03) Predictive", domain:'measurement', type:'single',
@@ -3910,11 +3910,11 @@ const QUESTIONS = [
     ar:{q:'نشاط له تاريخ انتهاء مبكر (Early Finish) في 12 أكتوبر، وتاريخ انتهاء متأخر (Late Finish) في 17 أكتوبر. هذا النشاط:',
       opts:['يقع على المسار الحرج','لديه تأخير (Lag) مقداره 5 أيام','من المتوقع أن ينتهي قبل الموعد المحدد','لا يقع على المسار الحرج']} },
 
-  { id:458, cat:"Domain (03) Predictive", domain:'terms', type:'single',
-    en:{q:'In the example illustrated below, what is the duration of the critical path? Start branches to A(5) and B(7). A leads to C(4). B leads to D(12) and E(11). C, D, and E all lead to Finish.',
+  { id:458, cat:"Domain (03) Predictive", domain:'terms', type:'single', image:'q458-network-critical-path.png',
+    en:{q:'In the example illustrated below, what is the duration of the critical path?',
       opts:['9','17','18','19'],
       correct:3, exp:'The three paths are: Start-A-C-Finish = 5+4 = 9; Start-B-D-Finish = 7+12 = 19; Start-B-E-Finish = 7+11 = 18. The critical path is the longest one, at 19.'},
-    ar:{q:'في المثال الموضح أدناه، ما هي مدة المسار الحرج؟ يتفرع Start إلى A(5) وB(7). يؤدي A إلى C(4). يؤدي B إلى D(12) وE(11). وتنتهي كل من C وD وE عند Finish.',
+    ar:{q:'في المثال الموضح أدناه، ما هي مدة المسار الحرج؟',
       opts:['9','17','18','19']} },
 
   { id:459, cat:"Domain (03) Predictive", domain:'terms', type:'dragMatch',
@@ -4151,7 +4151,7 @@ const QUESTIONS = [
     ar:{q:'مشروع تتبع فيه مكونات الأجهزة دورة حياة تنبؤية، ويتبع فيه تطوير البرمجيات نهجًا أجايل، يُقال إنه يُدار باستخدام:',
       opts:['دورة حياة موجَّهة بالخطة','دورة حياة موجَّهة بالتغيير','دورة حياة هجينة','دورة حياة انتقالية']} },
 
-  { id:489, cat:"Domain (02) Agile", domain:'agile', type:'single',
+  { id:489, cat:"Domain (02) Agile", domain:'agile', type:'single', image:'q489-kanban-board.png',
     en:{q:'This tool is useful in visualizing workflow and is known as a _______ Board.',
       opts:['Kaizen','Kano','Kali','Kanban'],
       correct:3, exp:'A Kanban Board is a visual tool used to visualize workflow, typically showing columns such as To Do, In Progress, and Done.'},
@@ -4705,9 +4705,9 @@ function updatePasswordStrength(){
 document.getElementById('timedDesc').textContent =
   `اختبار بزمن محدد (بمعدل الاختبار العالمي) بدون إظهار الإجابات أثناء الحل. النتيجة والتفسير يظهران فقط بعد الإنهاء.`;
 
-if(QUESTIONS.length < 90){
+if(QUESTIONS.length < 150){
   document.getElementById('bankSizeNote').textContent =
-    `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (90 و180) تلقائيًا عند تحديث البنك.`;
+    `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (75 و150) تلقائيًا عند تحديث البنك.`;
 } else {
   document.getElementById('bankSizeNote').textContent = `يتم سحب الأسئلة عشوائيًا من بنك يضم +1000 سؤال — كل محاولة تحصل على مجموعة جديدة.`;
   const list = document.getElementById('domainWeightsList');
@@ -4742,6 +4742,10 @@ async function startQuiz(selectedMode, idsSubset, desiredCount){
     const result = await buildSmartWeightedSet(desiredCount, baseSet);
     activeSet = result.ids;
     lastDrawShortfall = result.shortfall;
+  } else if(selectedMode === 'practice' && !(idsSubset && idsSubset.length)){
+    // وضع التدريب: سحب 10 أسئلة عشوائية فقط من كامل البنك، تختلف بكل محاولة جديدة
+    activeSet = shuffle(baseSet).slice(0, Math.min(10, baseSet.length));
+    lastDrawShortfall = 0;
   } else {
     activeSet = baseSet;
     lastDrawShortfall = 0;
@@ -4752,7 +4756,9 @@ async function startQuiz(selectedMode, idsSubset, desiredCount){
   answerFeedback = {};
   clearInterval(timerHandle);
 
-  document.getElementById('timedBar').classList.toggle('show', mode === 'timed');
+  document.getElementById('timedBar').classList.add('show');
+  document.getElementById('timerBox').style.display = mode === 'timed' ? '' : 'none';
+  document.getElementById('navDots').style.display = mode === 'timed' ? '' : 'none';
   document.getElementById('prevBtn').style.visibility = mode === 'timed' ? 'visible' : 'hidden';
 
   if(mode === 'timed'){
@@ -4865,10 +4871,9 @@ function renderQuestion(){
   catTag.innerHTML = q.cat ? `<span class="cat-dot" style="background:${catColor}"></span>${q.cat}` : '';
   document.getElementById('questionText').textContent = data.q;
   // بوضع التدريب: ما نعرض المقام (order.length) لأنه يساوي حجم البنك الحقيقي الكامل
-  // بدون أي حد أقصى — عرضه كان يفضح الرقم الحقيقي. بوضع الاختبار الفعلي (90/180)
-  // المقام محدود فعليًا (90 أو 180) فآمن نعرضه زي ما هو.
-  document.getElementById('progressLabel').textContent =
-    mode === 'practice' ? `السؤال ${posIndex + 1}` : `${posIndex + 1} / ${order.length}`;
+  // بدون أي حد أقصى — عرضه كان يفضح الرقم الحقيقي. بوضع الاختبار الفعلي (75/150)
+  // المقام محدود فعليًا (75 أو 150) فآمن نعرضه زي ما هو.
+  document.getElementById('progressLabel').textContent = `${posIndex + 1} / ${order.length}`;
   document.getElementById('progressFill').style.width = ((posIndex) / order.length * 100 + 10) + '%';
 
   const imgWrap = document.getElementById('qImgWrap');
@@ -5159,7 +5164,8 @@ function goNext(){
 function finishQuiz(timedOut){
   clearInterval(timerHandle);
   let correct = 0, wrong = 0;
-  const details = activeSet.map(id=>{
+  const scoringIds = mode === 'practice' ? Object.keys(answers).map(Number) : activeSet;
+  const details = scoringIds.map(id=>{
     const q = qById(id);
     const sel = answers[id];
     const isCorrect = isAnswerCorrect(q, sel);
@@ -5167,7 +5173,7 @@ function finishQuiz(timedOut){
     if(isUnanswered || !isCorrect) wrong++; else correct++;
     return { id, sel, isCorrect, isUnanswered };
   });
-  lastRunResults = { correct, wrong, total: activeSet.length, details, timedOut: !!timedOut };
+  lastRunResults = { correct, wrong, total: scoringIds.length, details, timedOut: !!timedOut };
   showScreen('screenResult');
   renderResults();
 }
@@ -5700,7 +5706,7 @@ window.saveAttempt = async function(record){
 window.isLoggedIn = function(){ return !!currentUser; };
 
 // حالة تتبع تغطية بنك الأسئلة لكل مستخدم — تُستخدم عشان نضمن إنه يشوف كل
-// أسئلة كل دومين مرة على الأقل قبل ما يتكرر عليه أي سؤال في محاولات نموذج 90/180.
+// أسئلة كل دومين مرة على الأقل قبل ما يتكرر عليه أي سؤال في محاولات نموذج 75/150.
 window.getCoverageState = async function(){
   if(!currentUser) return null;
   try{
