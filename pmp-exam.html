@@ -164,12 +164,15 @@ button{ font-family:inherit; cursor:pointer; }
 .result-screen.show{ display:block; }
 .result-ring{ width:160px; height:160px; margin:0 auto 18px; }
 .result-verdict{ font-size:24px; color:var(--navy); margin-top:6px; }
-.result-stats{ display:flex; gap:28px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
-.result-stats div strong{ display:block; font-family:var(--font-mono); font-size:22px; }
-.result-stats div span{ font-size:12.5px; color:var(--slate); }
-.result-stats .st-correct strong{ color:var(--good); }
-.result-stats .st-wrong strong{ color:var(--bad); }
-.result-stats .st-pct strong{ color:var(--navy); }
+.result-stats{ display:flex; flex-direction:column; gap:12px; margin-top:18px; }
+.st-pct-line{ text-align:center; }
+.st-pct-line strong{ display:block; font-family:var(--font-mono); font-size:29px; color:#000; font-weight:700; }
+.st-pct-line span{ font-size:12.5px; color:var(--slate); }
+.st-details-row{ display:flex; gap:28px; justify-content:flex-start; flex-wrap:wrap; }
+.st-details-row div strong{ display:block; font-family:var(--font-mono); font-size:22px; }
+.st-details-row div span{ font-size:12.5px; color:var(--slate); }
+.st-details-row .st-correct strong{ color:var(--good); }
+.st-details-row .st-wrong strong{ color:var(--bad); }
 .result-sub{ color:var(--slate); font-size:15px; margin-top:14px; max-width:460px; margin-inline:auto; }
 .result-actions{ display:flex; gap:12px; justify-content:center; margin-top:30px; flex-wrap:wrap; }
 .review-list{ margin-top:44px; text-align:left; direction:ltr; display:flex; flex-direction:column; gap:14px; font-family:var(--font-en); }
@@ -450,16 +453,16 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
   <div class="screen" id="screenResult">
     <div class="result-screen show">
       <svg class="result-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(200,155,60,.2)" stroke-width="1.5" stroke-dasharray="2 5"/>
-        <circle cx="100" cy="100" r="78" fill="none" stroke="var(--gold-light)" stroke-width="1.5" id="ringOuter"/>
-        <circle cx="100" cy="100" r="58" fill="#6C6CE1" stroke="#C89B3C" stroke-width="2" id="ringInner"/>
-        <text x="100" y="107" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700" font-size="30" fill="#FAF8F2" id="ringScore">0%</text>
+        <circle cx="100" cy="100" r="90" fill="var(--bad)" id="ringInner"/>
+        <text x="100" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700" font-size="34" fill="#000" id="ringScore">0%</text>
       </svg>
       <h2 class="result-verdict" id="verdictText">—</h2>
       <div class="result-stats">
-        <div class="st-pct"><strong id="statPct">0%</strong><span>النسبة الكلية</span></div>
-        <div class="st-correct"><strong id="statCorrect">0</strong><span>إجابات صحيحة</span></div>
-        <div class="st-wrong"><strong id="statWrong">0</strong><span>إجابات خاطئة</span></div>
+        <div class="st-pct-line"><strong id="statPct">0%</strong><span>النسبة الكلية</span></div>
+        <div class="st-details-row">
+          <div class="st-correct"><strong id="statCorrect">0</strong><span>إجابات صحيحة</span></div>
+          <div class="st-wrong"><strong id="statWrong">0</strong><span>إجابات خاطئة</span></div>
+        </div>
       </div>
       <p class="result-sub" id="verdictSub">—</p>
       <div class="result-actions">
@@ -4805,8 +4808,7 @@ async function renderResults(){
   const passed = pct >= 70;
 
   document.getElementById('ringScore').textContent = pct + '%';
-  document.getElementById('ringInner').setAttribute('stroke', passed ? 'var(--good)' : 'var(--bad)');
-  document.getElementById('ringOuter').setAttribute('stroke', passed ? 'var(--good-light)' : 'var(--bad)');
+  document.getElementById('ringInner').setAttribute('fill', passed ? 'var(--good)' : 'var(--bad)');
   document.getElementById('statPct').textContent = pct + '%';
   document.getElementById('statCorrect').textContent = correct;
   document.getElementById('statWrong').textContent = wrong;
@@ -4830,11 +4832,11 @@ async function renderResults(){
     cta.innerHTML = `<p>نتيجتك لن تُحفظ ما لم تسجّل الدخول — أنشئ حسابًا أو سجّل الدخول لحفظ إنجازك.</p><button class="btn btn-gold btn-sm" onclick="openAuthModal()">تسجيل الدخول / حساب جديد</button>`;
   }
   if(typeof window.renderAttemptHistory === 'function') await window.renderAttemptHistory();
-  document.getElementById('verdictText').textContent = passed ? 'اجتياز محاكاة قوي' : 'يحتاج مزيدًا من المراجعة';
+  document.getElementById('verdictText').textContent = passed ? 'اجتياز محاكاة قوي' : 'راجع وحاول مرة أخرى!';
   let sub = passed
     ? 'أداؤك يوازي مستوى الجاهزية للاختبار الفعلي — راجع الأسئلة التي أخطأت فيها ثم أعد المحاولة لتثبيت المعلومة.'
-    : 'راجع الأسئلة والمجالات التي أخطأت فيها أدناه، ثم استخدم "إعادة الأسئلة الخاطئة فقط" للتركيز عليها.';
-  if(timedOut) sub = 'انتهى الوقت المحدد للاختبار. ' + sub;
+    : '';
+  if(timedOut) sub = 'انتهى الوقت المحدد للاختبار.' + (sub ? ' ' + sub : '');
   document.getElementById('verdictSub').textContent = sub;
 
   document.getElementById('retryWrongBtn').style.display = wrong > 0 ? 'inline-flex' : 'none';
