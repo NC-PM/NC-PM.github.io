@@ -143,7 +143,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
       <div class="info-hero">
         <span class="tag" id="courseTag">شهادة مهنية معتمدة</span>
         <h1 id="courseName">—</h1>
-        <p id="courseDesc">بنك أسئلة تدريبي شامل بمحاكاة كاملة لتجربة الاختبار الفعلي.</p>
+        <p id="courseDesc">—</p>
       </div>
       <div class="info-body">
 
@@ -385,6 +385,7 @@ document.getElementById('domainMini').innerHTML = course.domains.map(d => `<span
 
 const details = COURSE_DETAILS[courseId];
 if(details){
+  document.getElementById('courseDesc').textContent = details.brief;
   document.getElementById('detailBrief').textContent = details.brief;
   document.getElementById('detailDuration').textContent = details.duration;
   document.getElementById('detailQuestions').textContent = details.questions;
