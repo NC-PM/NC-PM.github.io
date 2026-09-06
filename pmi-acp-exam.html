@@ -93,7 +93,11 @@ button{ font-family:inherit; cursor:pointer; }
 .progress-fill{ height:100%; background:linear-gradient(90deg,var(--gold),var(--teal-light)); border-radius:999px; transition:width .35s ease; }
 .progress-label{ font-family:var(--font-mono); font-size:12.5px; color:var(--slate); white-space:nowrap; direction:ltr; }
 
-.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; overflow:hidden; }
+.qcard{ background:var(--paper); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-card); position:relative; z-index:2; overflow:hidden; transition:box-shadow .35s ease, border-color .35s ease; }
+.qcard.qcard-correct{ border-color:rgba(34,153,84,.55); box-shadow:0 0 0 3px rgba(34,153,84,.16), var(--shadow-card); }
+.qcard.qcard-incorrect{ border-color:rgba(200,60,60,.55); box-shadow:0 0 0 3px rgba(200,60,60,.14), var(--shadow-card); }
+.feedback-emoji{ position:absolute; top:14px; left:16px; font-size:26px; z-index:3; animation:feedbackPop .45s ease; pointer-events:none; }
+@keyframes feedbackPop{ 0%{ transform:scale(0.4) rotate(-8deg); opacity:0; } 60%{ transform:scale(1.15) rotate(4deg); opacity:1; } 100%{ transform:scale(1) rotate(0deg); opacity:1; } }
 .qcard .domain-tag{ font-family:var(--font-mono); font-size:11px; color:var(--teal); background:rgba(31,111,92,.09); padding:4px 10px; border-radius:999px; width:fit-content; margin-bottom:16px; display:inline-block; }
 .qcard h3{ font-size:19px; color:#000000; font-weight:700; font-family:var(--font-en); line-height:1.6; }
 .translate-row{ margin-top:14px; }
@@ -132,6 +136,9 @@ button{ font-family:inherit; cursor:pointer; }
 .btn-ghost{ border-color:var(--border); color:var(--slate); background:transparent; }
 .btn-ghost:hover:not(:disabled){ border-color:var(--slate); color:var(--navy); }
 .hint{ font-size:12.5px; color:var(--slate); font-family:var(--font-mono); }
+.domain-weights-list{ list-style:none; padding:0; margin:6px 0 0; display:flex; flex-direction:column; gap:2px; }
+.domain-weights-list li{ font-size:10.5px; color:var(--slate); font-family:var(--font-mono); display:flex; align-items:center; gap:6px; }
+.domain-weights-list .cat-dot{ width:7px; height:7px; border-radius:50%; flex:0 0 auto; display:inline-block; }
 
 .result-screen{ display:none; text-align:center; }
 .result-screen.show{ display:block; }
@@ -367,6 +374,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
           <button class="btn btn-outline-dark" onclick="startQuizGuarded(this, 180)">نموذج 180 سؤال</button>
         </div>
         <p class="hint" id="bankSizeNote" style="margin-top:4px;"></p>
+        <ul class="domain-weights-list" id="domainWeightsList"></ul>
       </div>
     </div>
   </div>
@@ -4189,6 +4197,17 @@ document.getElementById('bankSizeNote').textContent =
     ? `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (90 و180) تلقائيًا عند تحديث البنك.`
     : `يتم سحب الأسئلة عشوائيًا من بنك يضم +1000 سؤال — كل محاولة تحصل على مجموعة جديدة.`;
 
+// النسب الرسمية لدومينات اختبار PMI-ACP (Exam Content Outline، مارس 2026) — قائمة ثابتة توضيحية فقط
+const ACP_OFFICIAL_DOMAINS = [
+  { name:'Mindset', pct:28, color:'#6C6CE1' },
+  { name:'Leadership', pct:25, color:'#2E9E6B' },
+  { name:'Product', pct:19, color:'#C89B3C' },
+  { name:'Delivery', pct:28, color:'#D9534F' },
+];
+document.getElementById('domainWeightsList').innerHTML = ACP_OFFICIAL_DOMAINS.map(d =>
+  `<li><span class="cat-dot" style="background:${d.color}"></span>${d.name} — ${d.pct}%</li>`
+).join('');
+
 
 // البوابة الحقيقية: لازم تسجيل دخول + دفع فعلي قبل ما يبدأ أي اختبار
 // (تدريبي أو نموذج 90/180) — قبل السحب، مو بعد الانتهاء.
@@ -4332,6 +4351,7 @@ function renderQuestion(){
 
   const explainBox = document.getElementById('explainBox');
   const nextBtn = document.getElementById('nextBtn');
+  const qcardEl = document.querySelector('.qcard');
   const isLast = posIndex === order.length - 1;
 
   if(mode === 'practice'){
@@ -4341,16 +4361,36 @@ function renderQuestion(){
       explainBox.classList.add('show');
       explainBox.innerHTML = `<b>${answerFeedback[id]}</b><br>${data.exp}`;
       nextBtn.disabled = false;
+      if(qcardEl){
+        qcardEl.classList.remove('qcard-correct','qcard-incorrect');
+        const oldEmoji = qcardEl.querySelector('.feedback-emoji');
+        if(oldEmoji) oldEmoji.remove();
+        qcardEl.classList.add(isCorrectAns ? 'qcard-correct' : 'qcard-incorrect');
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'feedback-emoji';
+        emojiSpan.textContent = isCorrectAns ? '😄' : '😞';
+        qcardEl.appendChild(emojiSpan);
+      }
     } else {
       explainBox.classList.remove('show');
       explainBox.innerHTML = '';
       nextBtn.disabled = true;
+      if(qcardEl){
+        qcardEl.classList.remove('qcard-correct','qcard-incorrect');
+        const oldEmoji = qcardEl.querySelector('.feedback-emoji');
+        if(oldEmoji) oldEmoji.remove();
+      }
     }
     document.getElementById('hintText').textContent = 'اختر إجابة لعرض التفسير';
   } else {
     explainBox.classList.remove('show');
     explainBox.innerHTML = '';
     nextBtn.disabled = false;
+    if(qcardEl){
+      qcardEl.classList.remove('qcard-correct','qcard-incorrect');
+      const oldEmoji = qcardEl.querySelector('.feedback-emoji');
+      if(oldEmoji) oldEmoji.remove();
+    }
     document.getElementById('hintText').textContent = 'اختر إجابة ثم انتقل — النتيجة تظهر بعد الإنهاء';
     renderNavDots();
   }
