@@ -66,6 +66,13 @@ button{ font-family:inherit; cursor:pointer; }
 
 .mode-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-top:8px; }
 .mode-card{ background:var(--paper); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-card); text-align:right; display:flex; flex-direction:column; gap:12px; transition:border-color .15s ease, transform .15s ease; }
+.resource-download-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:auto; padding-top:4px; }
+.resource-download-box{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; padding:16px 8px; border:1.5px dashed var(--border); border-radius:12px; background:var(--ivory); text-decoration:none; color:var(--charcoal); font-size:11.5px; font-family:var(--font-mono); text-align:center; transition:border-color .15s ease, background .15s ease; }
+.resource-download-box:hover{ border-color:var(--gold); background:rgba(200,155,60,.08); }
+.resource-download-box svg{ width:30px; height:30px; flex:0 0 auto; }
+.resource-download-box.pdf svg{ color:var(--danger); }
+.resource-download-box.book svg{ color:var(--navy); }
+.resource-download-box.disabled{ opacity:.55; cursor:not-allowed; pointer-events:none; }
 .mode-card:hover{ border-color:var(--gold); transform:translateY(-3px); }
 .mode-card .mtag{ font-family:var(--font-mono); font-size:11px; padding:4px 10px; border-radius:999px; width:fit-content; direction:ltr; }
 .mode-card.practice .mtag{ color:var(--teal); background:rgba(31,111,92,.09); }
@@ -244,7 +251,12 @@ footer.mini-footer{ text-align:center; padding:30px 0 50px; color:var(--slate); 
 
 .history-box{ max-width:640px; margin:36px auto 0; text-align:right; display:none; }
 .history-box h4{ font-size:14px; color:var(--navy); margin-bottom:12px; }
-.history-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px; background:var(--paper); direction:rtl; }
+.history-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px; background:var(--paper); direction:rtl; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+.history-row:hover{ border-color:var(--gold); background:rgba(200,155,60,.06); }
+.review-context{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin:14px 0 6px; font-size:13px; color:var(--slate); }
+.review-context:empty{ display:none; margin:0; }
+.review-context button{ font-family:var(--font-mono); font-size:12px; color:var(--navy); background:transparent; border:1px solid var(--border); border-radius:999px; padding:5px 14px; cursor:pointer; }
+.review-context button:hover{ border-color:var(--gold); }
 .history-row .hscore{ font-family:var(--font-mono); font-weight:700; color:var(--navy); }
 
 /* ---- Arabic translation popup (mimics real-exam language toggle window) ---- */
@@ -368,6 +380,16 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <h3>وضع التدريب</h3>
         <p>يتم سحب 10 أسئلة بشكل عشوائي في كل محاولة. تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
         <button class="btn btn-gold" onclick="startPracticeGuarded(this)">ابدأ الوضع التدريبي</button>
+        <div class="resource-download-grid">
+          <a href="assets/resources/ACP_ECO.pdf" download class="resource-download-box pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            دليل ECO الرسمي (PDF)
+          </a>
+          <a href="#" class="resource-download-box book disabled" onclick="return false;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            الكتاب المرافق (قريبًا)
+          </a>
+        </div>
       </div>
       <div class="mode-card timed">
         <h3>وضع الاختبار الفعلي</h3>
@@ -453,6 +475,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <h4>سجل محاولاتك السابقة لهذا الاختبار</h4>
         <div id="historyList"></div>
       </div>
+      <div class="review-context" id="reviewContext"></div>
       <div class="review-list" id="reviewList"></div>
     </div>
   </div>
@@ -4460,7 +4483,7 @@ async function renderResults(){
 
   if(purchased){
     if(!lastRunResults.saved){
-      await window.saveAttempt({ date: new Date().toLocaleDateString('ar-SA'), mode, pct, correct, wrong, total });
+      await window.saveAttempt({ date: new Date().toLocaleDateString('ar-SA'), mode, pct, correct, wrong, total, details });
       lastRunResults.saved = true;
     }
     cta.classList.remove('show');
@@ -4482,12 +4505,18 @@ async function renderResults(){
 
   document.getElementById('retryWrongBtn').style.display = wrong > 0 ? 'inline-flex' : 'none';
 
+  document.getElementById('reviewContext').innerHTML = '';
+  renderReviewList(details);
+}
+
+function renderReviewList(details){
   const reviewList = document.getElementById('reviewList');
   const oldNote = reviewList.parentElement.querySelector('.all-correct-note');
   if(oldNote) oldNote.remove();
   reviewList.innerHTML = '';
   details.forEach((d, i)=>{
     const q = qById(d.id);
+    if(!q) return;
     const data = q.en;
     const div = document.createElement('div');
     const cls = d.isUnanswered ? 'was-unanswered' : (d.isCorrect ? 'was-correct' : 'was-wrong');
@@ -4503,7 +4532,8 @@ async function renderResults(){
     reviewList.appendChild(div);
   });
 
-  if(wrong === 0){
+  const wrongCount = details.filter(d => d.isUnanswered || !d.isCorrect).length;
+  if(wrongCount === 0){
     const note = document.createElement('p');
     note.className = 'result-sub all-correct-note';
     note.style.marginTop = '18px';
@@ -4978,15 +5008,41 @@ window.renderAttemptHistory = async function(){
     if(snap.empty){ box.style.display = 'none'; return; }
     box.style.display = 'block';
     list.innerHTML = '';
+    window.historyAttempts = [];
     snap.forEach(docSnap=>{
       const a = docSnap.data();
       const modeLabel = a.mode === 'timed' ? 'محاكاة فعلية' : 'تدريبي';
-      list.innerHTML += `<div class="history-row"><span>${a.date} · ${modeLabel} · ${a.correct}/${a.total}</span><span class="hscore">${a.pct}%</span></div>`;
+      const idx = window.historyAttempts.length;
+      window.historyAttempts.push(a);
+      const row = document.createElement('div');
+      row.className = 'history-row';
+      row.innerHTML = `<span>${a.date} · ${modeLabel} · ${a.correct}/${a.total}</span><span class="hscore">${a.pct}%</span>`;
+      row.onclick = () => viewHistoricalAttempt(idx);
+      list.appendChild(row);
     });
   } catch(e){
     box.style.display = 'none';
   }
 };
+
+function viewHistoricalAttempt(idx){
+  const a = window.historyAttempts && window.historyAttempts[idx];
+  if(!a || !a.details || !a.details.length){
+    alert('هذه محاولة قديمة سُجّلت قبل تفعيل حفظ تفاصيل الحلول، فلا تتوفر لها حلول محفوظة.');
+    return;
+  }
+  const modeLabel = a.mode === 'timed' ? 'المحاكاة الفعلية' : 'التدريب';
+  renderReviewList(a.details);
+  document.getElementById('reviewContext').innerHTML =
+    `<span>📅 تستعرض حلول محاولة ${modeLabel} بتاريخ ${a.date} (${a.correct}/${a.total} — ${a.pct}%)</span><button onclick="restoreCurrentAttempt()">رجوع لنتيجتك الحالية</button>`;
+  document.getElementById('reviewList').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function restoreCurrentAttempt(){
+  if(!lastRunResults) return;
+  renderReviewList(lastRunResults.details);
+  document.getElementById('reviewContext').innerHTML = '';
+}
 </script>
 </body>
 </html>
