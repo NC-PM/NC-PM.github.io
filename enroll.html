@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DGEWSWZYPQ"></script>
+<!-- Google Analytics 4 — استبدل G-XXXXXXXXXX برقم القياس الفعلي من حسابك -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-DGEWSWZYPQ');
+  gtag('config', 'G-XXXXXXXXXX');
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -298,6 +298,7 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   onAuthStateChanged, updateProfile, sendPasswordResetEmail, sendEmailVerification
@@ -315,6 +316,14 @@ const firebaseConfig = {
   appId: "1:93200453111:web:db7cc90675220ae55ef2f2"
 };
 const app = initializeApp(firebaseConfig);
+
+try{
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Lfflm8tAAAAAN_wbPYNO-oXqv9tDDseYyFH1rZI'),
+    isTokenAutoRefreshEnabled: true
+  });
+} catch(e){ /* App Check not configured yet — safe to ignore */ }
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 
