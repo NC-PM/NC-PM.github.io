@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم NC-PM</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --navy:#2b2a55; --purple:#6C6CE1; --gold:#C89B3C; --ivory:#FAF8F2;
+    --border:#e4e0d6; --slate:#6b6b78; --charcoal:#2a2a2a;
+    --good:#2e7d4f; --bad:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; font-family:'Tajawal', Arial, sans-serif; background:var(--ivory); color:var(--charcoal); }
+  .wrap{ max-width:1200px; margin:0 auto; padding:24px 16px 60px; }
+  h1{ font-size:22px; color:var(--navy); margin:0 0 4px; }
+  .sub{ color:var(--slate); font-size:13px; margin:0 0 24px; }
+
+  /* شاشة الدخول */
+  #loginScreen{ max-width:380px; margin:80px auto; background:#fff; border:1px solid var(--border); border-radius:14px; padding:28px; text-align:center; }
+  #loginScreen h2{ color:var(--navy); margin-top:0; }
+  #loginScreen input{ width:100%; padding:11px 12px; margin:8px 0; border:1px solid var(--border); border-radius:8px; font-size:14px; font-family:inherit; }
+  #loginScreen button{ width:100%; padding:12px; margin-top:10px; background:var(--navy); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; }
+  #loginScreen button:hover{ opacity:.9; }
+  #loginError{ color:var(--bad); font-size:13px; margin-top:10px; min-height:16px; }
+
+  #dashboard{ display:none; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+  #logoutBtn{ background:none; border:1px solid var(--border); border-radius:8px; padding:8px 16px; cursor:pointer; font-size:13px; color:var(--slate); }
+  #logoutBtn:hover{ background:#f2f0ea; }
+
+  .tabs{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+  .tab-btn{ padding:9px 18px; border:1px solid var(--border); border-radius:99px; background:#fff; cursor:pointer; font-size:13px; font-weight:700; color:var(--slate); }
+  .tab-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+
+  .panel{ display:none; }
+  .panel.show{ display:block; }
+
+  table{ width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  th, td{ padding:10px 12px; text-align:right; font-size:13px; border-bottom:1px solid var(--border); }
+  th{ background:var(--navy); color:#fff; font-weight:700; position:sticky; top:0; }
+  tr:last-child td{ border-bottom:none; }
+  tr:hover td{ background:#faf9f6; }
+  .num{ font-weight:700; color:var(--navy); }
+  .muted{ color:var(--slate); font-size:12px; }
+  .empty{ text-align:center; padding:40px; color:var(--slate); }
+  #loadingMsg{ text-align:center; padding:40px; color:var(--slate); }
+  .table-scroll{ overflow-x:auto; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div id="loginScreen">
+    <h2>لوحة تحكم NC-PM</h2>
+    <p class="sub">دخول حصري لحساب الإدارة</p>
+    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" autocomplete="username">
+    <input type="password" id="loginPass" placeholder="كلمة المرور" autocomplete="current-password">
+    <button id="loginBtn">دخول</button>
+    <div id="loginError"></div>
+  </div>
+
+  <div id="dashboard">
+    <div class="topbar">
+      <div>
+        <h1>لوحة تحكم NC-PM</h1>
+        <p class="sub">نشاط المستخدمين عبر الأوضاع الثلاثة: التدريب، الاختبار الفعلي، لعبة المفاهيم</p>
+      </div>
+      <button id="logoutBtn">تسجيل خروج</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="capm">CAPM</button>
+      <button class="tab-btn" data-tab="pmp">PMP</button>
+      <button class="tab-btn" data-tab="acp">PMI-ACP</button>
+      <button class="tab-btn" data-tab="rmp">PMI-RMP</button>
+      <button class="tab-btn" data-tab="concepts">لعبة المفاهيم (CAPM)</button>
+    </div>
+
+    <div id="loadingMsg">جارٍ تحميل البيانات...</div>
+
+    <div id="panels" style="display:none;">
+      <div class="panel show" id="panel-capm"><div class="table-scroll"></div></div>
+      <div class="panel" id="panel-pmp"><div class="table-scroll"></div></div>
+      <div class="panel" id="panel-acp"><div class="table-scroll"></div></div>
+      <div class="panel" id="panel-rmp"><div class="table-scroll"></div></div>
+      <div class="panel" id="panel-concepts"><div class="table-scroll"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore, collection, collectionGroup, getDocs
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXebiDdl4_ksWTr-UC7lXMNq2BRBNrqfU",
+  authDomain: "ncpm-platform.firebaseapp.com",
+  projectId: "ncpm-platform",
+  storageBucket: "ncpm-platform.firebasestorage.app",
+  messagingSenderId: "93200453111",
+  appId: "1:93200453111:web:db7cc90675220ae55ef2f2"
+};
+
+const ADMIN_EMAIL = "mohammed2034kssa@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+auth.languageCode = 'ar';
+const db = getFirestore(app);
+
+const loginScreen = document.getElementById('loginScreen');
+const dashboard = document.getElementById('dashboard');
+const loginError = document.getElementById('loginError');
+
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  loginError.textContent = '';
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if(!email || !pass){ loginError.textContent = 'أدخل البريد وكلمة المرور.'; return; }
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e){
+    loginError.textContent = 'بيانات الدخول غير صحيحة.';
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=> signOut(auth));
+
+onAuthStateChanged(auth, async (user)=>{
+  if(user && user.email === ADMIN_EMAIL){
+    loginScreen.style.display = 'none';
+    dashboard.style.display = 'block';
+    await loadDashboard();
+  } else {
+    if(user && user.email !== ADMIN_EMAIL){
+      loginError.textContent = 'هذا الحساب غير مصرّح له بدخول لوحة التحكم.';
+      await signOut(auth);
+    }
+    dashboard.style.display = 'none';
+    loginScreen.style.display = 'block';
+  }
+});
+
+// تبديل التبويبات
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('show');
+  });
+});
+
+function fmtDate(ts){
+  if(!ts || !ts.toDate) return '—';
+  return ts.toDate().toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric' });
+}
+
+async function loadDashboard(){
+  document.getElementById('loadingMsg').style.display = 'block';
+  document.getElementById('panels').style.display = 'none';
+
+  // خريطة uid -> {name, email}
+  const usersMap = {};
+  const usersSnap = await getDocs(collection(db, 'users'));
+  usersSnap.forEach(d=>{
+    const data = d.data();
+    usersMap[d.id] = { name: data.name || '—', email: data.email || '—' };
+  });
+
+  const courses = ['capm','pmp','acp','rmp'];
+
+  for(const course of courses){
+    const stats = {}; // uid -> { practice: n, quiz: n, last: ts }
+    let snap;
+    try{
+      snap = await getDocs(collectionGroup(db, 'attempts_' + course));
+    } catch(e){ snap = { forEach: ()=>{} }; }
+
+    snap.forEach(d=>{
+      const uid = d.ref.parent.parent.id;
+      const data = d.data();
+      if(!stats[uid]) stats[uid] = { practice:0, quiz:0, last:null };
+      if(data.mode === 'practice') stats[uid].practice++;
+      else stats[uid].quiz++;
+      if(data.createdAt && (!stats[uid].last || data.createdAt.toMillis() > stats[uid].last.toMillis())){
+        stats[uid].last = data.createdAt;
+      }
+    });
+
+    renderCourseTable(course, stats, usersMap);
+  }
+
+  // لعبة المفاهيم (CAPM فقط حاليًا)
+  const cgStats = {}; // uid -> { completed: n, last: ts }
+  let cgSnap;
+  try{
+    cgSnap = await getDocs(collectionGroup(db, 'conceptGame_capm'));
+  } catch(e){ cgSnap = { forEach: ()=>{} }; }
+
+  cgSnap.forEach(d=>{
+    const uid = d.ref.parent.parent.id;
+    const data = d.data();
+    const progress = data.progress || {};
+    let completed = 0;
+    Object.values(progress).forEach(day=>{ completed += (day.completedIds || []).length; });
+    cgStats[uid] = { completed, last: data.updatedAt || null };
+  });
+
+  renderConceptTable(cgStats, usersMap);
+
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('panels').style.display = 'block';
+}
+
+function renderCourseTable(course, stats, usersMap){
+  const container = document.querySelector('#panel-' + course + ' .table-scroll');
+  const uids = Object.keys(stats);
+  if(uids.length === 0){
+    container.innerHTML = '<div class="empty">لا يوجد أي نشاط مسجّل بعد لهذه الشهادة.</div>';
+    return;
+  }
+  // ترتيب حسب آخر نشاط (الأحدث أولًا)
+  uids.sort((a,b)=>{
+    const ta = stats[a].last ? stats[a].last.toMillis() : 0;
+    const tb = stats[b].last ? stats[b].last.toMillis() : 0;
+    return tb - ta;
+  });
+
+  let html = '<table><thead><tr><th>الاسم</th><th>الإيميل</th><th>محاولات تدريب</th><th>محاولات اختبار فعلي</th><th>آخر نشاط</th></tr></thead><tbody>';
+  uids.forEach(uid=>{
+    const u = usersMap[uid] || { name:'—', email: uid };
+    const s = stats[uid];
+    html += `<tr><td>${u.name}</td><td class="muted">${u.email}</td><td class="num">${s.practice}</td><td class="num">${s.quiz}</td><td class="muted">${fmtDate(s.last)}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function renderConceptTable(stats, usersMap){
+  const container = document.querySelector('#panel-concepts .table-scroll');
+  const uids = Object.keys(stats);
+  if(uids.length === 0){
+    container.innerHTML = '<div class="empty">لا يوجد أي تقدّم مسجّل بعد بلعبة المفاهيم.</div>';
+    return;
+  }
+  uids.sort((a,b)=>{
+    const ta = stats[a].last ? stats[a].last.toMillis() : 0;
+    const tb = stats[b].last ? stats[b].last.toMillis() : 0;
+    return tb - ta;
+  });
+
+  let html = '<table><thead><tr><th>الاسم</th><th>الإيميل</th><th>عدد المفاهيم المكتملة</th><th>آخر تحديث</th></tr></thead><tbody>';
+  uids.forEach(uid=>{
+    const u = usersMap[uid] || { name:'—', email: uid };
+    const s = stats[uid];
+    html += `<tr><td>${u.name}</td><td class="muted">${u.email}</td><td class="num">${s.completed}</td><td class="muted">${fmtDate(s.last)}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
