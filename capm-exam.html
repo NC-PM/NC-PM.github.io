@@ -5315,7 +5315,7 @@ function renderQuestion(){
   const img = document.getElementById('qImg');
   if(q.image){
     imgWrap.style.display = 'block';
-    img.src = 'assets/exam-images/' + q.image;
+    img.src = q.image;
   } else {
     imgWrap.style.display = 'none';
     img.src = '';
