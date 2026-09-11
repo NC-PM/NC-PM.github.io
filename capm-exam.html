@@ -3858,11 +3858,11 @@ const QUESTIONS = [
     ar:{q:'التأخير (Lag) المرتبط بنشاط في جدول المشروع يشير إلى:',
       opts:['تأخير ثابت مفروض على السابق.','تأخير مشروط ناتج عن عدم اليقين.','مقدار ثابت من الوقت يمكن أن يبدأ فيه اللاحق مسبقًا.','مورد بطيء الحركة']} },
 
-  { id:433, cat:"Domain (03) Predictive", domain:'terms', type:'single',
-    en:{q:"Determine the Early Finish Date for Activity-X illustrated below: a node shows (top row) Early Start=3, Duration=5, Early Finish=? ; (bottom row) Late Start=11, Total Float=8, Late Finish=15.",
+  { id:433, cat:"Domain (03) Predictive", domain:'terms', type:'single', image:'q433-activity-x-node.png',
+    en:{q:"Determine the Early Finish Date for Activity-X illustrated below:",
       opts:['7','8','9','15'],
       correct:0, exp:'Total Float equals Late Finish minus Early Finish. So Early Finish = Late Finish − Total Float = 15 − 8 = 7.'},
-    ar:{q:'حدّد تاريخ الانتهاء المبكر (Early Finish) للنشاط X الموضّح أدناه: عقدة تُظهر (الصف العلوي) البدء المبكر=3، المدة=5، الانتهاء المبكر=؟ ؛ (الصف السفلي) البدء المتأخر=11، الأثر الكلي=8، الانتهاء المتأخر=15.',
+    ar:{q:'حدّد تاريخ الانتهاء المبكر (Early Finish) للنشاط X الموضّح أدناه:',
       opts:['7','8','9','15']} },
 
   { id:434, cat:"Domain (03) Predictive", domain:'terms', type:'single',
