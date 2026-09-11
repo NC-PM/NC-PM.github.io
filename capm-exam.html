@@ -73,6 +73,75 @@ button{ font-family:inherit; cursor:pointer; }
 .resource-download-box.pdf svg{ color:var(--danger); }
 .resource-download-box.book svg{ color:var(--navy); }
 .resource-download-box.disabled{ opacity:.55; cursor:not-allowed; pointer-events:none; }
+
+.concept-game-cta{ display:flex; align-items:center; gap:12px; margin-top:10px; padding:14px 16px; border:1.5px solid var(--gold); border-radius:12px; background:rgba(200,155,60,.08); width:100%; text-align:right; transition:background .15s ease, transform .15s ease; }
+.concept-game-cta:hover{ background:rgba(200,155,60,.16); transform:translateY(-2px); }
+.concept-game-cta svg{ width:32px; height:32px; color:var(--navy); flex:0 0 auto; }
+.concept-game-cta .cta-text{ display:flex; flex-direction:column; gap:2px; }
+.concept-game-cta .cta-title{ font-weight:700; font-size:14.5px; color:var(--navy); font-family:var(--font-display); }
+.concept-game-cta .cta-sub{ font-size:12px; color:var(--slate); }
+
+/* ---------------- وضع تثبيت المفاهيم (لعبة الربط) ---------------- */
+.cg-status-row{ display:flex; justify-content:space-between; align-items:center; margin:4px 0 18px; font-size:14px; }
+.cg-progress-wrap{ flex:1; height:9px; background:var(--border); border-radius:99px; margin:0 16px; overflow:hidden; }
+.cg-progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--navy),var(--gold)); border-radius:99px; transition:width .45s ease; }
+.cg-status-num{ font-weight:700; color:var(--navy); white-space:nowrap; }
+.cg-status-tries{ color:var(--slate); font-family:var(--font-mono); font-size:12.5px; white-space:nowrap; }
+
+.cg-board{ background:var(--paper); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:26px; display:grid; grid-template-columns:1fr 1.3fr 1fr; gap:20px; box-shadow:var(--shadow-card); }
+@media (max-width:680px){
+  .cg-board{ grid-template-columns:1fr; padding:18px; gap:16px; }
+  .cg-board > div:nth-child(1){ order:1; }
+  .cg-board > div:nth-child(2){ order:3; }
+  .cg-board > div:nth-child(3){ order:2; }
+}
+.cg-middle{ border-right:1px dashed var(--border); border-left:1px dashed var(--border); padding:0 16px; }
+@media (max-width:680px){ .cg-middle{ border:none; padding:0; } }
+.cg-col-title{ font-size:12.5px; color:var(--slate); margin-bottom:10px; font-weight:700; font-family:var(--font-mono); }
+.cg-concepts{ display:flex; flex-direction:column; gap:10px; }
+.cg-concept-btn{ text-align:right; font-family:var(--font-body); font-size:15.5px; font-weight:700; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--ivory); color:var(--charcoal); cursor:pointer; transition:border-color .15s, transform .1s, background .15s; }
+.cg-concept-btn:hover:not(:disabled){ border-color:var(--navy); }
+.cg-concept-btn.selected{ border-color:var(--navy); background:rgba(108,108,225,.08); }
+.cg-concept-btn.matched{ border-color:var(--good); background:var(--good-bg); color:var(--good); cursor:default; }
+.cg-concept-btn.wrong{ border-color:var(--bad); background:var(--bad-bg); animation:cgShake .35s; }
+
+.cg-images{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.cg-image-card{ border:1.5px solid var(--border); background:var(--ivory); border-radius:14px; padding:14px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:border-color .15s, transform .1s, background .15s; }
+.cg-image-card:hover:not(:disabled){ border-color:var(--gold); }
+.cg-image-card.selected{ border-color:var(--navy); background:rgba(108,108,225,.08); }
+.cg-image-card.matched{ border-color:var(--good); background:var(--good-bg); cursor:default; }
+.cg-image-card.matched svg{ color:var(--good); }
+.cg-image-card.wrong{ border-color:var(--bad); background:var(--bad-bg); animation:cgShake .35s; }
+.cg-image-card svg{ width:42px; height:42px; color:var(--navy); transition:color .15s; }
+@keyframes cgShake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+
+.cg-controls{ display:flex; justify-content:center; margin-top:20px; }
+
+.cg-def-placeholder{ color:var(--slate); font-size:13px; text-align:center; padding:30px 6px; }
+.cg-definitions{ display:flex; flex-direction:column; gap:12px; max-height:520px; overflow-y:auto; }
+
+.cg-days-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.cg-day-pill{ font-family:var(--font-mono); font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:999px; border:1.5px solid var(--navy); background:var(--paper); color:var(--navy); cursor:pointer; transition:background .15s ease, color .15s ease; }
+.cg-day-pill:hover:not(:disabled){ background:rgba(108,108,225,.08); }
+.cg-day-pill.active{ background:var(--navy); color:#fff; }
+.cg-day-pill.done{ border-color:var(--good); color:var(--good); }
+.cg-day-pill.done.active{ background:var(--good); border-color:var(--good); color:#fff; }
+.cg-day-pill.locked{ opacity:.5; cursor:not-allowed; border-style:dashed; }
+.cg-def-card{ border:1.5px solid var(--good); background:var(--good-bg); border-radius:14px; padding:16px 18px; animation:cgFadeIn .3s ease; }
+@keyframes cgFadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+.cg-def-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.cg-def-head strong{ color:var(--good); font-size:15.5px; font-family:var(--font-display); }
+.cg-def-emoji{ font-size:18px; }
+.cg-def-text{ color:var(--good); font-family:var(--font-en); direction:ltr; text-align:left; font-size:14px; line-height:1.6; }
+.cg-def-example{ color:var(--slate); font-family:var(--font-en); direction:ltr; text-align:left; font-size:12.5px; font-style:italic; margin-top:6px; }
+.cg-def-meta{ margin-top:8px; padding-top:8px; border-top:1px dashed rgba(30,138,76,.3); display:flex; flex-wrap:wrap; gap:6px 14px; font-family:var(--font-mono); font-size:11px; color:var(--teal); direction:ltr; }
+
+.cg-overlay{ position:fixed; inset:0; background:rgba(23,26,33,.55); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:200; }
+.cg-overlay.show{ opacity:1; pointer-events:auto; }
+.cg-win-card{ background:var(--paper); border-radius:22px; padding:36px 30px; text-align:center; max-width:380px; border:2px solid var(--gold); transform:scale(.9); transition:transform .3s; }
+.cg-overlay.show .cg-win-card{ transform:scale(1); }
+.cg-win-card h2{ font-family:var(--font-display); font-size:24px; margin:6px 0 10px; color:var(--charcoal); }
+.cg-win-card p{ color:var(--slate); font-size:14px; line-height:1.7; margin-bottom:18px; }
 .mode-card:hover{ border-color:var(--gold); transform:translateY(-3px); }
 .mode-card .mtag{ font-family:var(--font-mono); font-size:11px; padding:4px 10px; border-radius:999px; width:fit-content; direction:ltr; }
 .mode-card.practice .mtag{ color:var(--teal); background:rgba(31,111,92,.09); }
@@ -402,16 +471,13 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <h3>وضع التدريب</h3>
         <p>يتم سحب 10 أسئلة بشكل عشوائي في كل محاولة. تشوف فورًا إذا إجابتك صحيحة أو خاطئة، مع شرح كامل بعد كل سؤال. مناسب للمراجعة والتعلم بدون ضغط وقت.</p>
         <button class="btn btn-gold" onclick="startQuiz('practice', null)">ابدأ الوضع التدريبي</button>
-        <div class="resource-download-grid">
-          <a href="assets/resources/CAPM_ECO.pdf" download class="resource-download-box pdf">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            دليل ECO الرسمي (PDF)
-          </a>
-          <a href="#" class="resource-download-box book disabled" onclick="return false;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-            الكتاب المرافق (سيتم إرساله على بريدك)
-          </a>
-        </div>
+        <button class="concept-game-cta" onclick="startConceptGame()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M9.5 7h5M7 9.5v5M17 9.5v5M9.5 17h5"/></svg>
+          <span class="cta-text">
+            <span class="cta-title">وضع تثبيت المفاهيم</span>
+            <span class="cta-sub">اربط المفهوم بصورته وشوف تعريفه فورًا</span>
+          </span>
+        </button>
       </div>
       <div class="mode-card timed">
         <h3>وضع الاختبار الفعلي</h3>
@@ -423,6 +489,48 @@ table{ display:block; overflow-x:auto; max-width:100%; -webkit-overflow-scrollin
         <p class="hint" id="bankSizeNote" style="margin-top:4px;"></p>
         <ul class="domain-weights-list" id="domainWeightsList"></ul>
       </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screenConceptGame">
+    <button class="exit-mode-btn" onclick="exitConceptGame()">← رجوع لاختيار الوضع</button>
+
+    <div class="cg-days-row" id="cgDaysRow"></div>
+
+    <div class="cg-status-row">
+      <span class="cg-status-num" id="cgScoreLabel">0 / 7 مطابقات</span>
+      <div class="cg-progress-wrap"><div class="cg-progress-fill" id="cgProgressFill"></div></div>
+      <span class="cg-status-tries" id="cgTriesLabel">المحاولات: 0</span>
+    </div>
+
+    <div class="cg-board" id="cgBoard">
+      <div>
+        <div class="cg-col-title">المفاهيم</div>
+        <div class="cg-concepts" id="cgConceptsCol"></div>
+      </div>
+      <div class="cg-middle">
+        <div class="cg-col-title">التعريف</div>
+        <div class="cg-definitions" id="cgDefinitions">
+          <p class="cg-def-placeholder">تعريف كل مفهوم بيظهر هنا أول ما تربطه صح بصورته.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cg-col-title">الصور</div>
+        <div class="cg-images" id="cgImagesCol"></div>
+      </div>
+    </div>
+
+    <div class="cg-controls">
+      <button class="btn btn-outline-dark" id="cgResetBtn">امسح تقدم هذا اليوم وابدأ من جديد</button>
+    </div>
+  </div>
+
+  <div class="cg-overlay" id="cgWinOverlay">
+    <div class="cg-win-card">
+      <div style="font-size:40px; margin-bottom:6px;">🎉</div>
+      <h2>أحسنت، ثبّتّ كل المفاهيم!</h2>
+      <p>راجع التعريفات اللي ظهرت لك بالأسفل، وارجع كرر اللعبة بأي وقت لترسيخها أكثر.</p>
+      <button class="btn btn-gold" id="cgPlayAgainBtn">تم، أراجع المفاهيم</button>
     </div>
   </div>
 
@@ -4594,8 +4702,312 @@ async function buildSmartWeightedSet(desiredCount, poolIds){
   return { ids: shuffle(finalIds), shortfall: desiredCount - finalIds.length, tracked: true };
 }
 
+/* ---------------- وضع تثبيت المفاهيم (لعبة الربط) ---------------- */
+const CG_ICONS = {
+  project: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="14" width="20" height="28"/><line x1="9" y1="21" x2="29" y2="21"/><line x1="9" y1="28" x2="29" y2="28"/><line x1="9" y1="35" x2="29" y2="35"/><line x1="14" y1="14" x2="14" y2="42"/><line x1="24" y1="14" x2="24" y2="42"/><line x1="34" y1="42" x2="34" y2="7"/><line x1="34" y1="7" x2="44" y2="7"/><line x1="44" y1="7" x2="44" y2="13"/><line x1="34" y1="11" x2="40" y2="11"/></svg>`,
+  business_case: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="24" height="32" rx="2"/><line x1="14" y1="14" x2="26" y2="14"/><line x1="14" y1="20" x2="26" y2="20"/><line x1="14" y1="26" x2="22" y2="26"/><circle cx="32" cy="32" r="7.5"/><line x1="37.5" y1="37.5" x2="43" y2="43"/></svg>`,
+  benefits_plan: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="30" width="8" height="10"/><rect x="18" y="20" width="8" height="20"/><rect x="30" y="10" width="8" height="30"/><path d="M34 4 Q39 7 34 11 Q29 7 34 4 Z" fill="currentColor" stroke="none"/></svg>`,
+  wpd: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 34 A17 17 0 0 1 41 34"/><line x1="24" y1="34" x2="32" y2="19"/><circle cx="24" cy="34" r="2" fill="currentColor" stroke="none"/><line x1="10" y1="40" x2="38" y2="40"/></svg>`,
+  risk: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6 4 40h40L24 6z"/><line x1="24" y1="20" x2="24" y2="29"/><circle cx="24" cy="34" r="1.6" fill="currentColor" stroke="none"/></svg>`,
+  cba: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="17"/><text x="24" y="31" font-size="20" font-weight="700" fill="currentColor" stroke="none" text-anchor="middle" font-family="Tajawal, sans-serif">$</text></svg>`,
+  constraint: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="7" height="32" fill="currentColor" stroke="none"/><rect x="37" y="8" width="7" height="32" fill="currentColor" stroke="none"/><rect x="18" y="17" width="12" height="14" rx="2"/><line x1="16" y1="24" x2="11.5" y2="24"/><path d="M13.5 21 L11.5 24 L13.5 27"/><line x1="32" y1="24" x2="36.5" y2="24"/><path d="M34.5 21 L36.5 24 L34.5 27"/></svg>`
+};
+
+const CG_DATA = [
+  { id:'project', label:'Project', day:1,
+    definition:'A temporary endeavor undertaken to create a unique product, service, or result.',
+    pages:['PMBOK Guide 7th Edition – p. 245'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 1' },
+  { id:'business_case', label:'Business Case', day:1,
+    definition:'A project should be initiated with a detailed business case documenting the project objectives and success criteria.',
+    pages:['The Standard for Project Management – p. 34'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 4' },
+  { id:'benefits_plan', label:'Benefits Management Plan', day:1,
+    definition:'The documented explanation defining the processes for creating, maximizing, and sustaining the benefits provided by a project or program.',
+    pages:['PMBOK Guide 7th Edition – p. 236'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 4' },
+  { id:'wpd', label:'Work Performance Data', day:1,
+    definition:'Project Work Performance Domain: the performance domain that addresses activities and functions associated with establishing project processes, managing physical resources, and fostering a learning environment. Work Performance Data: actual costs, actual durations, and the number of defects are examples of work performance data.',
+    pages:['The Standard for Project Management – p. 69'],
+    domainTask:'Domain 2 (Predictive, Plan-Based Methodologies) – Task 3' },
+  { id:'risk', label:'Risk', day:1,
+    definition:'An uncertain event or condition that, if it occurs, has a positive or negative effect on one or more project objectives.',
+    example:'The uncertainty of the oil price is a project risk, which can positively or negatively affect the project.',
+    pages:['PMBOK Guide 7th Edition – p. 248','The Standard for Project Management – p. 53'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 1' },
+  { id:'cba', label:'Cost-Benefit Analysis', day:1,
+    definition:'A cost-benefit analysis is a financial analysis tool used to determine the benefits provided by a project against its costs.',
+    pages:['PMBOK Guide 7th Edition – p. 175'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 4' },
+  { id:'constraint', label:'Constraint', day:1,
+    definition:'A constraint is a factor that limits the options for managing a project, program, portfolio, or process. An assumption log records all assumptions and constraints throughout the project.',
+    example:'A fixed budget limit such as $10,000 is a constraint, a (limitation) the project manager and team must work within.',
+    pages:['PMBOK Guide 7th Edition – p. 185'],
+    domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 1' }
+  /* أضف مفاهيم الأيام الجديدة هنا بنفس الشكل، مع day:2 أو day:3 ...الخ حسب اليوم اللي تبي تفتحه */
+];
+
+/* تاريخ انطلاق اليوم الأول — اليوم رقم N يُفتح تلقائيًا بعد مرور (N-1) يوم من هذا التاريخ.
+   لو تبي تفتح يوم معين يدويًا بغض النظر عن التاريخ (بدون انتظار الحساب التلقائي)،
+   أضف رقمه لمصفوفة CG_MANUAL_UNLOCK_DAYS. */
+const CG_LAUNCH_DATE = '2026-09-11';
+const CG_MANUAL_UNLOCK_DAYS = [];
+
+let cgSelectedConcept = null;
+let cgSelectedImage = null;
+let cgMatchedCount = 0;
+let cgTries = 0;
+let cgLock = false;
+let cgCurrentDay = null;
+
+function cgShuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function cgTodayStr(){ return new Date().toISOString().slice(0,10); }
+
+function cgDaysSinceLaunch(){
+  const launch = new Date(CG_LAUNCH_DATE + 'T00:00:00');
+  const today = new Date(cgTodayStr() + 'T00:00:00');
+  return Math.floor((today - launch) / 86400000) + 1;
+}
+
+function cgIsDayUnlocked(dayNum){
+  if(CG_MANUAL_UNLOCK_DAYS.includes(dayNum)) return true;
+  return dayNum <= cgDaysSinceLaunch();
+}
+
+function cgAllDays(){
+  return [...new Set(CG_DATA.map(c=>c.day))].sort((a,b)=>a-b);
+}
+
+function cgConceptsForDay(dayNum){
+  return CG_DATA.filter(c=>c.day===dayNum);
+}
+
+/* ---------------- حفظ تقدم كل يوم محليًا (لكل جهاز/متصفح) ---------------- */
+const CG_PROGRESS_KEY = 'ncpmCapmConceptProgressV2';
+
+function cgLoadProgress(){
+  try{ const raw = localStorage.getItem(CG_PROGRESS_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch(e){ return {}; }
+}
+function cgSaveProgress(p){
+  try{ localStorage.setItem(CG_PROGRESS_KEY, JSON.stringify(p)); }catch(e){}
+}
+function cgGetDayCompletedIds(dayNum){
+  const p = cgLoadProgress();
+  return (p[dayNum] && p[dayNum].completedIds) || [];
+}
+function cgMarkConceptDone(dayNum, conceptId){
+  const p = cgLoadProgress();
+  if(!p[dayNum]) p[dayNum] = { completedIds: [] };
+  if(!p[dayNum].completedIds.includes(conceptId)) p[dayNum].completedIds.push(conceptId);
+  cgSaveProgress(p);
+}
+function cgClearDayProgress(dayNum){
+  const p = cgLoadProgress();
+  delete p[dayNum];
+  cgSaveProgress(p);
+}
+
+function startConceptGame(){
+  showScreen('screenConceptGame');
+  const days = cgAllDays();
+  const firstUnlocked = days.find(d=>cgIsDayUnlocked(d)) || days[0];
+  cgSelectDay(firstUnlocked);
+}
+
+function exitConceptGame(){
+  showScreen('screenStart');
+}
+
+function cgRenderDaysRow(){
+  const row = document.getElementById('cgDaysRow');
+  row.innerHTML = '';
+  cgAllDays().forEach(d=>{
+    const unlocked = cgIsDayUnlocked(d);
+    const total = cgConceptsForDay(d).length;
+    const doneCount = cgGetDayCompletedIds(d).length;
+    const isDone = unlocked && total > 0 && doneCount === total;
+    const btn = document.createElement('button');
+    btn.className = 'cg-day-pill'
+      + (unlocked ? '' : ' locked')
+      + (isDone ? ' done' : '')
+      + (d === cgCurrentDay ? ' active' : '');
+    btn.disabled = !unlocked;
+    btn.textContent = unlocked ? `اليوم ${d}${isDone ? ' ✓' : ''}` : `🔒 اليوم ${d}`;
+    if(unlocked) btn.addEventListener('click', ()=>cgSelectDay(d));
+    row.appendChild(btn);
+  });
+}
+
+function cgSelectDay(dayNum){
+  cgCurrentDay = dayNum;
+  cgRenderDaysRow();
+  cgBuildBoard();
+}
+
+function cgBuildBoard(){
+  const dayConcepts = cgConceptsForDay(cgCurrentDay);
+  const completedIds = cgGetDayCompletedIds(cgCurrentDay);
+
+  cgMatchedCount = completedIds.length;
+  cgTries = 0; cgSelectedConcept = null; cgSelectedImage = null; cgLock = false;
+
+  document.getElementById('cgWinOverlay').classList.remove('show');
+
+  const defsContainer = document.getElementById('cgDefinitions');
+  defsContainer.innerHTML = completedIds.length
+    ? ''
+    : '<p class="cg-def-placeholder">تعريف كل مفهوم بيظهر هنا أول ما تربطه صح بصورته.</p>';
+
+  const conceptsCol = document.getElementById('cgConceptsCol');
+  const imagesCol = document.getElementById('cgImagesCol');
+  conceptsCol.innerHTML = '';
+  imagesCol.innerHTML = '';
+
+  const conceptOrder = cgShuffle(dayConcepts);
+  const imageOrder = cgShuffle(dayConcepts);
+
+  conceptOrder.forEach(item=>{
+    const already = completedIds.includes(item.id);
+    const btn = document.createElement('button');
+    btn.className = 'cg-concept-btn' + (already ? ' matched' : '');
+    btn.textContent = item.label;
+    btn.dataset.id = item.id;
+    btn.disabled = already;
+    if(!already) btn.addEventListener('click', ()=>cgOnConceptClick(btn, item.id));
+    conceptsCol.appendChild(btn);
+  });
+
+  imageOrder.forEach(item=>{
+    const already = completedIds.includes(item.id);
+    const card = document.createElement('button');
+    card.className = 'cg-image-card' + (already ? ' matched' : '');
+    card.dataset.id = item.id;
+    card.innerHTML = CG_ICONS[item.id];
+    card.disabled = already;
+    if(!already) card.addEventListener('click', ()=>cgOnImageClick(card, item.id));
+    imagesCol.appendChild(card);
+  });
+
+  // إظهار تعريفات المفاهيم اللي سبق إنجازها بنفس ترتيبها الأصلي
+  dayConcepts.forEach(item=>{
+    if(completedIds.includes(item.id)) cgRevealDefinition(item.id);
+  });
+
+  cgUpdateStatus(dayConcepts.length);
+}
+
+function cgOnConceptClick(el, id){
+  if(cgLock || el.classList.contains('matched')) return;
+  document.querySelectorAll('.cg-concept-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  cgSelectedConcept = {el, id};
+  if(cgSelectedImage) cgEvaluate();
+}
+
+function cgOnImageClick(el, id){
+  if(cgLock || el.classList.contains('matched')) return;
+  document.querySelectorAll('.cg-image-card').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  cgSelectedImage = {el, id};
+  if(cgSelectedConcept) cgEvaluate();
+}
+
+function cgEvaluate(){
+  cgTries++;
+  cgLock = true;
+  const isMatch = cgSelectedConcept.id === cgSelectedImage.id;
+  const dayTotal = cgConceptsForDay(cgCurrentDay).length;
+
+  if(isMatch){
+    cgSelectedConcept.el.classList.remove('selected');
+    cgSelectedImage.el.classList.remove('selected');
+    cgSelectedConcept.el.classList.add('matched');
+    cgSelectedImage.el.classList.add('matched');
+    cgSelectedConcept.el.disabled = true;
+    cgSelectedImage.el.disabled = true;
+    cgMatchedCount++;
+    cgMarkConceptDone(cgCurrentDay, cgSelectedConcept.id);
+    cgRevealDefinition(cgSelectedConcept.id);
+    cgResetSelection();
+    cgUpdateStatus(dayTotal);
+    cgRenderDaysRow();
+    if(cgMatchedCount === dayTotal){
+      setTimeout(()=>document.getElementById('cgWinOverlay').classList.add('show'), 400);
+    }
+  } else {
+    cgSelectedConcept.el.classList.add('wrong');
+    cgSelectedImage.el.classList.add('wrong');
+    cgUpdateStatus(dayTotal);
+    setTimeout(()=>{
+      cgSelectedConcept.el.classList.remove('wrong','selected');
+      cgSelectedImage.el.classList.remove('wrong','selected');
+      cgResetSelection();
+    }, 500);
+  }
+}
+
+function cgResetSelection(){
+  cgSelectedConcept = null;
+  cgSelectedImage = null;
+  cgLock = false;
+}
+
+function cgUpdateStatus(dayTotal){
+  const total = dayTotal || cgConceptsForDay(cgCurrentDay).length;
+  document.getElementById('cgScoreLabel').textContent = `${cgMatchedCount} / ${total} مطابقات`;
+  document.getElementById('cgTriesLabel').textContent = `المحاولات: ${cgTries}`;
+  document.getElementById('cgProgressFill').style.width = `${total ? (cgMatchedCount/total)*100 : 0}%`;
+}
+
+function cgRevealDefinition(id){
+  const item = CG_DATA.find(c=>c.id===id);
+  if(!item) return;
+  const container = document.getElementById('cgDefinitions');
+  const placeholder = container.querySelector('.cg-def-placeholder');
+  if(placeholder) placeholder.remove();
+  if(container.querySelector(`[data-def-id="${id}"]`)) return;
+  const card = document.createElement('div');
+  card.className = 'cg-def-card';
+  card.setAttribute('data-def-id', id);
+  card.innerHTML = `
+    <div class="cg-def-head"><strong>${item.label}</strong><span class="cg-def-emoji">😊</span></div>
+    <div class="cg-def-text">${item.definition}</div>
+    ${item.example ? `<div class="cg-def-example">Example: ${item.example}</div>` : ''}
+    <div class="cg-def-meta">
+      <span>${item.pages.join(' • ')}</span>
+      <span>${item.domainTask}</span>
+    </div>
+  `;
+  container.appendChild(card);
+  container.scrollTop = container.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const resetBtn = document.getElementById('cgResetBtn');
+  const playAgainBtn = document.getElementById('cgPlayAgainBtn');
+  if(resetBtn) resetBtn.addEventListener('click', ()=>{
+    if(confirm(`متأكد تبي تمسح تقدمك باليوم ${cgCurrentDay} وتبدأ من جديد؟`)){
+      cgClearDayProgress(cgCurrentDay);
+      cgBuildBoard();
+      cgRenderDaysRow();
+    }
+  });
+  if(playAgainBtn) playAgainBtn.addEventListener('click', ()=>{
+    document.getElementById('cgWinOverlay').classList.remove('show');
+  });
+});
+
 function showScreen(name){
-  ['screenStart','screenQuiz','screenResult'].forEach(id=>{
+  ['screenStart','screenQuiz','screenResult','screenConceptGame'].forEach(id=>{
     document.getElementById(id).classList.toggle('show', id === name);
   });
   // كوب القهوة بالزاوية يبان بشاشة اختيار الوضع بس — أثناء حل الأسئلة يظهر
