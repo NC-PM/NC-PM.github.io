@@ -5144,7 +5144,7 @@ if(QUESTIONS.length < 150){
   document.getElementById('bankSizeNote').textContent =
     `البنك الحالي فيه ${QUESTIONS.length} سؤال فقط — كلا الخيارين حاليًا يستخدمان كل الأسئلة المتاحة، وسيصلان لعددهم الكامل (75 و150) تلقائيًا عند تحديث البنك.`;
 } else {
-  document.getElementById('bankSizeNote').textContent = `يتم سحب الأسئلة عشوائيًا من بنك يضم +1000 سؤال — كل محاولة تحصل على مجموعة جديدة.`;
+  document.getElementById('bankSizeNote').textContent = `يتم سحب الأسئلة عشوائيًا من بنك يضم ${QUESTIONS.length} سؤال — كل محاولة تحصل على مجموعة جديدة.`;
   const list = document.getElementById('domainWeightsList');
   const weightsOrder = [
     'Domain (01) Fundamentals and core concepts',
