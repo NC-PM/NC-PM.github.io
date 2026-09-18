@@ -4946,18 +4946,11 @@ const CG_PROGRESS_KEY = 'ncpmCapmConceptProgressV2';
 let cgProgressCache = null; // يُحمَّل مرة وحدة من Firestore عند دخول اللعبة، وتُقرأ منه كل الدوال التالية مباشرة
 
 async function cgFetchProgressFromCloud(){
-  if(!currentUser) return null;
-  try{
-    const snap = await getDoc(doc(db, 'users', currentUser.uid, 'conceptGame_' + window.COURSE_ID, 'state'));
-    return snap.exists() ? (snap.data().progress || {}) : {};
-  } catch(e){ return null; }
+  try{ return await window.cgFetchProgress(); } catch(e){ return null; }
 }
 
 function cgPushProgressToCloud(p){
-  if(!currentUser) return;
-  // مزامنة بالخلفية بدون انتظار — ما نوقف تجربة اللعب لو تأخر أو فشل الحفظ السحابي
-  setDoc(doc(db, 'users', currentUser.uid, 'conceptGame_' + window.COURSE_ID, 'state'),
-    { progress: p, updatedAt: serverTimestamp() }, { merge: true }).catch(()=>{});
+  try{ window.cgPushProgress(p); } catch(e){ /* لا نوقف تجربة اللعب لو فشل الحفظ */ }
 }
 
 async function cgEnsureProgressLoaded(){
@@ -6344,6 +6337,22 @@ window.saveCoverageState = async function(state){
   try{
     await setDoc(doc(db, 'users', currentUser.uid, 'coverage_' + window.COURSE_ID, 'state'), state, { merge: true });
   } catch(e){ /* لا نوقف تجربة المستخدم لو فشل الحفظ */ }
+};
+
+// جسر لعبة تثبيت المفاهيم مع Firestore — لازم يكون هنا (داخل سكربت الموديول)
+// لأن db و currentUser وأدوات Firebase معرّفة فقط بهذا النطاق
+window.cgFetchProgress = async function(){
+  if(!currentUser) return null;
+  try{
+    const snap = await getDoc(doc(db, 'users', currentUser.uid, 'conceptGame_' + window.COURSE_ID, 'state'));
+    return snap.exists() ? (snap.data().progress || {}) : {};
+  } catch(e){ return null; }
+};
+
+window.cgPushProgress = function(p){
+  if(!currentUser) return;
+  setDoc(doc(db, 'users', currentUser.uid, 'conceptGame_' + window.COURSE_ID, 'state'),
+    { progress: p, updatedAt: serverTimestamp() }, { merge: true }).catch(()=>{});
 };
 
 
