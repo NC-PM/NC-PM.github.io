@@ -4978,6 +4978,7 @@ const CG_DATA = [
     domainTask:'Domain 1 (Fundamentals and Core Concepts) – Task 1' }
   /* أضف مفاهيم الأيام الجديدة هنا بنفس الشكل، مع day:4 أو day:5 ...الخ حسب اليوم اللي تبي تفتحه */
 ];
+window.CG_DATA = CG_DATA; // نعرّضها عالميًا عشان صفحة الإحصائيات بالسكربت التاني تقدر تحسب إجمالي مفاهيم كل يوم
 
 /* تاريخ انطلاق اليوم الأول — اليوم رقم N يُفتح تلقائيًا بعد مرور (N-1) يوم من هذا التاريخ.
    لو تبي تفتح يوم معين يدويًا بغض النظر عن التاريخ (بدون انتظار الحساب التلقائي)،
@@ -6190,10 +6191,27 @@ async function computeUserStats(){
     pctSum += coursePctSum;
   }
 
+  // لعبة تثبيت المفاهيم (CAPM حاليًا) — نحسب كم مفهوم اكتمل بكل يوم مقابل إجمالي مفاهيم ذلك اليوم
+  let conceptGame = null;
+  try{
+    const cgProgress = await window.cgFetchProgress();
+    const cgData = window.CG_DATA || [];
+    if(cgData.length){
+      const days = [...new Set(cgData.map(c=>c.day))].sort((a,b)=>a-b).map(dayNum=>{
+        const total = cgData.filter(c=>c.day===dayNum).length;
+        const completed = (cgProgress && cgProgress[dayNum] && cgProgress[dayNum].completedIds) ? cgProgress[dayNum].completedIds.length : 0;
+        return { day: dayNum, completed, total };
+      });
+      const totalCompleted = days.reduce((s,d)=>s+d.completed, 0);
+      const totalConcepts = days.reduce((s,d)=>s+d.total, 0);
+      conceptGame = { days, totalCompleted, totalConcepts };
+    }
+  } catch(e){ conceptGame = null; }
+
   return {
     totalAttempts, totalPassed, totalFailed, totalQuestions,
     overallAvgPct: totalAttempts ? Math.round(pctSum / totalAttempts) : 0,
-    perCourse
+    perCourse, conceptGame
   };
 }
 
@@ -6201,7 +6219,8 @@ function renderStatsDropdown(stats){
   const summary = document.getElementById('statsSummary');
   const breakdown = document.getElementById('statsBreakdown');
 
-  if(stats.totalAttempts === 0){
+  const hasConceptProgress = stats.conceptGame && stats.conceptGame.totalCompleted > 0;
+  if(stats.totalAttempts === 0 && !hasConceptProgress){
     summary.innerHTML = '<p class="stats-empty">ما فيه محاولات محفوظة بعد — خذ اختبارًا وفعّل الوصول لتبدأ إحصائياتك.</p>';
     breakdown.innerHTML = '';
     return;
@@ -6223,6 +6242,20 @@ function renderStatsDropdown(stats){
         <span class="bpct">${c.avgPct}%</span>
       </div>
     `).join('') || '<p class="stats-empty">لا توجد محاولات محفوظة بعد.</p>';
+
+  if(stats.conceptGame && stats.conceptGame.totalConcepts > 0){
+    const cg = stats.conceptGame;
+    const rows = cg.days.map(d => `
+      <div class="brow">
+        <span>لعبة تثبيت المفاهيم — اليوم ${d.day}</span>
+        <span class="bpct">${d.completed} / ${d.total}</span>
+      </div>
+    `).join('');
+    breakdown.innerHTML += `<div class="brow" style="border-top:1px dashed var(--border,#e4e0d6); margin-top:6px; padding-top:10px;">
+        <span><b>إجمالي لعبة تثبيت المفاهيم</b></span>
+        <span class="bpct">${cg.totalCompleted} / ${cg.totalConcepts}</span>
+      </div>` + rows;
+  }
 }
 
 onAuthStateChanged(auth, (user)=>{
